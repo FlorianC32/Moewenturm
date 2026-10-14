@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<title>Das Rätsel vom Möwenturm</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Lexend:wght@400;500;700&family=Special+Elite&display=swap">
+<style>
+/* Layout: Nachtmeer als Bühne, darauf eine Fallakte aus Papier. Bewusst nur ein (Nacht-)Look. */
+:root{
+  --sea:#0d2433; --sea-deep:#081822; --beam:#ffd34d; --paper:#f3ead3; --ink:#1f2a33;
+  --stamp:#b8352b; --ok:#2e7d4f; --muted:#5b6a73; --line:#d8ccad; --foam:#cfe3ea;
+  --f-display:"Alfa Slab One",Georgia,serif;
+  --f-body:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-type:"Special Elite","Courier New",monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--sea-deep);color:var(--foam);font-family:var(--f-body);font-size:18px;line-height:1.5;
+  background-image:radial-gradient(ellipse at 50% -10%,#1d4258 0%,var(--sea) 45%,var(--sea-deep) 100%);background-attachment:fixed}
+.wrap{max-width:720px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+button{font-family:var(--f-body);cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:3px solid var(--beam);outline-offset:3px}
+h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;letter-spacing:.01em}
+
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--f-type);font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--beam)}
+.bar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ghost{background:transparent;border:2px solid #2d5368;color:var(--foam);border-radius:999px;padding:8px 16px;font-size:16px}
+.ghost:active{background:#163646}
+.stars-total{font-family:var(--f-type);color:var(--beam);font-size:16px}
+
+.hero{position:relative;overflow:hidden;border-radius:20px;padding:36px 22px 28px;background:linear-gradient(180deg,#0b1d29,#12344a);min-height:280px;display:flex;flex-direction:column;justify-content:flex-end;gap:14px}
+.beam{position:absolute;top:58px;right:74px;width:900px;height:900px;transform-origin:0 0;background:conic-gradient(from 0deg at 0 0,rgba(255,211,77,.28) 0deg,rgba(255,211,77,0) 18deg,rgba(255,211,77,0) 360deg);animation:sweep 7s linear infinite;pointer-events:none}
+@keyframes sweep{from{transform:rotate(80deg)}to{transform:rotate(440deg)}}
+.tower{position:absolute;right:52px;top:40px;width:44px}
+.hero h1{font-size:clamp(34px,8vw,54px);line-height:1.05;color:var(--paper);position:relative;max-width:12ch}
+.hero p{margin:0;color:var(--foam);position:relative;max-width:42ch}
+.big{background:var(--beam);color:var(--ink);border:none;border-radius:14px;padding:16px 26px;font-size:20px;font-weight:700;box-shadow:0 5px 0 #b38f1f;position:relative;align-self:flex-start}
+.big:active{transform:translateY(3px);box-shadow:0 2px 0 #b38f1f}
+.big:disabled{opacity:.45;cursor:default}
+.namebox{display:flex;flex-direction:column;gap:8px;position:relative}
+.namebox label{font-family:var(--f-type);font-size:15px;letter-spacing:.08em;color:var(--beam);text-transform:uppercase}
+.namebox input{font:inherit;font-size:20px;padding:12px 14px;border-radius:12px;border:2px solid #2d5368;background:#0a1b26;color:var(--paper);max-width:320px}
+
+.chapters{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.ch{display:flex;gap:14px;align-items:center;text-align:left;background:#10303f;border:2px solid #23495c;border-radius:16px;padding:16px;color:var(--foam)}
+.ch:not(:disabled):active{background:#163e51}
+.ch:disabled{opacity:.45;cursor:default}
+.ch-num{font-family:var(--f-display);font-size:30px;color:var(--beam);min-width:40px;text-align:center}
+.ch-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ch-title{font-weight:700;font-size:18px;color:var(--paper)}
+.ch-meta{font-family:var(--f-type);font-size:14px;color:#9bb7c3}
+
+.file{background:var(--paper);color:var(--ink);border-radius:6px 18px 18px 18px;padding:24px 20px;box-shadow:0 14px 30px rgba(0,0,0,.35);position:relative;display:flex;flex-direction:column;gap:14px}
+.file::before{content:"";position:absolute;top:-14px;left:0;width:140px;height:16px;background:var(--paper);border-radius:8px 8px 0 0}
+.label{font-family:var(--f-type);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.file h2{font-size:clamp(24px,5.5vw,32px);color:var(--ink);line-height:1.15;padding-right:90px}
+.file p{margin:0;max-width:62ch}
+.speech{border-left:4px solid var(--line);padding-left:14px}
+.question{font-weight:700;font-size:20px;background:#fff8e3;border:2px dashed var(--line);border-radius:12px;padding:14px 16px}
+.stamp{position:absolute;top:16px;right:16px;font-family:var(--f-type);color:var(--stamp);border:3px solid var(--stamp);padding:2px 10px;border-radius:6px;transform:rotate(8deg);font-size:15px;letter-spacing:.1em;opacity:.85}
+.mirror{font-family:var(--f-display);font-size:clamp(34px,9vw,52px);text-align:center;transform:scaleX(-1);background:#fff;border:3px solid var(--ink);border-radius:12px;padding:10px;letter-spacing:.06em}
+.code{font-family:var(--f-type);font-size:24px;text-align:center;background:#fff;border:3px solid var(--ink);border-radius:12px;padding:12px;letter-spacing:.08em}
+.abc{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:4px;font-family:var(--f-type);font-size:14px;text-align:center}
+.abc span{background:#fff8e3;border-radius:6px;padding:4px 0}
+
+.answer-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.display{font-family:var(--f-display);font-size:40px;min-width:150px;height:68px;display:flex;align-items:center;justify-content:center;background:#fff;border:3px solid var(--ink);border-radius:14px;color:var(--ink);font-variant-numeric:tabular-nums;padding:0 14px}
+.display.empty{color:#c4b994}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;width:100%}
+.key{font-size:28px;font-weight:700;padding:14px 0;border-radius:14px;border:none;background:#e3d6b4;color:var(--ink);box-shadow:0 4px 0 #bfae86}
+.key:active{transform:translateY(3px);box-shadow:0 1px 0 #bfae86}
+.key:disabled{opacity:.5}
+.key.del{background:#d9c9a3;font-size:20px}
+.key.go{background:var(--ink);color:var(--beam);font-size:20px;box-shadow:0 4px 0 #000}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.choice{font-size:20px;font-weight:700;padding:18px 10px;border-radius:14px;border:3px solid var(--ink);background:#fff;color:var(--ink)}
+.choice:active{background:#fff3c4}
+.choice.wrong{border-color:var(--stamp);color:var(--stamp);text-decoration:line-through}
+
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.path{display:flex;flex-direction:column;gap:4px;text-align:left;padding:18px;border-radius:16px;border:3px solid var(--ink);background:#fff;color:var(--ink)}
+.path:active{background:#fff3c4}
+.path b{font-size:20px}
+.path span{font-size:16px;color:var(--muted)}
+
+.feedback{min-height:28px;font-weight:700}
+.feedback.bad{color:var(--stamp)}
+.feedback.good{color:var(--ok)}
+.tries{font-family:var(--f-type);font-size:15px;color:var(--muted)}
+
+/* Kampf */
+.arena{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--ink);color:var(--paper);border-radius:14px;padding:14px}
+.fighter{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fighter .who{font-family:var(--f-type);font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:#9bb7c3}
+.hearts{font-size:26px;color:#e8564a;letter-spacing:3px}
+.hearts i{font-style:normal;opacity:.2}
+.foebar{display:flex;gap:4px}
+.foebar span{flex:1;height:16px;border-radius:4px;background:var(--beam)}
+.foebar span.gone{background:#3b4852}
+.task{font-family:var(--f-display);font-size:clamp(36px,10vw,52px);color:var(--ink);font-variant-numeric:tabular-nums}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+.overlay{position:fixed;inset:0;background:rgba(4,12,18,.8);display:flex;align-items:flex-end;justify-content:center;z-index:10;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.notebook{background:var(--paper);color:var(--ink);width:100%;max-width:640px;max-height:80%;overflow:auto;border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:12px;background-image:repeating-linear-gradient(180deg,transparent 0 33px,#d9e4ea 33px 34px)}
+.notebook h2{font-size:26px}
+.notebook ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px;font-family:var(--f-type);font-size:17px}
+.notebook .empty{font-family:var(--f-type);color:var(--muted)}
+.small{background:transparent;border:2px solid var(--ink);color:var(--ink);border-radius:999px;padding:8px 16px;font-size:16px;font-weight:500}
+
+.certificate{text-align:center;align-items:center}
+.certificate h2{padding-right:0}
+.certificate .seal{font-family:var(--f-display);font-size:64px;color:var(--stamp);line-height:1}
+.starline{font-size:30px;color:#c99a12;letter-spacing:4px}
+
+@media (prefers-reduced-motion:reduce){.beam{animation:none;transform:rotate(150deg)}.shake{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app"></div>
+
+<script>
+/* Knotentypen: story · decide (Abzweigung) · num (Zahl eintippen) · pick (auswählen) · battle (mehrere Aufgaben hintereinander) */
+const CHAPTERS = [
+ { title:"Der Brief ohne Absender",
+   outro:"Ben pfeift leise. „Wer auch immer den Kompass hat: Er kannte den Code. Und er hat etwas mit dem Leuchtturm zu tun.“ Mila nickt. „Morgen Abend gehen wir zum Möwenturm.“",
+   nodes:{
+    start:{type:"story", title:"Ein neuer Fall", text:[
+      "Möwenbucht, Dienstagmorgen. Im Detektivbüro Leuchtfeuer liegt ein Brief auf dem Tisch. Kein Absender, keine Briefmarke.",
+      "Mila, die Chefin, hält ihn gegen das Licht. „Jemand hat ihn nachts unter der Tür durchgeschoben.“ Ben kaut auf seinem Bleistift. „Und das Merkwürdigste: Seit drei Nächten blinkt der alte Möwenturm. Dabei ist der Leuchtturm seit Jahren abgeschaltet!“",
+      "Ihr drei seid das Team. Der Fall beginnt jetzt."], next:"p1"},
+    p1:{type:"num", scene:"Der Brief", text:"Auf dem Papier steht in krakeliger Schrift:", say:"„Wenn ihr wissen wollt, warum der Möwenturm blinkt, kommt zur Hausnummer 7 mal 8.“", q:"Zu welcher Hausnummer müsst ihr?", answer:56, sol:"7 × 8 = 56", clue:"Der Brief führt zur Hausnummer 56, dem Museum am Hafen.", next:"d1"},
+    d1:{type:"decide", scene:"Der Weg zum Hafen", text:"Hausnummer 56 ist das kleine Museum am Hafen. Mila zeigt auf zwei Wege.", q:"Welchen Weg nehmt ihr?", options:[
+      {label:"Über den Strand", sub:"Kurz. Aber dort wohnen die frechsten Möwen der Stadt.", next:"b1"},
+      {label:"Durch die Altstadt", sub:"Länger, mit engen Gassen und dem Bäcker.", next:"t1"}]},
+    b1:{type:"battle", scene:"Möwen-Angriff!", text:"Kaum seid ihr am Strand, stürzen sich fünf Möwen auf Bens Fischbrötchen! Jede richtige Rechnung verscheucht eine Möwe. Jede falsche kostet ein Herz.", foe:"Möwen", hits:5, gen:"mul", tables:[3,4,5,6], hitLines:["Eine Möwe flattert kreischend davon!","Ben wedelt mit der Mütze. Treffer!","Die Möwe lässt das Brötchen fallen!","Weg ist sie!"], missLine:"Eine Möwe schnappt nach dem Brötchen!", win:"Die letzte Möwe gibt auf. Ben beißt triumphierend in sein Brötchen.", lose:"Die Möwen haben das Brötchen erwischt. Ben ist empört. Noch ein Versuch!", clue:"Am Strand gab es einen Kampf mit den Möwen. Gewonnen!", next:"b2"},
+    b2:{type:"num", scene:"Spuren im Sand", text:"Im nassen Sand entdeckt Mila Abdrücke von Gummistiefeln. Sie führen Richtung Hafen. Ihr zählt 6 Abdrücke, und jeder hat 7 Rillen in der Sohle.", q:"Wie viele Rillen sind es zusammen?", answer:42, sol:"6 × 7 = 42", clue:"Gummistiefel-Spuren am Strand führen zum Hafen.", next:"p2"},
+    t1:{type:"pick", scene:"Das Plakat", text:"An einer Hauswand hängt ein altes Plakat vom Museum. Jemand hat ein Wort in Spiegelschrift daraufgeschmiert.", mirror:"KOMPASS", q:"Welches Wort steht da?", options:["KAPITÄN","KOMPASS","KOFFER","KARTE"], answer:"KOMPASS", sol:"Das Wort heißt KOMPASS.", clue:"In der Altstadt hat jemand KOMPASS in Spiegelschrift an ein Plakat geschrieben.", next:"t2"},
+    t2:{type:"num", scene:"Beim Bäcker", text:"Bäcker Jansen schiebt gerade Bleche aus dem Ofen. 9 Bleche, auf jedem 6 Brötchen.", say:"„Heute Nacht um drei hat einer an meine Hintertür geklopft und Brötchen gekauft. Er roch nach Fisch!“", q:"Wie viele Brötchen hat der Bäcker gebacken?", answer:54, sol:"9 × 6 = 54", clue:"Ein Mann, der nach Fisch roch, war nachts um drei beim Bäcker.", next:"p2"},
+    p2:{type:"num", scene:"Im Museum", text:"Herr Lindqvist, der Museumswärter, öffnet aufgeregt die Tür.", say:"„Gut, dass ihr kommt! Ich habe den Brief geschrieben. Jede Nacht blinkt der Turm 6 Mal hintereinander, dann ist Pause. Das habe ich 4 Mal gezählt.“", q:"Wie oft hat das Licht insgesamt geblinkt?", answer:24, sol:"4 × 6 = 24", clue:"Das Licht blinkt in Gruppen von 6. Das sieht nach einem Signal aus.", next:"p3"},
+    p3:{type:"num", scene:"Die Vitrine", text:"Herr Lindqvist führt euch zu einer leeren Vitrine. „Hier lag der alte Schiffskompass von Kapitän Hansen. Unser wertvollstes Stück!“ Die Vitrine hat ein Zahlenschloss mit drei Ziffern. Daneben liegt ein Zettel:", say:"1. Ziffer: 36 geteilt durch 9 · 2. Ziffer: 27 geteilt durch 3 · 3. Ziffer: 14 geteilt durch 7", q:"Wie lautet der Code? Tippe alle drei Ziffern hintereinander.", answer:492, sol:"36 : 9 = 4, 27 : 3 = 9, 14 : 7 = 2. Der Code ist 492.", clue:"Der Kompass von Kapitän Hansen fehlt. Der Dieb kannte den Code 492.", next:"p4"},
+    p4:{type:"num", scene:"Die Symbole", text:"Auf der Rückseite des Zettels hat jemand mit Symbolen gerechnet:", say:"▲ + ▲ = 14   ·   ▲ × ● = 21", q:"Welche Zahl ist der Kreis ●?", answer:3, sol:"▲ ist 7, weil 7 + 7 = 14. Und 7 × 3 = 21, also ist ● die 3.", clue:"Auf dem Zettel standen geheime Symbol-Rechnungen.", next:"d2"},
+    d2:{type:"decide", scene:"Und jetzt?", text:"Es ist schon Nachmittag. Ben gähnt, Mila ist hellwach.", q:"Was macht ihr als Nächstes?", options:[
+      {label:"Heute Nacht den Turm beobachten", sub:"Mit Taschenlampe und Decke in den Dünen.", next:"n1"},
+      {label:"Herrn Lindqvist ausfragen", sub:"Wer war gestern im Museum?", next:"q1"}]},
+    n1:{type:"num", scene:"Nachtwache", text:"Ihr versteckt euch in den Dünen. Kurz nach Mitternacht beginnt der Turm zu blinken. Diesmal anders: 5 Gruppen mit je 8 Blinkern.", q:"Wie oft blinkt das Licht diesmal?", answer:40, sol:"5 × 8 = 40", clue:"Das Signal hat sich geändert: jetzt 5 Gruppen mit je 8 Blinkern.", next:"END"},
+    q1:{type:"pick", scene:"Die Besucher", text:"Herr Lindqvist kratzt sich am Kopf. „Gestern waren drei Besucher da: Frau Olsen, Hafenmeister Brandt und Fischhändler Kai. Frau Olsen kam als Erste. Kai kam nach Brandt.“", q:"Wer war als Letzter im Museum, kurz vor Ladenschluss?", options:["Frau Olsen","Brandt","Kai"], answer:"Kai", sol:"Olsen war zuerst da. Kai kam nach Brandt. Also war Kai der Letzte.", clue:"Fischhändler Kai war gestern als Letzter im Museum.", next:"END"}
+   }},
+ { title:"Spuren am Leuchtturm",
+   outro:"Mila zählt auf: „Fischgeruch, Fischschuppen, eine Fischgräte… Ich glaube, wir müssen mit ein paar Leuten am Hafen reden.“",
+   nodes:{
+    start:{type:"story", title:"Am Möwenturm", text:[
+      "Es dämmert. Der Wind pfeift um den Möwenturm. Die Tür steht einen Spalt offen.",
+      "Ben leuchtet mit der Taschenlampe auf den Boden. „Seht mal, Fußspuren im Sand. Und hier riecht es irgendwie… nach Fisch?“"], next:"p1"},
+    p1:{type:"num", scene:"Die Fußspuren", text:"Die Spuren führen bis zur Tür. Ihr messt nach: Der Fremde hat 8 Schritte gemacht. Jeder Schritt ist genau 6 Pflastersteine lang.", q:"Wie viele Pflastersteine lang ist der Weg?", answer:48, sol:"8 × 6 = 48", clue:"Große Schritte! Der Fremde ist wohl ein Erwachsener.", next:"d1"},
+    d1:{type:"decide", scene:"Die Tür klemmt", text:"Mila rüttelt an der Tür. Sie bewegt sich keinen Millimeter mehr. An der Außenwand führt eine rostige Leiter nach oben.", q:"Wie kommt ihr rein?", options:[
+      {label:"Tür aufbrechen", sub:"Mit dem Zahlenschloss am Riegel.", next:"door"},
+      {label:"Die Leiter hochklettern", sub:"Mutig, aber der Wind wird stärker.", next:"ladder"}]},
+    door:{type:"num", scene:"Das Riegelschloss", text:"Am Riegel hängt ein Schloss. Auf einem Schild steht:", say:"Der Code ist die Zahl, die in der 8er-Reihe UND in der 9er-Reihe steht und kleiner als 100 ist.", q:"Wie lautet der Code?", answer:72, sol:"8 × 9 = 72. Die 72 steht in beiden Reihen.", clue:"Das Riegelschloss hatte den Code 72.", next:"stairs"},
+    stairs:{type:"num", scene:"Die Treppe", text:"Drinnen geht es eine Wendeltreppe hoch. Sie hat 7 Etagen, und jede Etage hat 9 Stufen.", q:"Wie viele Stufen steigt ihr bis ganz nach oben?", answer:63, sol:"7 × 9 = 63", clue:"Auf jeder Stufe liegen glitzernde Fischschuppen.", next:"p2"},
+    ladder:{type:"battle", scene:"Kletterpartie im Wind", text:"Auf halber Höhe frischt der Wind auf! Die Leiter wackelt. Jede richtige Rechnung bringt euch eine Sprosse höher.", foe:"Sturm", hits:5, gen:"mul", tables:[6,7,8], hitLines:["Eine Sprosse geschafft!","Mila zieht Ben hoch. Weiter!","Der Wind heult, aber ihr haltet fest!","Fast oben!"], missLine:"Eine Böe! Ihr rutscht eine Sprosse runter.", win:"Ihr schwingt euch durch das Fenster in den Laternenraum. Geschafft!", lose:"Der Wind ist zu stark. Ihr klettert vorsichtig wieder runter und versucht es nochmal.", clue:"Ihr seid die Außenleiter hochgeklettert. Oben im Fensterrahmen klebt eine Fischschuppe.", next:"p2"},
+    p2:{type:"num", scene:"Die Laterne", text:"Oben im Laternenraum steht eine Kiste mit 40 Glühbirnen. Ein Zettel daran: „Gleichmäßig in 5 Reihen einschrauben.“", q:"Wie viele Glühbirnen kommen in jede Reihe?", answer:8, sol:"40 : 5 = 8", clue:"Jemand hat neue Glühbirnen eingesetzt. Der Turm wurde absichtlich wieder angeschaltet!", next:"p3"},
+    p3:{type:"pick", scene:"Das Schaltpult", text:"Am Schaltpult leuchten vier Knöpfe mit Zahlen. Darunter steht: „Drücke den Knopf, der NICHT in die 6er-Reihe gehört. Dann geht das Licht aus.“", q:"Welchen Knopf drückt ihr?", options:["18","24","32","36"], answer:"32", sol:"18, 24 und 36 sind in der 6er-Reihe. 32 nicht.", clue:"Ihr habt das Licht am Schaltpult ausgeschaltet.", next:"p4"},
+    p4:{type:"num", scene:"Das Fenster", text:"In die Fensterscheibe hat jemand Zahlen gekratzt. Sie werden immer kleiner:", say:"81 · 72 · 63 · ?", q:"Welche Zahl fehlt?", answer:54, sol:"Jedes Mal 9 weniger: 63 − 9 = 54.", clue:"Die 9er-Reihe rückwärts. Daneben ist eine kleine Fischgräte gekratzt.", next:"storm"},
+    storm:{type:"battle", scene:"Das Gewitter", text:"Plötzlich zieht ein Gewitter auf! Die Fensterläden schlagen auf und zu. Schließt alle vier, bevor der Regen reinkommt. Jetzt wird geteilt!", foe:"Fensterläden", hits:4, gen:"div", tables:[4,5,6,7], hitLines:["Klack! Ein Laden ist zu.","Ben stemmt sich dagegen. Zu!","Noch einer geschafft!"], missLine:"Ein Laden knallt wieder auf! Regen spritzt rein.", win:"Alle Läden sind zu. Draußen tobt das Gewitter, drinnen ist es still.", lose:"Ihr seid klatschnass. Trocknet euch kurz ab und versucht es nochmal.", clue:"Ihr habt den Turm vor dem Gewitter gesichert.", next:"END"}
+   }},
+ { title:"Drei Verdächtige",
+   outro:"Auf Kais Zettel steht: „Übergabe heute Nacht. Wenn der Turm blinkt, kommt das Boot.“ Mila springt auf. „Er hat einem Boot Zeichen gegeben!“",
+   nodes:{
+    start:{type:"story", title:"Am Hafen", text:[
+      "Am nächsten Morgen ist am Hafen viel los. Drei Leute waren in der Nacht in der Nähe des Möwenturms.",
+      "Ein guter Detektiv prüft jede Aussage nach. Auch die Zahlen!"], next:"d0"},
+    d0:{type:"decide", scene:"Wie geht ihr vor?", text:"Ben will sofort losfragen. Mila möchte die Leute erst heimlich beobachten.", q:"Wie startet ihr?", options:[
+      {label:"Heimlich beobachten", sub:"Hinter den Fischkisten verstecken.", next:"spy"},
+      {label:"Direkt fragen", sub:"Freundlich, aber hartnäckig.", next:"p1"}]},
+    spy:{type:"pick", scene:"Die Boote", text:"Vom Versteck aus seht ihr drei Boote: ein rotes, ein blaues und ein grünes. Das Boot von Kai ist nicht rot. Das blaue Boot gehört Frau Olsen.", q:"Welches Boot gehört Kai?", options:["Rot","Blau","Grün"], answer:"Grün", sol:"Blau gehört Olsen, rot ist es nicht. Also bleibt Grün.", clue:"Kai hat ein grünes Boot. Am Bug hängt eine Taschenlampe.", next:"p1"},
+    p1:{type:"num", scene:"Hafenmeister Brandt", text:"Hafenmeister Brandt sitzt vor seinem Häuschen und flickt Netze.", say:"„Ich war die ganze Nacht hier. Ich habe 8 Netze geflickt, jedes hatte 9 Löcher.“", extra:"In seinem Notizbuch steht: Löcher geflickt: 72", q:"Wie viele Löcher hat er geflickt, wenn seine Aussage stimmt?", answer:72, sol:"8 × 9 = 72", clue:"Brandt: 8 Netze mit je 9 Löchern = 72. Passt zum Notizbuch.", next:"p2"},
+    p2:{type:"num", scene:"Malerin Frau Olsen", text:"Frau Olsen malt am Kai. Sie hat Farbe an den Händen.", say:"„Ich habe die ganze Nacht gemalt. 4 Bilder, auf jedem 7 Möwen.“", extra:"Ihr zählt alle Möwen auf ihren Bildern: Es sind 28.", q:"Wie viele Möwen müssten es sein, wenn ihre Aussage stimmt?", answer:28, sol:"4 × 7 = 28", clue:"Frau Olsen: 4 Bilder mit je 7 Möwen = 28. Passt zu den Bildern.", next:"p3"},
+    p3:{type:"num", scene:"Fischhändler Kai", text:"Fischhändler Kai stapelt nervös Kisten. Er riecht stark nach Fisch und trägt Gummistiefel.", say:"„Ich? Ich war die ganze Nacht im Laden! Ich habe 6 Kisten gepackt, in jeder 8 Fische. Das sind 56 Fische!“", q:"Wie viele Fische sind es wirklich?", answer:48, sol:"6 × 8 = 48. Kai hat sich verrechnet!", clue:"Kai behauptet 56 Fische, es sind aber nur 48!", next:"p4"},
+    p4:{type:"pick", scene:"Wer flunkert?", text:"Mila schaut in eure Notizen. „Zwei Aussagen passen zu den Zahlen. Eine nicht.“", q:"Wer hat geflunkert?", options:["Brandt","Frau Olsen","Kai"], answer:"Kai", sol:"Nur bei Kai stimmt die Rechnung nicht.", clue:"Hauptverdächtiger: Fischhändler Kai.", next:"d1"},
+    d1:{type:"decide", scene:"Kai haut ab!", text:"Kai wird blass, lässt eine Kiste fallen und rennt los!", q:"Was macht ihr?", options:[
+      {label:"Hinterher!", sub:"Quer über den Fischmarkt.", next:"chase"},
+      {label:"Seinen Laden durchsuchen", sub:"Vielleicht liegt da ein Beweis.", next:"shop"}]},
+    chase:{type:"battle", scene:"Verfolgungsjagd!", text:"Kai rennt über den Fischmarkt, ihr hinterher! Jede richtige Rechnung bringt euch näher ran. Gemischte Aufgaben!", foe:"Kai", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Ihr springt über eine Fischkiste!","Ben schlüpft unter einem Netz durch!","Ihr holt auf!","Nur noch ein paar Meter!"], missLine:"Ihr rutscht auf einer Fischschuppe aus!", win:"Kai bleibt keuchend stehen. Dabei fällt ihm ein Zettel aus der Tasche.", lose:"Kai ist um die Ecke verschwunden. Aber ihr kennt den Hafen. Noch mal!", clue:"Ihr habt Kai auf dem Fischmarkt eingeholt.", next:"alley"},
+    alley:{type:"pick", scene:"Die Gasse", text:"Kai hat sich losgerissen und ist in eine Gasse gelaufen. Ein Fischer ruft: „Er ist in die Gasse mit der Nummer 6 mal 6!“", q:"In welche Gasse rennt ihr?", options:["32","36","42","63"], answer:"36", sol:"6 × 6 = 36", clue:"In Gasse 36 findet ihr Kais Zettel auf dem Boden.", next:"END"},
+    shop:{type:"num", scene:"Im Kühlraum", text:"In Kais Laden ist es eiskalt. Im Kühlraum stehen 7 Regale mit je 8 Fischkisten. Aber eine Kiste fehlt!", q:"Wie viele Kisten stehen noch da?", answer:55, sol:"7 × 8 = 56. Eine fehlt, also 56 − 1 = 55.", clue:"In Kais Kühlraum fehlt eine Kiste.", next:"secret"},
+    secret:{type:"pick", scene:"Die Geheimschrift", text:"Auf dem Tresen liegt ein Zettel mit Zahlen. Jede Zahl ist ein Buchstabe: A = 1, B = 2, C = 3 und so weiter.", code:"19 · 20 · 5 · 7", abc:true, q:"Welches Wort steht da?", options:["SAGE","STEG","SEGEL","SPUR"], answer:"STEG", sol:"S = 19, T = 20, E = 5, G = 7. Das Wort heißt STEG.", clue:"In Kais Laden stand das Wort STEG in Geheimschrift.", next:"END"}
+   }},
+ { title:"Das Lichtsignal",
+   outro:"Am Abend leuchtet der Möwenturm ein letztes Mal. Herr Lindqvist hat ihn extra für euch angeschaltet. Ein Dankeschön für das Detektivbüro Leuchtfeuer.",
+   nodes:{
+    start:{type:"story", title:"Die Übergabe", text:[
+      "Auf der Rückseite von Kais Zettel steht noch mehr:",
+      "„Steg Nummer (9 mal 9) minus (8 mal 9).“",
+      "Mila springt auf. „Wir müssen ihn aufhalten, bevor der Kompass die Bucht verlässt!“"], next:"p1"},
+    p1:{type:"num", scene:"Der richtige Steg", text:"Am Hafen gibt es viele Stege. Kais Zettel sagt:", say:"Steg Nummer (9 mal 9) minus (8 mal 9)", q:"Zu welchem Steg müsst ihr?", answer:9, sol:"9 × 9 = 81 und 8 × 9 = 72. 81 − 72 = 9.", clue:"Die Übergabe soll an Steg 9 stattfinden.", next:"p2"},
+    p2:{type:"num", scene:"Die Flut", text:"Der alte Fischer Jens am Steg brummt: „Das Boot kann erst anlegen, wenn das Wasser hoch genug ist. Jetzt fehlen noch 32 Zentimeter. Jede Stunde steigt das Wasser um 4 Zentimeter.“", q:"In wie vielen Stunden kann das Boot anlegen?", answer:8, sol:"32 : 4 = 8", clue:"Das Boot kommt erst in 8 Stunden.", next:"d1"},
+    d1:{type:"decide", scene:"Acht Stunden", text:"Ihr habt Zeit. Ben will den Kompass suchen. Mila hat einen frechen Plan.", q:"Was macht ihr?", options:[
+      {label:"Den Kompass suchen", sub:"Er muss hier irgendwo versteckt sein.", next:"search"},
+      {label:"Das Boot reinlegen", sub:"Mit der Taschenlampe ein falsches Signal senden.", next:"morse"}]},
+    search:{type:"num", scene:"Das Bootshaus", text:"Im Bootshaus an Steg 9 hängen 9 Rettungsringe in jeder Reihe. Es gibt 4 Reihen. Hinter einem davon klebt ein Zettel: „Kisten am Ende des Stegs.“", q:"Wie viele Rettungsringe hängen dort?", answer:36, sol:"4 × 9 = 36", clue:"Im Bootshaus: Der Kompass ist in einer Kiste am Ende des Stegs.", next:"boxes"},
+    morse:{type:"num", scene:"Das falsche Signal", text:"Mila kennt Kais Lichtcode jetzt: Ein langes Leuchten zählt 5, ein kurzes zählt 1. Sie will dem Boot sagen: „Komm zu Steg 17.“ Dort wartet die Wasserpolizei.", say:"lang · lang · lang · kurz · kurz", q:"Welche Zahl sendet dieses Signal?", answer:17, sol:"5 + 5 + 5 + 1 + 1 = 17", clue:"Ihr habt dem Boot ein falsches Signal geschickt: Steg 17.", next:"boxes"},
+    boxes:{type:"pick", scene:"Die Kisten", text:"Am Ende von Steg 9 stehen vier Kisten mit Nummern. Unter Kais Zettel steht klein: „Kompass in der Kiste, deren Zahl in der 4er-Reihe UND in der 6er-Reihe vorkommt.“", q:"Welche Kiste macht ihr auf?", options:["8","12","16","18"], answer:"12", sol:"12 ist in der 4er-Reihe (4, 8, 12) und in der 6er-Reihe (6, 12).", clue:"In Kiste 12 liegt der Kompass von Kapitän Hansen!", next:"final"},
+    final:{type:"battle", scene:"Tauziehen am Steg", text:"Gerade als ihr die Kiste öffnet, taucht Kai auf und packt sie am anderen Ende! Jetzt zählt jede Rechnung: Wer zieht stärker?", foe:"Kai", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Ihr zieht die Kiste ein Stück zu euch!","Ben stemmt die Füße in die Planken!","Kai kommt ins Rutschen!","Noch ein Ruck!"], missLine:"Kai zieht die Kiste zurück!", win:"Mit einem letzten Ruck plumpst Kai auf seinen Hosenboden. Die Kiste gehört euch! Kai gibt kleinlaut auf.", lose:"Kai hat die Kiste zurückgezogen. Aber ihr lasst nicht locker. Noch mal!", clue:"Tauziehen gewonnen! Der Kompass ist gerettet.", next:"p_end"},
+    p_end:{type:"num", scene:"Zurück ins Museum", text:"Herr Lindqvist strahlt, als ihr den Kompass zurückbringt. „In 3 Wochen kommt der Kompass auf eine große Ausstellung. Bis dahin hängt euer Foto neben der Vitrine!“", q:"Eine Woche hat 7 Tage. Wie viele Tage sind 3 Wochen?", answer:21, sol:"3 × 7 = 21", clue:"Fall gelöst! In 21 Tagen geht der Kompass auf große Ausstellung.", next:"END"}
+   }}
+];
+
+const KEY="moewenturm-v2";
+let S=load(), view={screen:"title"}, entry="";
+
+function load(){
+  try{const r=localStorage.getItem(KEY); if(r){const s=JSON.parse(r); return Object.assign({name:"",stars:{},clues:[],pos:{},done:{}},s);}}catch(e){}
+  return {name:"",stars:{},clues:[],pos:{},done:{}};
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+const app=document.getElementById("app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const totalStars=()=>Object.values(S.stars).reduce((a,b)=>a+b,0);
+const chStars=i=>Object.entries(S.stars).filter(([k])=>k.startsWith(i+":")).reduce((a,[,v])=>a+v,0);
+const unlocked=i=>i===0||!!S.done[i-1];
+const node=()=>CHAPTERS[view.ch].nodes[view.node];
+
+function award(stars,clue){
+  const k=view.ch+":"+view.node;
+  S.stars[k]=Math.max(S.stars[k]||0,stars);
+  if(clue&&!S.clues.includes(clue)) S.clues.push(clue);
+  save();
+}
+
+function go(id){
+  entry="";
+  if(id==="END"){S.done[view.ch]=true; delete S.pos[view.ch]; save(); view={screen:"outro",ch:view.ch};}
+  else{S.pos[view.ch]=id; save(); view={screen:"node",ch:view.ch,node:id,tries:0}; if(node().type==="battle") startBattle();}
+  render(); window.scrollTo(0,0);
+}
+
+function bar(){
+  return `<div class="bar"><div class="brand">Detektivbüro Leuchtfeuer</div>
+  <div class="bar-actions"><span class="stars-total">★ ${totalStars()}</span>
+  <button class="ghost" data-act="notes">Notizbuch</button>
+  ${view.screen!=="map"&&view.screen!=="title"?'<button class="ghost" data-act="map">Fälle</button>':""}</div></div>`;
+}
+
+const towerSvg=`<svg class="tower" viewBox="0 0 44 140" aria-hidden="true"><rect x="12" y="6" width="20" height="14" rx="3" fill="#ffd34d"/><rect x="8" y="20" width="28" height="6" fill="#f3ead3"/><path d="M12 26h20l6 110H6z" fill="#f3ead3"/><path d="M10 52h24l1 14H9zM8 88h28l1 14H7z" fill="#b8352b"/></svg>`;
+
+function render(){
+  ({title:renderTitle,map:renderMap,node:renderNode,outro:renderOutro,end:renderEnd})[view.screen]();
+}
+
+function renderTitle(){
+  app.innerHTML=`<section class="hero"><div class="beam"></div>${towerSvg}
+   <div class="label" style="color:var(--beam);position:relative">Ein Detektiv-Abenteuer in 4 Kapiteln</div>
+   <h1>Das Rätsel vom Möwenturm</h1>
+   <p>Ein Kompass ist verschwunden, ein alter Leuchtturm blinkt mitten in der Nacht. Nur wer gut rechnet, findet die Spur. Und du entscheidest, welchen Weg ihr nehmt.</p>
+   <div class="namebox"><label for="detname">Dein Detektivname</label>
+   <input id="detname" maxlength="20" autocomplete="off" value="${esc(S.name)}" placeholder="z. B. Paul"></div>
+   <button class="big" id="start">${totalStars()?"Weiter ermitteln":"Fall übernehmen"}</button></section>`;
+  const inp=document.getElementById("detname"),btn=document.getElementById("start");
+  const upd=()=>btn.disabled=!inp.value.trim(); inp.addEventListener("input",upd); upd();
+  btn.onclick=()=>{S.name=inp.value.trim();save();view={screen:"map"};render();};
+}
+
+function renderMap(){
+  const cards=CHAPTERS.map((c,i)=>{
+    const meta=!unlocked(i)?"Noch verschlossen":S.pos[i]?"Angefangen · weiterspielen":S.done[i]?`Gelöst · ★ ${chStars(i)} · Nochmal mit anderem Weg?`:"Neuer Fall";
+    return `<button class="ch" data-ch="${i}" ${unlocked(i)?"":"disabled"}><span class="ch-num">${i+1}</span><span class="ch-body"><span class="ch-title">${esc(c.title)}</span><span class="ch-meta">${meta}</span></span></button>`;
+  }).join("");
+  app.innerHTML=bar()+`<div><div class="label" style="color:#9bb7c3">Fallakte</div><h2 style="color:var(--paper);font-size:30px">Hallo, Detektiv ${esc(S.name)}!</h2></div>
+   <div class="chapters">${cards}</div>
+   ${S.done[CHAPTERS.length-1]?'<button class="big" data-act="end">Urkunde ansehen</button>':""}
+   <button class="ghost" data-act="reset" style="align-self:flex-start;font-size:14px;opacity:.7">Neues Spiel beginnen</button>`;
+  app.querySelectorAll("[data-ch]").forEach(b=>b.onclick=()=>{view={screen:"node",ch:+b.dataset.ch}; go(S.pos[+b.dataset.ch]||"start");});
+}
+
+function head(n,stamp){
+  return `${stamp?`<div class="stamp">${stamp}</div>`:""}<div class="label">Kapitel ${view.ch+1} · ${esc(CHAPTERS[view.ch].title)}</div><h2>${esc(n.scene||n.title)}</h2>`;
+}
+
+function padHtml(){
+  return `<div class="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="key" data-k="${n}">${n}</button>`).join("")}
+   <button class="key del" data-k="del" aria-label="Löschen">⌫</button><button class="key" data-k="0">0</button><button class="key go" data-k="ok">Prüfen</button></div>`;
+}
+
+function renderNode(){
+  const n=node();
+  if(n.type==="story"){
+    app.innerHTML=bar()+`<article class="file">${head(n)}${n.text.map(t=>`<p>${esc(t)}</p>`).join("")}<button class="big" id="go">Weiter</button></article>`;
+    document.getElementById("go").onclick=()=>go(n.next); return;
+  }
+  if(n.type==="decide"){
+    app.innerHTML=bar()+`<article class="file">${head(n,"Du entscheidest")}<p>${esc(n.text)}</p><div class="question">${esc(n.q)}</div>
+     <div class="paths">${n.options.map((o,i)=>`<button class="path" data-i="${i}"><b>${esc(o.label)}</b><span>${esc(o.sub)}</span></button>`).join("")}</div></article>`;
+    app.querySelectorAll(".path").forEach(b=>b.onclick=()=>go(n.options[+b.dataset.i].next)); return;
+  }
+  if(n.type==="battle") return renderBattle();
+  const pick=n.type==="pick", limit=pick?2:3;
+  const abc=n.abc?`<div class="abc">${"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((l,i)=>`<span>${l}=${i+1}</span>`).join("")}</div>`:"";
+  app.innerHTML=bar()+`<article class="file">${head(n,"Rätsel")}
+   <p>${esc(n.text)}</p>
+   ${n.say?`<p class="speech">${esc(n.say)}</p>`:""}
+   ${n.mirror?`<div class="mirror" aria-label="Wort in Spiegelschrift">${esc(n.mirror)}</div>`:""}
+   ${n.code?`<div class="code">${esc(n.code)}</div>${abc}`:""}
+   ${n.extra?`<p><b>${esc(n.extra)}</b></p>`:""}
+   <div class="question">${esc(n.q)}</div>
+   ${pick?`<div class="choices">${n.options.map(o=>`<button class="choice" data-opt="${esc(o)}">${esc(o)}</button>`).join("")}</div>`
+     :`<div class="answer-row"><div class="display empty" id="disp" aria-live="polite">?</div><span class="tries" id="tries">${limit} Versuche</span></div>${padHtml()}`}
+   <div class="feedback" id="fb" aria-live="polite"></div></article>`;
+  if(pick) app.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>check(b.dataset.opt,b));
+  else app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>press(b.dataset.k));
+}
+
+function press(k){
+  const d=document.getElementById("disp"); if(!d||document.querySelector(".key:disabled")) return;
+  if(k==="ok"){ if(!entry) return; return node().type==="battle"?battleAnswer(entry):check(entry); }
+  if(k==="del") entry=entry.slice(0,-1); else if(entry.length<4) entry+=k;
+  d.textContent=entry||"?"; d.classList.toggle("empty",!entry);
+}
+
+document.addEventListener("keydown",e=>{
+  if(view.screen!=="node"||document.querySelector(".overlay")||!document.getElementById("disp")) return;
+  if(/^[0-9]$/.test(e.key)) press(e.key); else if(e.key==="Backspace") press("del"); else if(e.key==="Enter") press("ok");
+});
+
+const praise=["Stark kombiniert!","Genau richtig!","Messerscharf!","Volltreffer, Detektiv!","So macht man das!"];
+
+function finishPuzzle(fbHtml,cls,n){
+  const fb=document.getElementById("fb"); fb.className="feedback "+cls; fb.innerHTML=fbHtml;
+  app.querySelectorAll(".key,.choice").forEach(b=>b.disabled=true);
+  const next=document.createElement("button"); next.className="big"; next.textContent="Weiter";
+  next.onclick=()=>go(n.next); fb.after(next); next.focus();
+}
+
+function check(val,btn){
+  const n=node(), limit=n.type==="pick"?2:3;
+  if(String(val)===String(n.answer)){
+    const stars=[3,2,1][view.tries]||1;
+    award(stars,n.clue);
+    finishPuzzle(`${rnd(praise)} ${"★".repeat(stars)}<br><span style="font-weight:500">Notiz: ${esc(n.clue)}</span>`,"good",n);
+    return;
+  }
+  view.tries++;
+  if(btn) btn.classList.add("wrong");
+  entry=""; const d=document.getElementById("disp"); if(d){d.textContent="?";d.classList.add("empty");d.classList.remove("shake");void d.offsetWidth;d.classList.add("shake");}
+  if(view.tries>=limit){
+    award(0,n.clue);
+    finishPuzzle(`Mila hat nachgerechnet: ${esc(n.sol)}<br><span style="font-weight:500">Diesmal gibt es keinen Stern. Notiz: ${esc(n.clue)}</span>`,"bad",n);
+    return;
+  }
+  const left=limit-view.tries;
+  document.getElementById("fb").className="feedback bad";
+  document.getElementById("fb").textContent=`Leider falsch. Noch ${left} ${left===1?"Versuch":"Versuche"}.`;
+  const t=document.getElementById("tries"); if(t) t.textContent=`${left} ${left===1?"Versuch":"Versuche"}`;
+}
+
+/* Kampf */
+function startBattle(){ view.b={hp:3,hits:0,msg:"",over:null,last:""}; newTask(); entry=""; }
+function newTask(){
+  const n=node(); let t;
+  do{
+    const a=rnd(n.tables), b=2+Math.floor(Math.random()*9);
+    const div=n.gen==="div"||(n.gen==="mix"&&Math.random()<.4);
+    t=div?{txt:`${a*b} : ${a}`,ans:b}:(Math.random()<.5?{txt:`${a} × ${b}`,ans:a*b}:{txt:`${b} × ${a}`,ans:a*b});
+  }while(t.txt===view.b.last);
+  view.b.task=t; view.b.last=t.txt;
+}
+function renderBattle(){
+  const n=node(), b=view.b;
+  const hearts=[0,1,2].map(i=>i<b.hp?"♥":"<i>♥</i>").join("");
+  const foe=Array.from({length:n.hits},(_,i)=>`<span class="${i<b.hits?"gone":""}"></span>`).join("");
+  let body;
+  if(b.over==="win") body=`<p class="feedback good">${esc(n.win)} ${"★".repeat(b.hp)}</p><p><b>Notiz:</b> ${esc(n.clue)}</p><button class="big" id="bnext">Weiter</button>`;
+  else if(b.over==="lose") body=`<p class="feedback bad">${esc(n.lose)}</p><button class="big" id="bretry">Nochmal kämpfen</button>`;
+  else body=`<div class="question" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>Aufgabe ${b.hits+1} von ${n.hits}</span></div>
+     <div class="answer-row"><span class="task">${b.task.txt} =</span><div class="display empty" id="disp" aria-live="polite">?</div></div>
+     ${padHtml()}<div class="feedback ${b.msgCls||""}" id="fb" aria-live="polite">${esc(b.msg)}</div>`;
+  app.innerHTML=bar()+`<article class="file">${head(n,"Kampf")}<p>${esc(n.text)}</p>
+   <div class="arena"><div class="fighter"><span class="who">Euer Team</span><span class="hearts" aria-label="${b.hp} Herzen">${hearts}</span></div>
+   <div class="fighter"><span class="who">${esc(n.foe)}</span><div class="foebar" aria-label="${n.hits-b.hits} übrig">${foe}</div></div></div>
+   ${body}</article>`;
+  if(b.over==="win") document.getElementById("bnext").onclick=()=>go(n.next);
+  else if(b.over==="lose") document.getElementById("bretry").onclick=()=>{startBattle();renderBattle();};
+  else app.querySelectorAll("[data-k]").forEach(x=>x.onclick=()=>press(x.dataset.k));
+}
+function battleAnswer(val){
+  const n=node(), b=view.b; entry="";
+  if(Number(val)===b.task.ans){
+    b.hits++; b.msg=rnd(n.hitLines); b.msgCls="good";
+    if(b.hits>=n.hits){ b.over="win"; award(b.hp,n.clue); } else newTask();
+  }else{
+    b.hp--; b.msg=`${n.missLine} (${b.task.txt} = ${b.task.ans})`; b.msgCls="bad";
+    if(b.hp<=0) b.over="lose"; else newTask();
+  }
+  renderBattle();
+  if(b.msgCls==="bad"&&!b.over){const d=document.getElementById("disp"); d&&d.classList.add("shake");}
+}
+
+function renderOutro(){
+  const c=CHAPTERS[view.ch], last=view.ch===CHAPTERS.length-1;
+  app.innerHTML=bar()+`<article class="file"><div class="stamp">Gelöst</div><div class="label">Kapitel ${view.ch+1} abgeschlossen · ★ ${chStars(view.ch)}</div>
+   <h2>${esc(c.title)}</h2><p>${esc(c.outro)}</p>
+   <p style="color:var(--muted)">Tipp für später: Spiel das Kapitel nochmal und nimm den anderen Weg. Dort warten andere Rätsel.</p>
+   <button class="big" id="go">${last?"Zur Urkunde":"Nächstes Kapitel"}</button></article>`;
+  document.getElementById("go").onclick=()=>{ if(last){view={screen:"end"};render();} else {view={screen:"node",ch:view.ch+1}; go(S.pos[view.ch]||"start");} };
+}
+
+function renderEnd(){
+  const t=totalStars(), rank=t>=90?"Meisterdetektiv":t>=60?"Oberdetektiv":"Detektiv";
+  app.innerHTML=bar()+`<article class="file certificate"><div class="label">Urkunde</div><div class="seal">★</div>
+   <h2>${esc(S.name)} ist ${rank}!</h2>
+   <p>Das Detektivbüro Leuchtfeuer bestätigt: Das Rätsel vom Möwenturm ist gelöst. Der Kompass von Kapitän Hansen ist zurück im Museum.</p>
+   <div class="starline">★ ${t}</div>
+   <p>Ab 60 Sternen wirst du Oberdetektiv, ab 90 Meisterdetektiv. Die gibt es nur, wenn du auch die anderen Wege spielst.</p>
+   <button class="big" data-act="map" style="align-self:center">Zu den Fällen</button></article>`;
+}
+
+function openNotes(){
+  const ov=document.createElement("div"); ov.className="overlay";
+  ov.innerHTML=`<div class="notebook" role="dialog" aria-label="Notizbuch"><div class="label">Notizbuch von ${esc(S.name||"dir")}</div><h2>Spuren & Hinweise</h2>
+   ${S.clues.length?`<ol>${S.clues.map(c=>`<li>${esc(c)}</li>`).join("")}</ol>`:'<p class="empty">Noch keine Hinweise. Löse ein Rätsel!</p>'}
+   <button class="small" id="closeN" style="align-self:flex-start">Schließen</button></div>`;
+  document.body.appendChild(ov);
+  const close=()=>ov.remove();
+  ov.addEventListener("click",e=>{if(e.target===ov)close();});
+  ov.querySelector("#closeN").onclick=close; ov.querySelector("#closeN").focus();
+}
+
+let resetArmed=false;
+app.addEventListener("click",e=>{
+  const a=e.target.closest("[data-act]"); if(!a) return;
+  const act=a.dataset.act;
+  if(act==="notes") openNotes();
+  else if(act==="map"){view={screen:"map"};render();}
+  else if(act==="end"){view={screen:"end"};render();}
+  else if(act==="reset"){
+    if(!resetArmed){resetArmed=true;a.textContent="Wirklich alles löschen? Nochmal tippen";a.style.opacity=1;setTimeout(()=>{resetArmed=false;if(a.isConnected){a.textContent="Neues Spiel beginnen";a.style.opacity=.7}},4000);return;}
+    S={name:"",stars:{},clues:[],pos:{},done:{}};save();resetArmed=false;view={screen:"title"};render();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
