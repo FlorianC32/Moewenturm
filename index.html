@@ -178,6 +178,15 @@ h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;le
 
 <script>
 /* Knotentypen: story · decide (Abzweigung) · num (Zahl eintippen) · pick (auswählen) · battle (mehrere Aufgaben hintereinander) */
+const PLAN_STAGE={w:12,h:8, rooms:[
+  {id:"A",name:"Bühne",r:[[0,0,5,4]],l:[2.5,2]},
+  {id:"B",name:"Backstage",r:[[5,0,3,2],[5,2,2,2]],l:[6.5,1]},
+  {id:"C",name:"Garderobe",r:[[8,0,4,3]],l:[10,1.5]},
+  {id:"D",name:"Technik",r:[[7,2,1,2],[8,3,4,2]],l:[10,4]},
+  {id:"E",name:"Lager",r:[[0,4,4,4]],l:[2,6]},
+  {id:"F",name:"Werkstatt",r:[[4,4,4,4]],l:[6,6]},
+  {id:"G",name:"Kostüme",r:[[8,5,4,3]],l:[10,6.5]}],
+  doors:[[5,1.5,"v"],[8,0.5,"v"],[9.5,3,"h"],[9.5,5,"h"],[2.5,4,"h"],[5.5,4,"h"],[4,6.5,"v"],[8,6.5,"v"]]};
 const CHAPTERS = [
  { title:"Der Brief ohne Absender",
    outro:"Ben pfeift leise. „Wer auch immer den Kompass hat: Er kannte den Code. Und er hat etwas mit dem Leuchtturm zu tun.“ Mila nickt. „Morgen Abend gehen wir zum Möwenturm.“",
@@ -374,7 +383,8 @@ const CHAPTERS = [
       "Die Möweninsel ist klein, felsig und windig. Überall sind Möwen.",
       "Mila zieht Hansens Notizen hervor. „Wir müssen die Felsen zählen und die Höhle finden. Und zwar schneller als die Rote Möwe.“"], next:"p1"},
     p1:{type:"pick", scene:"Die Himmelsrichtungen", text:"Auf Hansens Karte steht: Das alte Leuchtfeuer liegt nördlich vom Strand. Der Brunnen liegt östlich vom Leuchtfeuer. Die Höhle liegt südlich vom Brunnen, auf gleicher Höhe wie der Strand.", q:"In welcher Richtung liegt die Höhle, vom Strand aus gesehen?", options:["Norden","Osten","Süden","Westen"], answer:"Osten", sol:"Vom Strand nach Norden, dann nach Osten, dann wieder nach Süden zurück. Am Ende steht ihr östlich vom Strand.", clue:"Die Höhle liegt östlich vom Strand.", next:"p2"},
-    p2:{type:"num", scene:"Die Felsen", text:"Am Strand liegen die 63 Felsen aus Hansens Botschaft. Auf jedem 7. Felsen ist ein kleiner Anker eingeritzt.", q:"Auf wie vielen Felsen ist ein Anker?", answer:9, sol:"63 : 7 = 9", clue:"9 Felsen tragen einen Anker. Sie zeigen wie Pfeile zur Höhle.", next:"d1"},
+    p2:{type:"num", scene:"Die Felsen", text:"Am Strand liegen die 63 Felsen aus Hansens Botschaft. Auf jedem 7. Felsen ist ein kleiner Anker eingeritzt.", q:"Auf wie vielen Felsen ist ein Anker?", answer:9, sol:"63 : 7 = 9", clue:"9 Felsen tragen einen Anker. Sie zeigen wie Pfeile zur Höhle.", next:"cavefloor"},
+    cavefloor:{type:"path", scene:"Der Höhlenboden", text:"Der Boden der Höhle ist voller Wasserlöcher. Hansen hat die festen Steine markiert: Nur Steine mit einer Zahl aus der 6er-Reihe tragen euch. Tippe Feld für Feld einen Weg nach hinten in die Höhle.", grid:[[6,30,44,42,14,50],[8,36,8,24,6,18],[28,54,6,48,20,12],[30,24,29,26,28,36],[24,6,26,42,24,48],[37,43,22,54,12,60]], start:[0,0], goal:[5,5], rule:"m6", q:"Finde einen trockenen Weg.", clue:"Ihr seid trockenen Fußes durch die Höhle gekommen.", next:"d1"},
     d1:{type:"decide", scene:"Zwei Gänge", text:"Die Höhle teilt sich gleich am Eingang in zwei Gänge.", q:"Welchen Gang nehmt ihr?", options:[
       {label:"Den linken Gang", sub:"Dunkel. Man hört Wasser tropfen und ein seltsames Klicken.", next:"crabs"},
       {label:"Den rechten Gang", sub:"Eng und trocken. Am Ende sieht man drei Türen.", next:"doors"}]},
@@ -401,20 +411,22 @@ const CHAPTERS = [
 
  /* ===== Fall 4: Die Goldene Möwe ===== */
  { title:"Der Festtag",
-   outro:"Im Technikraum steht eine offene Kiste. Darin führt eine Leiter nach unten. Kowalski kratzt sich am Kopf: „Den Gang hab ich nicht gebaut. Der ist viel älter als die Bühne!“",
+   outro:"Hinter den Kleiderständern im Kostümraum steht eine offene Kiste. Darin führt eine Leiter nach unten. Kowalski kratzt sich am Kopf: „Den Gang hab ich nicht gebaut. Der ist viel älter als die Bühne!“",
    nodes:{
     start:{type:"story", title:"Das Hafenfest", text:[
       "Ganz Möwenbucht feiert das große Hafenfest. Es gibt Zuckerwatte, ein Karussell und am Nachmittag das Drachenbootrennen.",
       "Auf der Festbühne steht in einer Glasvitrine der Siegerpokal: die Goldene Möwe.",
       "Um 15 Uhr kommt Bürgermeisterin Petersen angerannt. „Die Goldene Möwe ist weg! Und in zwei Stunden ist die Siegerehrung!“"], next:"lamp"},
-    lamp:{type:"num", scene:"Die Lampions", text:"Über dem Festplatz hängen Lampionketten. Es sind 6 Ketten mit je 9 Lampions. Mila zählt nach, ob einer fehlt. Diebe nehmen manchmal Lampen mit, um im Dunkeln zu suchen.", q:"Wie viele Lampions müssten es sein?", answer:54, sol:"6 × 9 = 54", clue:"Alle 54 Lampions hängen noch. Der Dieb brauchte also kein Licht von hier.", next:"d1"},
+    lamp:{type:"num", scene:"Die Lampions", text:"Über dem Festplatz hängen Lampionketten. Es sind 6 Ketten mit je 9 Lampions. Mila zählt nach, ob einer fehlt. Diebe nehmen manchmal Lampen mit, um im Dunkeln zu suchen.", q:"Wie viele Lampions müssten es sein?", answer:54, sol:"6 × 9 = 54", clue:"Alle 54 Lampions hängen noch. Der Dieb brauchte also kein Licht von hier.", next:"crowd"},
+    crowd:{type:"path", scene:"Durchs Gedränge", text:"Auf dem Festplatz ist es proppenvoll. Die Festordner haben Nummernschilder aufgestellt. Nur wo ein Schild aus der 8er-Reihe steht, ist ein Durchgang frei. Tippe Feld für Feld einen Weg zur Bühne. Tippst du nochmal auf das letzte Feld, gehst du einen Schritt zurück.", grid:[[8,31,32,24,72,78],[72,15,80,41,64,56],[64,64,72,70,80,34],[47,72,22,16,24,46],[80,8,22,64,50,46],[18,64,23,40,24,16]], start:[0,0], goal:[5,5], rule:"m8", q:"Finde einen freien Weg zur Bühne.", clue:"Ihr seid durch das Gedränge bis zur Festbühne gekommen.", next:"d1"},
     d1:{type:"decide", scene:"Wo fangt ihr an?", text:"Der Festplatz ist voller Leute. Ihr müsst euch entscheiden.", q:"Wohin geht ihr zuerst?", options:[
       {label:"Zur Vitrine", sub:"Vielleicht hat der Dieb Spuren hinterlassen.", next:"vit"},
       {label:"Zum Bühnenbauer", sub:"Herr Kowalski hat die Bühne gebaut und kennt jede Schraube.", next:"kow"}]},
     vit:{type:"num", scene:"Konfetti an der Vitrine", text:"Rund um die leere Vitrine liegt buntes Konfetti. Mila sammelt nur das goldene Sternen-Konfetti ein.", count:{"star:yellow":6,"star:blue":4,"circle:red":7,"heart:pink":5,"square:green":5}, q:"Wie viele GOLDENE Sterne liegen da?", answer:6, sol:"Es sind 6 goldene Sterne. Die blauen zählen nicht.", clue:"BEWEIS: An der Vitrine lag goldenes Sternen-Konfetti.", next:"vit2"},
     vit2:{type:"pick", scene:"Die Vitrine", text:"Ihr untersucht die Vitrine. Das Schloss ist zu. Alle vier Glaswände sind heil. Der Deckel ist fest verschraubt.", q:"Wie ist der Dieb an den Pokal gekommen?", options:["Durch die Glaswand","Mit dem Schlüssel","Von unten","Durch den Deckel"], answer:"Von unten", sol:"Schloss, Wände und Deckel sind unversehrt. Bleibt nur der Weg von unten, durch die Bühne.", clue:"Der Dieb kam von unten an den Pokal, durch die Bühne.", next:"plan1"},
     kow:{type:"num", scene:"Bühnenbauer Kowalski", text:"Herr Kowalski wischt sich die Hände an der Latzhose ab. „Diese Bühne? Hab ich selbst gebaut. 8 Reihen mit je 7 Brettern, alles festgeschraubt.“", q:"Wie viele Bretter hat Kowalski verlegt?", answer:56, sol:"8 × 7 = 56", clue:"Kowalski hat die Bühne gebaut und hat den Bauplan dabei.", next:"plan1"},
-    plan1:{type:"pick", tries:3, scene:"Der Bauplan", text:"Kowalski rollt den Bauplan der Festbühne aus. Jedes Kästchen ist ein Quadratmeter, die orangen Striche sind Türen. „Wer sich hier verstecken will“, sagt er, „nimmt einen Raum, der größer ist als die Garderobe, nicht direkt neben der Bühne liegt und genau 2 Türen hat.“", art:"plan", plan:{w:12,h:8, rooms:[{id:"A",name:"Bühne",x:0,y:0,w:6,h:4},{id:"B",name:"Backstage",x:6,y:0,w:3,h:4},{id:"C",name:"Garderobe",x:9,y:0,w:3,h:3},{id:"D",name:"Technik",x:9,y:3,w:3,h:5},{id:"E",name:"Lager",x:0,y:4,w:4,h:4},{id:"F",name:"Werkstatt",x:4,y:4,w:5,h:4}], doors:[[6,2,"v"],[2,4,"h"],[9,1.5,"v"],[7.5,4,"h"],[10.5,3,"h"],[9,6,"v"],[4,6,"v"]]}, q:"In welchem Raum sucht ihr?", options:["A Bühne","B Backstage","C Garderobe","D Technik","E Lager","F Werkstatt"], answer:"D Technik", sol:"Größer als die Garderobe (9 Kästchen) sind Bühne, Backstage, Technik, Lager und Werkstatt. Direkt neben der Bühne liegen Backstage, Lager und Werkstatt. Übrig bleibt die Technik: 15 Kästchen und genau 2 Türen.", clue:"Im Technikraum führt eine Leiter unter die Bühne.", next:"END"}
+    plan1:{type:"pick", tries:3, scene:"Der Bauplan", text:"Kowalski rollt den Bauplan der Festbühne aus. Jedes Kästchen ist ein Quadratmeter, die orangen Striche sind Türen. „Wer sich hier verstecken will“, sagt er, „nimmt einen Raum, der kleiner ist als das Lager, aber mehr als 10 Quadratmeter hat. Und der Raum liegt Wand an Wand mit der Werkstatt.“", art:"plan", plan:PLAN_STAGE, q:"In welchem Raum sucht ihr?", options:["A Bühne","B Backstage","C Garderobe","D Technik","E Lager","F Werkstatt","G Kostüme"], answer:"G Kostüme", sol:"Kleiner als das Lager (16) sind Backstage (10), Garderobe (12), Technik (10) und Kostüme (12). Mehr als 10 haben nur Garderobe und Kostüme. Wand an Wand mit der Werkstatt liegt nur der Kostümraum.", clue:"Im Kostümraum führt hinter den Kleiderständern eine Leiter nach unten.", next:"plan1b"},
+    plan1b:{type:"num", tries:3, scene:"Komische Ecken", text:"Kowalski seufzt. „Backstage und Technik haben so komische Ecken. Die beiden Räume muss ich morgen neu streichen.“", art:"plan", plan:PLAN_STAGE, q:"Wie viele Quadratmeter haben Backstage und Technik zusammen?", answer:20, sol:"Backstage: 3 × 2 + 2 × 2 = 10. Technik: 1 × 2 + 4 × 2 = 10. Zusammen 20 Quadratmeter.", clue:"Kowalski muss 20 Quadratmeter streichen. Er kennt jeden Winkel der Bühne.", next:"END"}
    }},
  { title:"Unter der Bühne",
    outro:"Der Tunnel endet hinter der Bühne. Als ihr die Klappe aufdrückt, steht ihr mitten zwischen drei bunten Künstlerzelten.",
@@ -422,8 +434,8 @@ const CHAPTERS = [
     start:{type:"story", title:"Der alte Gang", text:[
       "Mit Taschenlampen klettert ihr hinunter. Der Gang ist niedrig und riecht nach altem Holz.",
       "Über euch hört ihr die Festmusik und die Schritte der Leute auf der Bühne."], next:"area"},
-    area:{type:"num", scene:"Die Decke", text:"Über euch seht ihr die Unterseite der Bühne. Sie besteht aus Bodenplatten: 6 Platten lang und 4 Platten breit. Genau wie auf dem Bauplan.", q:"Aus wie vielen Platten besteht die Decke?", answer:24, sol:"6 × 4 = 24", clue:"Die Bühne hat 24 Bodenplatten. Eine davon muss sich öffnen lassen.", next:"trap"},
-    trap:{type:"pick", scene:"Die Falltür", text:"Kowalski hat euch einen zweiten Plan mitgegeben: die Bühne von oben. Darauf sind das Mikrofon und die Scheinwerfer eingezeichnet. Die Vitrine stand zwei Felder links vom Mikrofon und direkt unter einem Scheinwerfer.", art:"stage", q:"Wo ist die Falltür, genau unter der Vitrine?", options:["A","B","C","D"], answer:"A", sol:"Zwei Felder links vom Mikrofon liegen A. Und A liegt direkt unter einem Scheinwerfer. C liegt zwar auch unter einem Scheinwerfer, aber drei Felder links vom Mikrofon.", clue:"BEWEIS: Unter der Vitrine ist eine Falltür. Sie führt in den alten Tunnel.", next:"path1"},
+    area:{type:"num", scene:"Die Decke", text:"Über euch seht ihr die Unterseite der Bühne. Sie besteht aus Bodenplatten: 7 Platten lang und 5 Platten breit.", q:"Aus wie vielen Platten besteht die Decke?", answer:35, sol:"7 × 5 = 35", clue:"Die Bühne hat 35 Bodenplatten. Eine davon muss sich öffnen lassen.", next:"trap"},
+    trap:{type:"pick", tries:3, scene:"Die Falltür", text:"Kowalski hat euch einen zweiten Plan mitgegeben: die Bühne von oben. Ein Scheinwerfer leuchtet immer auf das Feld direkt unter ihm. Kowalski erinnert sich an vier Dinge über die Vitrine: Sie stand in derselben Reihe wie das Mikrofon. Direkt über ihr hing ein Scheinwerfer. Sie stand nicht am Rand der Bühne. Und sie stand nicht direkt neben dem Mikrofon.", art:"stage", q:"Wo ist die Falltür, genau unter der Vitrine?", options:["A","B","C","D","E"], answer:"A", sol:"B steht direkt neben dem Mikrofon. C steht am Rand. Über D hängt kein Scheinwerfer. E steht in einer anderen Reihe als das Mikrofon. Nur A passt zu allen vier Hinweisen.", clue:"BEWEIS: Unter der Vitrine ist eine Falltür. Sie führt in den alten Tunnel.", next:"path1"},
     path1:{type:"path", scene:"Morsche Bretter", text:"Der Boden im Tunnel ist voller morscher Bretter. Nur die Bretter mit einer Zahl aus der 7er-Reihe halten. Tippe Feld für Feld einen Weg vom Start zum Ziel. Tippst du nochmal auf das letzte Feld, gehst du einen Schritt zurück.", grid:[[7,14,26,32,40],[12,21,30,27,45],[36,28,25,49,50],[44,56,63,70,34],[9,48,38,42,35]], start:[0,0], goal:[4,4], rule:"seven", q:"Finde einen sicheren Weg zum Ziel.", clue:"Auf den sicheren Brettern liegt goldenes Sternen-Konfetti. Der Dieb ist hier entlanggegangen.", next:"d1"},
     d1:{type:"decide", scene:"Die Gabelung", text:"Der Gang teilt sich. Links glitzert Konfetti auf dem Boden. Rechts scheint ein schwaches Licht.", q:"Welchen Weg nehmt ihr?", options:[
       {label:"Dem Konfetti folgen", sub:"Die Bretter dort wackeln bedenklich.", next:"wobble"},
@@ -436,7 +448,8 @@ const CHAPTERS = [
    nodes:{
     start:{type:"story", title:"Die Künstlerzelte", text:[
       "Drei Künstler treten heute auf der Festbühne auf: Zauberer Zappo, Jongleurin Jule und Clown Pinsel-Paul, den ihr schon von Bens Geburtstag kennt.",
-      "Alle drei konnten heute in den Tunnel. Wer von ihnen war es?"], next:"times"},
+      "Alle drei konnten heute in den Tunnel. Wer von ihnen war es?"], next:"tents"},
+    tents:{type:"path", scene:"Zwischen den Zelten", text:"Zwischen den Zelten sind kreuz und quer Seile gespannt. Nur die Pflöcke mit einer Zahl aus der 9er-Reihe stehen fest, über die anderen stolpert ihr. Ihr startet oben rechts.", grid:[[20,17,9,26,27,9],[17,65,36,43,63,28],[18,29,81,18,9,53],[35,37,18,89,17,80],[9,90,54,71,76,74],[81,44,44,63,63,53]], start:[0,5], goal:[5,0], rule:"m9", q:"Finde den Weg zu den Künstlerzelten.", clue:"Ihr seid sicher bei den Künstlerzelten angekommen.", next:"times"},
     times:{type:"pick", tries:3, scene:"Der Auftrittsplan", text:"Jeder Künstler hatte heute genau einen Auftritt: um 14, um 15 oder um 16 Uhr. Am Zelt hängt ein zerrissener Plan. Ihr wisst nur: Jule ist nicht um 14 Uhr aufgetreten. Paul trat genau eine Stunde nach Jule auf.", q:"Wer stand um 15 Uhr auf der Bühne, als der Pokal verschwand?", options:["Zappo","Jule","Paul"], answer:"Jule", sol:"Paul kommt eine Stunde nach Jule. Wäre Jule um 16 Uhr dran, gäbe es danach keinen Termin mehr für Paul. Um 14 Uhr war Jule nicht dran. Also: Jule um 15, Paul um 16, Zappo um 14 Uhr.", clue:"BEWEIS: Jule stand um 15 Uhr auf der Bühne. Sie kann es nicht gewesen sein.", next:"cards"},
     cards:{type:"num", scene:"Zappos Kartentrick", text:"Vor seinem Zelt übt Zappo einen Kartentrick. Er verteilt die Karten gerecht an die Zuschauer.", share:{n:32,k:4,item:"card:red",group:"Zuschauer"}, q:"Wie viele Karten bekommt jeder Zuschauer?", answer:8, sol:"32 : 4 = 8", clue:"Zappo übt für seine große Abendshow.", next:"d1"},
     d1:{type:"decide", scene:"Die Zelte", text:"Zappo und Paul sind kurz weg. Ihr habt Zeit für ein Zelt.", q:"Welches Zelt durchsucht ihr?", options:[
@@ -460,7 +473,8 @@ const CHAPTERS = [
       {id:"nurzappo", icon:"tri:purple", text:"Nur Zappo benutzt goldenes Sternen-Konfetti in seiner Show."},
       {id:"lampions", icon:"circle:orange", text:"Alle 54 Lampions hängen noch."}]}, q:"Wähle die 3 Beweise, die zusammen zeigen, wer den Pokal genommen hat und wie.", sol:"Das goldene Konfetti lag am Tatort und im Tunnel. Nur Zappo benutzt dieses Konfetti. Und die Falltür erklärt, wie der Pokal aus der verschlossenen Vitrine kam.", clue:"Die Beweise zeigen auf Zauberer Zappo.", next:"route"},
     route:{type:"path", scene:"Quer über den Festplatz", text:"Zappo ist schon auf dem Weg zur Abendshow! Der schnellste Weg führt über den Festplatz. Ihr dürft nur über Stände gehen, deren Rechnung 24 ergibt.", grid:[["4×6","3×8","5×5","7×4"],["9×3","8×3","6×5","3×9"],["4×7","6×4","2×12","8×4"],["5×4","7×3","3×8","Ziel"]], start:[0,0], goal:[3,3], rule:"24", q:"Finde den Weg zur Bühne.", clue:"Ihr habt den schnellsten Weg über den Festplatz gefunden.", next:"show"},
-    show:{type:"battle", scene:"Die große Zaubershow", text:"Zappo steht schon auf der Bühne und hebt den Zauberstab. Gleich lässt er den Pokal für immer verschwinden! Jede richtige Rechnung bringt euch einen Schritt näher.", foe:"Zappo", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Durch die Zuschauer gedrängelt!","Die Bühnentreppe hoch!","Zappo zuckt zusammen!","Nur noch ein Schritt!"], missLine:"Eine Rauchwolke! Ihr seht nichts mehr.", win:"Ihr springt auf die Bühne. Zappo erschrickt so sehr, dass ihm der Zauberhut runterfällt. Heraus rollt die Goldene Möwe!", lose:"Der Rauch ist zu dicht. Wartet, bis er sich verzieht, und versucht es nochmal.", clue:"Die Goldene Möwe war in Zappos Zauberhut.", next:"prize"},
+    show:{type:"battle", scene:"Die große Zaubershow", text:"Zappo steht schon auf der Bühne und hebt den Zauberstab. Gleich lässt er den Pokal für immer verschwinden! Jede richtige Rechnung bringt euch einen Schritt näher.", foe:"Zappo", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Durch die Zuschauer gedrängelt!","Die Bühnentreppe hoch!","Zappo zuckt zusammen!","Nur noch ein Schritt!"], missLine:"Eine Rauchwolke! Ihr seht nichts mehr.", win:"Ihr springt auf die Bühne. Zappo erschrickt so sehr, dass ihm der Zauberhut runterfällt. Heraus rollt die Goldene Möwe!", lose:"Der Rauch ist zu dicht. Wartet, bis er sich verzieht, und versucht es nochmal.", clue:"Die Goldene Möwe war in Zappos Zauberhut.", next:"back"},
+    back:{type:"path", scene:"Zurück zur Siegerbühne", text:"Mit dem Pokal in der Hand müsst ihr quer über den Festplatz zur Siegerbühne. Diesmal sind nur die Stände frei, deren Rechnung 36 ergibt.", grid:[["6×6","5×7","8×4","9×4","6×7"],["4×9","9×3","12×3","6×6","4×9"],["9×4","3×12","6×6","7×5","9×4"],["6×6","4×8","4×9","6×5","3×12"],["9×4","12×3","5×8","7×4","Ziel"]], start:[0,0], goal:[4,4], rule:"e36", q:"Finde den Weg zur Siegerbühne.", clue:"Ihr habt die Goldene Möwe pünktlich zur Siegerbühne gebracht.", next:"prize"},
     prize:{type:"num", scene:"Die Siegerehrung", text:"Pünktlich um 17 Uhr überreicht die Bürgermeisterin die Goldene Möwe. Dazu verteilt sie Lose für die Tombola an die Ruderer des Siegerboots.", share:{n:45,k:9,item:"card:yellow",group:"Ruderer"}, q:"Wie viele Lose bekommt jeder Ruderer?", answer:5, sol:"45 : 9 = 5", clue:"Fall gelöst! Die Goldene Möwe ist zurück, und die Siegerehrung war pünktlich.", next:"END"}
    }}
 ];
@@ -527,22 +541,29 @@ function countHtml(spec){
   return `<div class="pic"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Bild mit vielen bunten Formen">${body}</svg></div>`;
 }
 const ART={
-  plan:(n)=>{const p=n.plan,U=26,o=3,W=p.w*U+o*2,H=p.h*U+o*2,fills=["#fde7b0","#d7ecf5","#f6d6e3","#dcefd9","#e9e0f5","#f8e3cf"];
+  plan:(n)=>{const p=n.plan,U=26,o=3,W=p.w*U+o*2,H=p.h*U+o*2,fills=["#fde7b0","#d7ecf5","#f6d6e3","#dcefd9","#e9e0f5","#f8e3cf","#e3eef0"];
+    const owner=Array.from({length:p.h},()=>Array(p.w).fill(-1));
+    p.rooms.forEach((rm,i)=>rm.r.forEach(([x,y,w,h])=>{for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)owner[yy][xx]=i;}));
     let g="";
-    p.rooms.forEach((r,i)=>{g+=`<rect x="${o+r.x*U}" y="${o+r.y*U}" width="${r.w*U}" height="${r.h*U}" fill="${fills[i%6]}"/>`;});
+    p.rooms.forEach((rm,i)=>rm.r.forEach(([x,y,w,h])=>{g+=`<rect x="${o+x*U}" y="${o+y*U}" width="${w*U}" height="${h*U}" fill="${fills[i%7]}"/>`;}));
     for(let x=1;x<p.w;x++)g+=`<line x1="${o+x*U}" y1="${o}" x2="${o+x*U}" y2="${o+p.h*U}" stroke="#1f2a33" stroke-opacity=".13"/>`;
     for(let y=1;y<p.h;y++)g+=`<line x1="${o}" y1="${o+y*U}" x2="${o+p.w*U}" y2="${o+y*U}" stroke="#1f2a33" stroke-opacity=".13"/>`;
-    p.rooms.forEach(r=>{g+=`<rect x="${o+r.x*U}" y="${o+r.y*U}" width="${r.w*U}" height="${r.h*U}" fill="none" stroke="#1f2a33" stroke-width="3"/>`;
-      const cx=o+(r.x+r.w/2)*U, cy=o+(r.y+r.h/2)*U;
-      g+=`<text x="${cx}" y="${cy-2}" text-anchor="middle" font-size="22" font-weight="700" fill="#1f2a33">${r.id}</text><text x="${cx}" y="${cy+15}" text-anchor="middle" font-size="11" fill="#1f2a33">${r.name}</text>`;});
+    const own=(x,y)=>(x<0||y<0||x>=p.w||y>=p.h)?-2:owner[y][x];
+    for(let y=0;y<p.h;y++)for(let x=0;x<p.w;x++){const me=owner[y][x];
+      if(own(x,y-1)!==me)g+=`<line x1="${o+x*U}" y1="${o+y*U}" x2="${o+(x+1)*U}" y2="${o+y*U}" stroke="#1f2a33" stroke-width="3" stroke-linecap="square"/>`;
+      if(own(x-1,y)!==me)g+=`<line x1="${o+x*U}" y1="${o+y*U}" x2="${o+x*U}" y2="${o+(y+1)*U}" stroke="#1f2a33" stroke-width="3" stroke-linecap="square"/>`;
+      if(y===p.h-1)g+=`<line x1="${o+x*U}" y1="${o+p.h*U}" x2="${o+(x+1)*U}" y2="${o+p.h*U}" stroke="#1f2a33" stroke-width="3"/>`;
+      if(x===p.w-1)g+=`<line x1="${o+p.w*U}" y1="${o+y*U}" x2="${o+p.w*U}" y2="${o+(y+1)*U}" stroke="#1f2a33" stroke-width="3"/>`;}
+    p.rooms.forEach(rm=>{const cx=o+rm.l[0]*U, cy=o+rm.l[1]*U;
+      g+=`<text x="${cx}" y="${cy+2}" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2a33">${rm.id}</text><text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="10" fill="#1f2a33">${rm.name}</text>`;});
     p.doors.forEach(([x,y,d])=>{g+=d==="v"?`<rect x="${o+x*U-4}" y="${o+(y-.5)*U+3}" width="8" height="${U-6}" rx="2" fill="#ee8a2b" stroke="#1f2a33" stroke-width="1.5"/>`:`<rect x="${o+(x-.5)*U+3}" y="${o+y*U-4}" width="${U-6}" height="8" rx="2" fill="#ee8a2b" stroke="#1f2a33" stroke-width="1.5"/>`;});
-    return `<div class="pic" style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:300px" role="img" aria-label="Bauplan der Festbühne mit sechs Räumen A bis F">${g}</svg><div class="legend"><span class="lg-door"></span> Tür · 1 Kästchen = 1 m²</div></div>`;},
-  stage:()=>{const U=46,cols=6,rows=4;let g="";
-    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++)g+=`<rect x="${x*U+2}" y="${y*U+2}" width="${U-4}" height="${U-4}" rx="5" fill="#f3d9a8" stroke="#c49a5a" stroke-width="2"/>`;
-    g+=shape("star","yellow",2*U+U/2,1*U+U/2,15)+shape("star","yellow",1*U+U/2,1*U+U/2,15);
-    g+=`<rect x="${4*U+U/2-3}" y="${2*U+U/2}" width="6" height="16" fill="#1f2a33"/><circle cx="${4*U+U/2}" cy="${2*U+U/2-2}" r="9" fill="#1f2a33"/>`;
-    g+=[["A",2,2],["B",3,2],["C",1,2],["D",2,3]].map(([l,x,y])=>`<circle cx="${x*U+U/2}" cy="${y*U+U/2}" r="15" fill="#fff" stroke="#1f2a33" stroke-width="2"/><text x="${x*U+U/2}" y="${y*U+U/2+7}" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2a33">${l}</text>`).join("");
-    return `<div class="pic" style="max-width:320px;align-self:center"><svg viewBox="0 0 ${cols*U+4} ${rows*U+4}" width="100%" role="img" aria-label="Bühne von oben mit Mikrofon, zwei Scheinwerfern und den Feldern A bis D">${g}</svg><div class="legend">★ Scheinwerfer · ● Mikrofon</div></div>`;},
+    return `<div class="pic" style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:300px" role="img" aria-label="Bauplan der Festbühne mit sieben Räumen A bis G">${g}</svg><div class="legend"><span class="lg-door"></span> Tür · 1 Kästchen = 1 m²</div></div>`;},
+  stage:()=>{const U=44,cols=7,rows=5;let g="";
+    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++)g+=`<rect x="${x*U+2}" y="${y*U+2}" width="${U-4}" height="${U-4}" rx="5" fill="${(x===0||y===0||x===cols-1||y===rows-1)?"#c9a26a":"#f3d9a8"}" stroke="#c49a5a" stroke-width="2"/>`;
+    [[0,1],[2,1],[4,1],[3,0]].forEach(([x,y])=>{g+=shape("star","yellow",x*U+U/2,y*U+U/2,14);});
+    g+=`<rect x="${5*U+U/2-3}" y="${2*U+U/2}" width="6" height="15" fill="#1f2a33"/><circle cx="${5*U+U/2}" cy="${2*U+U/2-2}" r="9" fill="#1f2a33"/>`;
+    g+=[["A",2,2],["B",4,2],["C",0,2],["D",3,2],["E",3,1]].map(([l,x,y])=>`<circle cx="${x*U+U/2}" cy="${y*U+U/2}" r="14" fill="#fff" stroke="#1f2a33" stroke-width="2"/><text x="${x*U+U/2}" y="${y*U+U/2+6}" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2a33">${l}</text>`).join("");
+    return `<div class="pic" style="max-width:340px;align-self:center"><svg viewBox="0 0 ${cols*U+4} ${rows*U+4}" width="100%" role="img" aria-label="Bühne von oben mit Mikrofon, vier Scheinwerfern und den Feldern A bis E">${g}</svg><div class="legend">★ Scheinwerfer · ● Mikrofon · dunkle Felder = Rand</div></div>`;},
   pot:()=>{const c=50,cells=[];
     for(let y=0;y<5;y++)for(let x=0;x<5;x++)cells.push(`<rect x="${x*c+2}" y="${y*c+2}" width="${c-4}" height="${c-4}" rx="6" fill="#fff8e3" stroke="#d8ccad" stroke-width="2"/>`);
     const L=[["A",3,3],["B",2,2],["C",3,2],["D",1,3]].map(([l,x,y])=>`<circle cx="${x*c+25}" cy="${y*c+25}" r="16" fill="#fff" stroke="#1f2a33" stroke-width="2"/><text x="${x*c+25}" y="${y*c+32}" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2a33">${l}</text>`).join("");
@@ -728,8 +749,13 @@ function renderNode(){
   else app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>press(b.dataset.k));
 }
 
-const RULES={seven:v=>typeof v==="number"&&v%7===0&&v<=70, "24":v=>{const m=/^(\d+)×(\d+)$/.exec(v);return !!m&&m[1]*m[2]===24;}};
-function walkable(n,r,c){return (r===n.goal[0]&&c===n.goal[1])||(r===n.start[0]&&c===n.start[1])||RULES[n.rule](n.grid[r][c]);}
+function ruleOk(rule,v){
+  if(rule==="seven") rule="m7"; if(rule==="24") rule="e24";
+  if(rule[0]==="m"){const k=+rule.slice(1);return typeof v==="number"&&v%k===0&&v<=10*k;}
+  if(rule[0]==="e"){const m=/^(\d+)×(\d+)$/.exec(v);return !!m&&m[1]*m[2]===+rule.slice(1);}
+  return false;
+}
+function walkable(n,r,c){return (r===n.goal[0]&&c===n.goal[1])||(r===n.start[0]&&c===n.start[1])||ruleOk(n.rule,n.grid[r][c]);}
 function solvePath(n){const R=n.grid.length,C=n.grid[0].length,prev={},q=[n.start],k=(a)=>a.join(",");prev[k(n.start)]=null;
   while(q.length){const cur=q.shift();if(cur[0]===n.goal[0]&&cur[1]===n.goal[1])break;
     for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){const nr=cur[0]+dr,nc=cur[1]+dc;if(nr<0||nc<0||nr>=R||nc>=C||k([nr,nc]) in prev||!walkable(n,nr,nc))continue;prev[k([nr,nc])]=cur;q.push([nr,nc]);}}
