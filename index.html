@@ -38,7 +38,8 @@ h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;le
 @keyframes sweep{from{transform:rotate(80deg)}to{transform:rotate(440deg)}}
 .tower{position:absolute;right:52px;top:40px;width:44px}
 .hero h1{font-size:clamp(34px,8vw,54px);line-height:1.05;color:var(--paper);position:relative;max-width:12ch}
-.hero p{margin:0;color:var(--foam);position:relative;max-width:42ch}
+.hero p{margin:0;color:var(--foam);position:relative;max-width:min(42ch,calc(100% - 70px))}
+.stamp + .label{padding-right:100px}
 .big{background:var(--beam);color:var(--ink);border:none;border-radius:14px;padding:16px 26px;font-size:20px;font-weight:700;box-shadow:0 5px 0 #b38f1f;position:relative;align-self:flex-start}
 .big:active{transform:translateY(3px);box-shadow:0 2px 0 #b38f1f}
 .big:disabled{opacity:.45;cursor:default}
@@ -113,6 +114,43 @@ h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;le
 .notebook .empty{font-family:var(--f-type);color:var(--muted)}
 .small{background:transparent;border:2px solid var(--ink);color:var(--ink);border-radius:999px;padding:8px 16px;font-size:16px;font-weight:500}
 
+.cases{display:flex;flex-direction:column;gap:12px}
+.case{display:flex;gap:16px;align-items:flex-start;text-align:left;background:#10303f;border:2px solid #23495c;border-radius:18px;padding:18px;color:var(--foam)}
+.case:not(:disabled):active{background:#163e51}
+.case:disabled{opacity:.5;cursor:default}
+.case-badge{flex:none;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:26px;color:var(--ink)}
+.case-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.case-title{font-family:var(--f-display);font-size:22px;color:var(--paper);line-height:1.15}
+.case-blurb{font-size:16px}
+.case-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-family:var(--f-type);font-size:14px;color:#9bb7c3}
+.hint-name{margin:0;font-family:var(--f-type);color:var(--beam)}
+.seq,.pile,.pic{background:#fff;border:3px solid var(--ink);border-radius:12px;padding:10px}
+.seq{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+.qbox{width:44px;height:44px;border:3px dashed var(--stamp);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);color:var(--stamp);font-size:24px}
+.share{display:flex;flex-direction:column;gap:8px}
+.pile{display:flex;flex-wrap:wrap;gap:2px;justify-content:center}
+.dot2{width:13px;height:13px;border-radius:50%;background:#e0a91a;border:1.5px solid var(--ink);margin:1px}
+.arrow{text-align:center;font-family:var(--f-type);color:var(--muted);font-size:15px}
+.arrow::before{content:"↓ "}
+.plates{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.pic svg{display:block}
+.tokchoice{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px}
+.tokchoice span{font-size:15px}
+.diffwrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.diffwrap figure{margin:0;display:flex;flex-direction:column;gap:6px}
+.diffgrid{display:grid;gap:4px;background:#fff;border:3px solid var(--ink);border-radius:12px;padding:6px}
+.diffgrid>*{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#f7f1e1;border:2px solid transparent;padding:0;min-width:0}
+.diffgrid svg{width:85%;height:85%}
+.cellbtn{background:#fff8e3}
+.cellbtn.wrong{border-color:var(--stamp)}
+.cellbtn.right{border-color:var(--ok);background:#dff0e4}
+.paintwrap{display:flex;justify-content:center;overflow-x:auto}
+.paintgrid{display:grid;gap:3px;background:#fff;border:3px solid var(--ink);border-radius:12px;padding:8px}
+.pc{width:34px;height:34px;border-radius:5px;border:1px solid var(--line);background:#fffdf6;padding:0}
+.pc.on{background:var(--paintc);border-color:var(--ink)}
+.pb{cursor:pointer;background:#fff8e3}
+.axis{background:var(--stamp);border-radius:3px}
+@media (max-width:380px){.pc{width:28px;height:28px}.paintgrid{grid-template-columns:repeat(4,28px) 6px repeat(4,28px)!important}}
 .certificate{text-align:center;align-items:center}
 .certificate h2{padding-right:0}
 .certificate .seal{font-family:var(--f-display);font-size:64px;color:var(--stamp);line-height:1}
@@ -209,8 +247,207 @@ const CHAPTERS = [
     boxes:{type:"pick", scene:"Die Kisten", text:"Am Ende von Steg 9 stehen vier Kisten mit Nummern. Unter Kais Zettel steht klein: „Kompass in der Kiste, deren Zahl in der 4er-Reihe UND in der 6er-Reihe vorkommt.“", q:"Welche Kiste macht ihr auf?", options:["8","12","16","18"], answer:"12", sol:"12 ist in der 4er-Reihe (4, 8, 12) und in der 6er-Reihe (6, 12).", clue:"In Kiste 12 liegt der Kompass von Kapitän Hansen!", next:"final"},
     final:{type:"battle", scene:"Tauziehen am Steg", text:"Gerade als ihr die Kiste öffnet, taucht Kai auf und packt sie am anderen Ende! Jetzt zählt jede Rechnung: Wer zieht stärker?", foe:"Kai", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Ihr zieht die Kiste ein Stück zu euch!","Ben stemmt die Füße in die Planken!","Kai kommt ins Rutschen!","Noch ein Ruck!"], missLine:"Kai zieht die Kiste zurück!", win:"Mit einem letzten Ruck plumpst Kai auf seinen Hosenboden. Die Kiste gehört euch! Kai gibt kleinlaut auf.", lose:"Kai hat die Kiste zurückgezogen. Aber ihr lasst nicht locker. Noch mal!", clue:"Tauziehen gewonnen! Der Kompass ist gerettet.", next:"p_end"},
     p_end:{type:"num", scene:"Zurück ins Museum", text:"Herr Lindqvist strahlt, als ihr den Kompass zurückbringt. „In 3 Wochen kommt der Kompass auf eine große Ausstellung. Bis dahin hängt euer Foto neben der Vitrine!“", q:"Eine Woche hat 7 Tage. Wie viele Tage sind 3 Wochen?", answer:21, sol:"3 × 7 = 21", clue:"Fall gelöst! In 21 Tagen geht der Kompass auf große Ausstellung.", next:"END"}
+   }},
+
+ /* ===== Fall 2: Das verschwundene Geburtstagsbild ===== */
+ { title:"Die Einladung",
+   outro:"Samstag, 15 Uhr. Ihr steht mit Muffins und Geschenk vor dem bunten Atelier am Hafen. Drinnen hört man Musik und Lachen.",
+   nodes:{
+    start:{type:"story", title:"Post für das Detektivbüro", text:[
+      "Im Detektivbüro liegt ein Umschlag mit einem Luftballon-Aufkleber. Ben grinst über das ganze Gesicht. „Ich werde 9! Und ich feiere im Malatelier von Frau Olsen.“",
+      "Frau Olsen, die Malerin vom Hafen, hat für Ben ein Überraschungsbild gemalt. Was drauf ist, verrät sie keinem.",
+      "Auf der Einladung hat Ben natürlich ein Rätsel versteckt. Typisch Ben."], next:"inv"},
+    inv:{type:"pick", scene:"Die Ballonkette", text:"Ben hat eine Ballonkette auf die Einladung gemalt. Ein Ballon ist noch nicht ausgemalt.", seq:["balloon:red","balloon:blue","balloon:blue","balloon:red","balloon:blue","balloon:blue","balloon:red","?"], tokens:true, q:"Welcher Ballon fehlt?", options:["balloon:red","balloon:blue","balloon:yellow","balloon:green"], answer:"balloon:blue", sol:"Das Muster ist immer: rot, blau, blau. Nach Rot kommt Blau.", clue:"Ben feiert im Atelier von Frau Olsen. Sie hat ihm ein Überraschungsbild gemalt.", next:"balloons"},
+    balloons:{type:"num", scene:"Luftballons", text:"Ben hat 7 Freunde eingeladen. Jedes Kind soll 4 Luftballons bekommen.", q:"Wie viele Luftballons müsst ihr aufblasen?", answer:28, sol:"7 × 4 = 28", clue:"Für die Feier braucht ihr 28 Luftballons.", next:"pump"},
+    pump:{type:"battle", scene:"Ballon-Marathon", text:"Ihr pustet um die Wette! Jede richtige Rechnung ist ein fertiger Ballon.", foe:"Ballons", hits:5, gen:"mul", tables:[3,4,5,6,7], hitLines:["Plopp! Ein Ballon ist voll.","Knoten drauf, fertig!","Der Ballon schwebt zur Decke!","Noch ein bisschen Puste!"], missLine:"Pffft! Der Ballon entwischt und flattert durchs Zimmer.", win:"Das Büro ist voller Ballons. Ben kann sich kaum noch bewegen.", lose:"Euch ist die Puste ausgegangen. Kurz durchatmen, dann nochmal!", clue:"Alle Ballons sind aufgeblasen.", next:"d1"},
+    d1:{type:"decide", scene:"Das Geschenk", text:"Ihr braucht noch ein Geschenk für Ben.", q:"Was schenkt ihr ihm?", options:[
+      {label:"Selbst ein Bild malen", sub:"Einen bunten Schmetterling. Ben liebt Schmetterlinge.", next:"butterfly"},
+      {label:"Im Spielzeugladen stöbern", sub:"Das Schaufenster ist voller Sachen.", next:"shop"}]},
+    butterfly:{type:"paint", scene:"Der Schmetterling", text:"Mila hat schon die linke Hälfte gemalt. Male die rechte Hälfte als Spiegelbild. Tippe auf die Kästchen, um sie auszumalen.", paint:{color:"purple", left:["1100","1110","0011","0011","0110","0100"]}, q:"Male die rechte Hälfte genau spiegelverkehrt.", sol:"So sieht der fertige Schmetterling aus.", clue:"Ihr habt Ben einen lila Schmetterling gemalt.", next:"muffins"},
+    shop:{type:"num", scene:"Das Schaufenster", text:"Im Schaufenster liegt ganz viel buntes Zeug. Ben liebt Sterne.", count:{"star:yellow":8,"star:green":3,"circle:red":6,"heart:pink":5,"square:blue":4}, q:"Wie viele GELBE Sterne siehst du?", answer:8, sol:"Es sind 8 gelbe Sterne. Die grünen zählen nicht mit.", clue:"Ihr habt Ben ein Sternen-Puzzle gekauft.", next:"muffins"},
+    muffins:{type:"num", scene:"Die Muffins", text:"Mila hat Muffins gebacken. Sie sollen gerecht auf die Teller.", share:{n:24,k:6,item:"muffin:pink",group:"Teller"}, q:"Wie viele Muffins kommen auf jeden Teller?", answer:4, sol:"24 : 6 = 4", clue:"Auf jedem Teller liegen 4 Muffins.", next:"END"}
+   }},
+ { title:"Im Atelier",
+   outro:"Frau Olsen ist ganz blass. „Das Bild war vor einer Stunde noch da!“ Ben schaut euch an. „Das ist ein Fall für das Detektivbüro Leuchtfeuer!“",
+   nodes:{
+    start:{type:"story", title:"Das bunte Atelier", text:[
+      "Das Atelier riecht nach Farbe. An allen Wänden hängen Bilder. In der Mitte steht eine Staffelei mit einem weißen Tuch darüber. „Das ist Bens Überraschung“, sagt Frau Olsen. „Um 17 Uhr wird enthüllt!“",
+      "Clown Pinsel-Paul jongliert mit Farbtöpfen. Bens kleine Cousine Lotta klebt Glitzer auf alles, was nicht wegläuft. Und Bäcker Jansen bringt die Torte in einem großen, flachen weißen Karton. Er stellt ihn neben die Staffelei."], next:"color1"},
+    color1:{type:"pick", scene:"Die Malstunde", text:"Frau Olsen gibt jedem Kind ein Blatt. Ben will eine orange Sonne malen. Es gibt aber nur Rot, Gelb und Blau.", tokens:true, q:"Welche zwei Farben muss Ben mischen?", options:["mix:red+yellow","mix:blue+yellow","mix:red+blue"], answer:"mix:red+yellow", sol:"Rot und Gelb gemischt ergibt Orange.", clue:"Rot und Gelb ergibt Orange.", next:"color2"},
+    color2:{type:"pick", scene:"Lottas Farbe", text:"Lotta kippt Blau und Gelb in denselben Becher und rührt kräftig um.", tokens:true, q:"Welche Farbe kommt heraus?", options:["blob:green","blob:purple","blob:orange","blob:brown"], answer:"blob:green", sol:"Blau und Gelb gemischt ergibt Grün.", clue:"Blau und Gelb ergibt Grün. Lotta hat jetzt grüne Hände.", next:"brushes"},
+    brushes:{type:"num", scene:"Die Pinsel", text:"Frau Olsen verteilt Pinsel. Jedes Kind am Maltisch soll gleich viele bekommen.", share:{n:30,k:6,item:"brush:blue",group:"Kinder"}, q:"Wie viele Pinsel bekommt jedes Kind?", answer:5, sol:"30 : 6 = 5", clue:"Jedes Kind hat 5 Pinsel.", next:"d1"},
+    d1:{type:"decide", scene:"Partyspiel", text:"Nach der Malstunde ist Zeit für ein Spiel.", q:"Was spielt ihr?", options:[
+      {label:"Topfschlagen", sub:"Mit verbundenen Augen den Topf finden.", next:"pot"},
+      {label:"Stopptanz", sub:"Wenn die Musik aufhört: einfrieren!", next:"dance"}]},
+    pot:{type:"pick", scene:"Topfschlagen", text:"Ben hat die Augen verbunden und steht auf dem Stern. Die Kinder rufen: „2 Felder nach oben! Jetzt 3 nach rechts! Und 1 zurück nach unten!“", art:"pot", q:"Unter welchem Buchstaben liegt der Topf?", options:["A","B","C","D"], answer:"A", sol:"Vom Stern 2 hoch, 3 nach rechts, 1 runter. Dort liegt A.", clue:"Ben hat den Topf gefunden. Darunter lag ein Schokoriegel.", next:"unveil"},
+    dance:{type:"battle", scene:"Stopptanz", text:"Die Musik läuft! Bei jeder richtigen Rechnung friert ihr rechtzeitig ein. Gemischte Aufgaben!", foe:"Musik", hits:5, gen:"mix", tables:[4,5,6,7,8], hitLines:["Eingefroren wie eine Statue!","Nicht mal geblinzelt!","Clown Paul fällt um, ihr nicht!","Perfekt gestoppt!"], missLine:"Du hast noch gewackelt!", win:"Ihr seid die Letzten auf der Tanzfläche. Gewonnen!", lose:"Ausgeschieden! Aber das Spiel beginnt gleich nochmal.", clue:"Ihr habt den Stopptanz gewonnen.", next:"unveil"},
+    unveil:{type:"story", title:"17 Uhr", text:[
+      "Alle versammeln sich um die Staffelei. Frau Olsen hebt feierlich das weiße Tuch.",
+      "Die Staffelei ist leer! Auf dem Boden davor liegen nur ein paar bunte Zuckerstreusel."], next:"END"}
+   }},
+ { title:"Spuren in Farbe",
+   outro:"Mila öffnet den weißen Karton neben der Staffelei. Drin ist die Torte. „Jansen hat zwei gleiche Kartons dabeigehabt“, ruft sie. „Er hat den falschen mitgenommen, den mit dem Bild! Und um 18 Uhr kommt bei der Bäckerei das Altpapier-Auto!“",
+   nodes:{
+    start:{type:"story", title:"Die Suche beginnt", text:[
+      "Mila zückt ihr Notizbuch. „Niemand verlässt den Raum. Ben, du suchst den Boden ab. Und du vergleichst mit Frau Olsens Foto.“",
+      "Lotta findet das alles furchtbar spannend."], next:"diff"},
+    diff:{type:"diff", scene:"Foto und Wirklichkeit", text:"Frau Olsen hat heute Mittag ein Foto vom Atelier gemacht. Links ist das Foto, rechts das Atelier jetzt.", diff:{cols:4, before:["star:yellow","circle:blue","square:red","tri:green","heart:pink","circle:orange","box:white","star:purple","tri:blue","square:yellow","circle:green","heart:red"], change:6, after:"none"}, q:"Tippe im rechten Bild auf den Unterschied.", answer:"6", sol:"Der flache weiße Karton fehlt.", clue:"Ein flacher weißer Karton, der heute Mittag im Atelier stand, ist weg.", next:"sprinkles"},
+    sprinkles:{type:"num", scene:"Die Streusel", text:"Auf dem Boden liegen bunte Streusel. Frau Olsen sagt: „Die Herzchen-Streusel gibt es nur auf Jansens Torten!“", count:{"heart:pink":7,"circle:yellow":9,"star:blue":5,"square:green":6}, q:"Wie viele Herzchen-Streusel liegen da?", answer:7, sol:"Es sind 7 rosa Herzchen.", clue:"7 Herzchen-Streusel von Jansens Torte liegen genau vor der Staffelei.", next:"d1"},
+    d1:{type:"decide", scene:"Zeugen befragen", text:"Zwei Gäste waren die ganze Zeit in der Nähe der Staffelei.", q:"Wen befragt ihr?", options:[
+      {label:"Clown Pinsel-Paul", sub:"Er redet gern. Aber nur in Rätseln.", next:"clown"},
+      {label:"Cousine Lotta", sub:"Sie spielt heute Geheimagentin.", next:"lotta"}]},
+    clown:{type:"pick", scene:"Das Clown-Rätsel", text:"Pinsel-Paul wackelt mit seiner roten Nase. „Ich verrate euch was, aber nur, wenn ihr mein Rätsel löst!“", say:"„Es hat einen Kopf und einen Fuß, aber keine Beine. Was ist das?“", q:"Was meint der Clown?", options:["Ein Stuhl","Ein Bett","Eine Mütze","Ein Schuh"], answer:"Ein Bett", sol:"Ein Bett hat ein Kopfende und ein Fußende, aber keine Beine im Sinn von Menschenbeinen.", clue:"Clown Paul: „Der Bäcker ist mit einem flachen Karton gegangen. Der war ziemlich schwer für einen leeren Karton.“", next:"juggle"},
+    juggle:{type:"num", scene:"Jonglieren", text:"Zum Dank jongliert Paul. Er hat 3 Bälle und wirft jeden 8 Mal hoch.", q:"Wie oft wirft Paul insgesamt?", answer:24, sol:"3 × 8 = 24", clue:"Paul hat 24 Mal geworfen und keinen Ball fallen lassen.", next:"who"},
+    lotta:{type:"pick", scene:"Agentin Lotta", text:"Lotta flüstert nur in Zahlen. „A ist 1, B ist 2, und so weiter. Ich habe gesehen, wie jemand das hier weggetragen hat:“", code:"11 · 1 · 18 · 20 · 15 · 14", abc:true, q:"Was hat Lotta gesehen?", options:["KANTON","KARTON","KARTEN","KNOTEN"], answer:"KARTON", sol:"K = 11, A = 1, R = 18, T = 20, O = 15, N = 14. Das Wort heißt KARTON.", clue:"Lotta hat gesehen, wie jemand einen KARTON zur Tür getragen hat.", next:"glitter"},
+    glitter:{type:"pick", scene:"Lottas Glitzerspur", text:"Lotta zeigt stolz auf ihre Glitzer-Aufkleber an der Tür. Einer fehlt.", seq:["star:yellow","star:yellow","heart:pink","star:yellow","star:yellow","heart:pink","star:yellow","?"], tokens:true, q:"Welcher Aufkleber fehlt?", options:["heart:pink","star:yellow","circle:blue","star:green"], answer:"star:yellow", sol:"Das Muster ist Stern, Stern, Herz. Nach einem Stern kommt noch ein Stern.", clue:"An Lottas Glitzertür klebt ein Streusel-Herz. Der Karton ist hier vorbeigekommen.", next:"who"},
+    who:{type:"pick", scene:"Wer war es?", text:"Mila zählt auf: Clown Paul hatte die ganze Zeit beide Hände voller Ballons. Lotta ist viel zu klein für so einen großen Karton. Frau Olsen war in der Küche und hat Kakao gekocht.", q:"Wer hat den Karton mit dem Bild hinausgetragen?", options:["Clown Paul","Lotta","Frau Olsen","Bäcker Jansen"], answer:"Bäcker Jansen", sol:"Paul, Lotta und Frau Olsen können es nicht gewesen sein. Es bleibt Bäcker Jansen.", clue:"Bäcker Jansen hat den Karton mit dem Bild mitgenommen. Aus Versehen?", next:"END"}
+   }},
+ { title:"Wettlauf zur Bäckerei",
+   outro:"Zurück im Atelier enthüllt Frau Olsen endlich das Bild. Es zeigt das Detektivbüro Leuchtfeuer: Mila, Ben und dich, mit dem Möwenturm im Hintergrund. Ben strahlt. „Das beste Geburtstagsgeschenk aller Zeiten!“",
+   nodes:{
+    start:{type:"story", title:"Halb sechs", text:[
+      "Es ist 17:30 Uhr. Um 18 Uhr holt das Altpapier-Auto die leeren Kartons an der Bäckerei ab.",
+      "Wenn Jansen den Bildkarton zu den leeren Kartons gestellt hat, ist Bens Bild für immer weg!"], next:"d1"},
+    d1:{type:"decide", scene:"Der schnellste Weg", text:"Zur Bäckerei gibt es zwei Wege.", q:"Wie kommt ihr hin?", options:[
+      {label:"Abkürzung durch den Park", sub:"Zu Fuß, querfeldein.", next:"park"},
+      {label:"Mit dem Bus", sub:"Er fährt gleich ab.", next:"bus"}]},
+    park:{type:"battle", scene:"Quer durch den Park", text:"Ihr rennt los! Jede richtige Rechnung bringt euch ein Stück näher an die Bäckerei. Gemischte Aufgaben!", foe:"Park", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Über die Pfütze gesprungen!","Am Brunnen vorbei!","Schneller als der Jogger!","Da vorne ist schon die Bäckerei!"], missLine:"Eine Ente watschelt euch in den Weg!", win:"Ihr kommt keuchend an der Bäckerei an.", lose:"Ihr habt euch im Park verlaufen. Zurück zum Eingang und nochmal!", clue:"Ihr seid durch den Park gerannt.", next:"stacks"},
+    bus:{type:"num", scene:"Die Busfahrt", text:"Der Bus hält an 6 Haltestellen, die Bäckerei ist die letzte. Von einer Haltestelle zur nächsten braucht er 3 Minuten. Ihr steigt an der ersten ein.", q:"Wie viele Minuten dauert die Fahrt bis zur letzten Haltestelle?", answer:15, sol:"Bei 6 Haltestellen gibt es nur 5 Strecken dazwischen. 5 × 3 = 15.", clue:"Die Busfahrt dauerte 15 Minuten. Knapp!", next:"stacks"},
+    stacks:{type:"num", scene:"Hinter der Bäckerei", text:"Hinter der Bäckerei stehen flache Kartons, in gleich hohen Stapeln.", share:{n:36,k:4,item:"box:white",group:"Stapel"}, q:"Wie viele Kartons liegen in jedem Stapel?", answer:9, sol:"36 : 4 = 9", clue:"In jedem Stapel liegen 9 Kartons.", next:"truck"},
+    truck:{type:"battle", scene:"Das Altpapier-Auto!", text:"Da biegt schon das Altpapier-Auto um die Ecke! Dreht schnell die Kartons um. Jede richtige Rechnung ist ein Karton. Jetzt wird geteilt!", foe:"Altpapier-Auto", hits:5, gen:"div", tables:[3,4,5,6,7], hitLines:["Leer! Weiter!","Auch leer!","Nur Krümel!","Der nächste!"], missLine:"Das Auto kommt näher!", win:"Im letzten Karton glänzt etwas: Das ist Bens Bild!", lose:"Das Auto hupt. Der Fahrer wartet zum Glück kurz. Nochmal!", clue:"Ihr habt Bens Bild im letzten Karton gefunden.", next:"seagull"},
+    seagull:{type:"paint", scene:"Das verlaufene Bild", text:"Beim Rennen ist Wasser auf das Bild getropft. Die rechte Hälfte der Möwe am Himmel ist verlaufen. Frau Olsen bittet euch, sie neu zu malen.", paint:{color:"blue", left:["0000","1000","1100","0110","0011","0001"]}, q:"Male die rechte Hälfte der Möwe als Spiegelbild.", sol:"So sieht die fertige Möwe aus.", clue:"Ihr habt die Möwe auf Bens Bild repariert.", next:"cake"},
+    cake:{type:"num", scene:"Endlich Torte!", text:"Zurück auf der Feier gibt es endlich Torte. Jansen hat sich so geschämt, dass er noch zwei Torten mitgebracht hat. Es gibt also 3 Torten, jede ist in 8 Stücke geschnitten.", q:"Wie viele Tortenstücke gibt es?", answer:24, sol:"3 × 8 = 24", clue:"Fall gelöst! Bens Bild ist gerettet, und es gibt 24 Stücke Torte.", next:"END"}
+   }},
+
+ /* ===== Fall 3: Der Schatz der Möweninsel ===== */
+ { title:"Die Botschaft im Kompass",
+   outro:"Morgen früh fahrt ihr zur Möweninsel. Beim Abschied bemerkt Ben eine Frau mit roter Mütze, die durchs Museumsfenster späht. Als er hinsieht, ist sie verschwunden.",
+   nodes:{
+    start:{type:"story", title:"Drei Wochen später", text:[
+      "Ein paar Wochen sind vergangen. Morgen beginnt die große Ausstellung. Herr Lindqvist poliert den Kompass von Kapitän Hansen ein letztes Mal.",
+      "Plötzlich macht es leise klick. Am Boden des Kompasses springt eine winzige Klappe auf. Darin steckt ein zusammengerolltes Papier, gelb und uralt.",
+      "Am Hafen putzt Kai übrigens immer noch Fischkisten. Das ist seine Strafe. Er winkt euch verlegen zu."], next:"p1"},
+    p1:{type:"num", scene:"Der Zettel im Kompass", text:"Mila rollt das Papier vorsichtig auf. Es ist Kapitän Hansens Handschrift.", say:"„Mein Schatz liegt auf der Möweninsel. Zähle die Felsen am Strand: 9 Reihen zu je 7 Felsen.“", q:"Wie viele Felsen liegen am Strand?", answer:63, sol:"9 × 7 = 63", clue:"Kapitän Hansens Schatz liegt auf der Möweninsel. Am Strand liegen 63 Felsen.", next:"p2"},
+    p2:{type:"num", pro:true, scene:"Das Logbuch", text:"Herr Lindqvist holt Hansens altes Logbuch aus dem Archiv. Auf dem Zettel stand auch: „Lies die allerletzte Seite.“ Das Logbuch hat 12 Kapitel mit je 4 Seiten.", q:"Welche Seitenzahl hat die allerletzte Seite?", answer:48, sol:"12 × 4 = 48. Rechne 10 × 4 = 40 und 2 × 4 = 8, zusammen 48.", clue:"Auf Seite 48 des Logbuchs steht Hansens Hinweis, in alter Seemannsschrift.", next:"d1"},
+    d1:{type:"decide", scene:"Die alte Schrift", text:"Seite 48 ist in einer verschnörkelten Seemannsschrift geschrieben. Keiner von euch kann sie lesen.", q:"Wen fragt ihr um Hilfe?", options:[
+      {label:"Bens Opa Hinnerk", sub:"Alter Seemann. Etwas grummelig, aber er kennt jede Schrift.", next:"opa1"},
+      {label:"Die Stadtbibliothek", sub:"Dort gibt es Bücher über alte Schriften.", next:"lib1"}]},
+    opa1:{type:"battle", scene:"Rechenduell mit Opa Hinnerk", text:"Opa Hinnerk zieht die Augenbrauen hoch. „Erst will ich sehen, ob ihr schnell im Kopf seid. So haben wir auf See trainiert!“", foe:"Opa Hinnerk", hits:5, gen:"mul", tables:[6,7,8,9], hitLines:["„Hm. Nicht schlecht.“","Opa nickt anerkennend.","„Das hätte ich in eurem Alter nicht so schnell gekonnt!“","Opa kratzt sich am Bart."], missLine:"„Haha! Daneben, Landratte!“", win:"Opa Hinnerk lacht laut. „Ihr seid echte Seeleute! Gebt her, das Logbuch.“", lose:"„Noch nicht seefest!“, brummt Opa. „Nochmal!“", clue:"Opa Hinnerk hat euch im Rechenduell getestet. Bestanden!", next:"opa2"},
+    opa2:{type:"num", scene:"Opas Seekarte", text:"Opa liest vor: „Die Insel liegt 18 Seemeilen vor der Küste.“ Dann holt er seine Seekarte. „Mein altes Motorboot schafft 6 Seemeilen in einer Stunde.“", q:"Wie viele Stunden dauert die Fahrt zur Insel?", answer:3, sol:"18 : 6 = 3", clue:"Die Möweninsel ist 18 Seemeilen entfernt. Mit dem Motorboot sind das 3 Stunden.", next:"p3"},
+    lib1:{type:"pick", scene:"In der Bibliothek", text:"Die Bibliothekarin Frau Krüger erkennt die Schrift sofort. „Das ist Seemannscode! Jede Zahl ist ein Buchstabe.“ Das wichtigste Wort auf Seite 48 lautet:", code:"9 · 14 · 19 · 5 · 12", abc:true, q:"Welches Wort steht da?", options:["NEBEL","INSEL","KESSEL","IGELN"], answer:"INSEL", sol:"I = 9, N = 14, S = 19, E = 5, L = 12. Das Wort heißt INSEL.", clue:"Im Logbuch steht in Seemannscode das Wort INSEL.", next:"lib2"},
+    lib2:{type:"num", scene:"Das Buch über Inseln", text:"„Zur Möweninsel habe ich ein altes Buch“, sagt Frau Krüger. „Es steht im großen Regal. Das Regal hat 8 Bretter, auf jedem stehen 9 Bücher. Es ist das allerletzte Buch.“", q:"Das wievielte Buch ist es?", answer:72, sol:"8 × 9 = 72", clue:"Im Buch über die Möweninsel ist eine Karte mit einer Höhle eingezeichnet.", next:"p3"},
+    p3:{type:"num", scene:"Die Zahlenmauer", text:"Unten auf Seite 48 hat Hansen eine Zahlenmauer gezeichnet. Jeder Stein ist so groß wie die beiden Steine darunter zusammen. Daneben steht: „Merk dir die Spitze!“", say:"Unterste Reihe: 6 · 9 · 8", q:"Welche Zahl steht ganz oben auf der Spitze?", answer:32, sol:"6 + 9 = 15 und 9 + 8 = 17. Oben: 15 + 17 = 32.", clue:"WICHTIG: Die Spitze von Hansens Zahlenmauer ist 32.", next:"END"}
+   }},
+ { title:"Überfahrt im Nebel",
+   outro:"Durch den letzten Nebelfetzen seht ihr ein Schiff mit roten Segeln. Es ankert auf der anderen Seite der Insel. Mila flüstert: „Wir sind nicht die Einzigen, die den Schatz suchen.“",
+   nodes:{
+    start:{type:"story", title:"Am Hafen", text:[
+      "Früh am Morgen. Über dem Wasser liegt Nebel. Kai schrubbt am Kai seine Kisten und schaut sich nervös um.",
+      "„Psst!“, flüstert er. „Passt auf die Rote Möwe auf. Das ist eine Kapitänin mit roter Mütze. Sie wollte den Kompass damals haben. Ich sollte ihn ihr bringen.“"], next:"d1"},
+    d1:{type:"decide", scene:"Wie kommt ihr hin?", text:"Zur Möweninsel gibt es zwei Möglichkeiten.", q:"Womit fahrt ihr?", options:[
+      {label:"Mit der großen Fähre", sub:"Bequem und trocken. Aber viele fremde Leute an Bord.", next:"f1"},
+      {label:"Mit Opas Ruderboot", sub:"Abenteuerlich. Und anstrengend.", next:"r1"}]},
+    f1:{type:"num", scene:"Auf der Fähre", text:"Auf dem Deck stehen 8 Reihen Bänke. Auf jeder Bank sitzen 6 Leute. Dann steigt ihr drei noch dazu.", q:"Wie viele Leute sitzen jetzt auf dem Deck?", answer:51, sol:"8 × 6 = 48. Dazu kommt ihr drei: 48 + 3 = 51.", clue:"Auf der Fähre sitzen 51 Leute auf dem Deck.", next:"f2"},
+    f2:{type:"pick", scene:"Die Fremden an Bord", text:"Drei Fremde fallen euch auf. Sie sitzen vorne, in der Mitte und hinten. Ein Mann trägt einen Hut. Eine Frau trägt eine rote Mütze. Ein Junge hat ein Fernglas. Ihr wisst: Der Mann mit Hut sitzt hinten. Die Frau mit der roten Mütze sitzt nicht vorne.", q:"Wo sitzt die Frau mit der roten Mütze?", options:["Vorne","Mitte","Hinten"], answer:"Mitte", sol:"Hinten sitzt der Mann mit Hut. Vorne sitzt sie nicht. Also bleibt die Mitte.", clue:"Auf der Fähre sitzt die Frau mit der roten Mütze in der Mitte. Ist das die Rote Möwe?", next:"fog"},
+    r1:{type:"battle", scene:"Gegen die Wellen", text:"Draußen wird das Meer unruhig. Jede richtige Rechnung ist ein kräftiger Ruderschlag. Gemischte Aufgaben!", foe:"Wellen", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Ein kräftiger Schlag!","Das Boot gleitet über die Welle!","Ben rudert wie ein Weltmeister!","Weiter so!"], missLine:"Eine Welle schwappt ins Boot!", win:"Das Meer wird ruhiger. Ihr seid weit draußen.", lose:"Die Wellen treiben euch zurück zum Ufer. Noch ein Anlauf!", clue:"Mit dem Ruderboot habt ihr die Wellen besiegt.", next:"r2"},
+    r2:{type:"num", scene:"Ruderschläge", text:"Ben will wissen, wie viel er gerudert hat. Ihr seid 9 Minuten gerudert, und in jeder Minute macht ihr 8 Schläge.", q:"Wie viele Ruderschläge waren das?", answer:72, sol:"9 × 8 = 72", clue:"72 Ruderschläge! Bens Arme sind schwer wie Blei.", next:"fog"},
+    fog:{type:"battle", scene:"Im Nebel", text:"Plötzlich wird der Nebel so dicht, dass ihr nichts mehr seht. Nur die Lichtsignale der Insel zeigen die Richtung. Jede richtige Rechnung lässt euch das nächste Signal erkennen. Jetzt wird geteilt!", foe:"Nebel", hits:4, gen:"div", tables:[6,7,8,9], hitLines:["Da! Ein Lichtsignal!","Die Richtung stimmt!","Der Nebel wird dünner!"], missLine:"Ihr habt euch im Nebel verfahren!", win:"Der Nebel reißt auf. Vor euch liegt die Möweninsel.", lose:"Ihr dreht im Nebel im Kreis. Wartet kurz und versucht es nochmal.", clue:"Ihr habt den Weg durch den Nebel gefunden.", next:"land"},
+    land:{type:"num", pro:true, scene:"Ankunft", text:"Am Ufer der Möweninsel schaukeln 4 Bojen im Wasser. Auf jeder Boje sitzen 15 Möwen und schauen euch neugierig an.", q:"Wie viele Möwen sitzen auf den Bojen?", answer:60, sol:"4 × 15 = 60. Rechne 4 × 10 = 40 und 4 × 5 = 20, zusammen 60.", clue:"Auf der Möweninsel begrüßen euch 60 Möwen.", next:"END"}
+   }},
+ { title:"Die Höhle der Krebse",
+   outro:"In der Truhe liegt kein Gold. Nur eine zweite Karte mit einem roten Kreuz und dem Satz: „Der echte Schatz liegt dort, wo das Licht wohnt.“ Draußen hört ihr Stimmen. Jemand kommt.",
+   nodes:{
+    start:{type:"story", title:"Auf der Möweninsel", text:[
+      "Die Möweninsel ist klein, felsig und windig. Überall sind Möwen.",
+      "Mila zieht Hansens Notizen hervor. „Wir müssen die Felsen zählen und die Höhle finden. Und zwar schneller als die Rote Möwe.“"], next:"p1"},
+    p1:{type:"pick", scene:"Die Himmelsrichtungen", text:"Auf Hansens Karte steht: Das alte Leuchtfeuer liegt nördlich vom Strand. Der Brunnen liegt östlich vom Leuchtfeuer. Die Höhle liegt südlich vom Brunnen, auf gleicher Höhe wie der Strand.", q:"In welcher Richtung liegt die Höhle, vom Strand aus gesehen?", options:["Norden","Osten","Süden","Westen"], answer:"Osten", sol:"Vom Strand nach Norden, dann nach Osten, dann wieder nach Süden zurück. Am Ende steht ihr östlich vom Strand.", clue:"Die Höhle liegt östlich vom Strand.", next:"p2"},
+    p2:{type:"num", scene:"Die Felsen", text:"Am Strand liegen die 63 Felsen aus Hansens Botschaft. Auf jedem 7. Felsen ist ein kleiner Anker eingeritzt.", q:"Auf wie vielen Felsen ist ein Anker?", answer:9, sol:"63 : 7 = 9", clue:"9 Felsen tragen einen Anker. Sie zeigen wie Pfeile zur Höhle.", next:"d1"},
+    d1:{type:"decide", scene:"Zwei Gänge", text:"Die Höhle teilt sich gleich am Eingang in zwei Gänge.", q:"Welchen Gang nehmt ihr?", options:[
+      {label:"Den linken Gang", sub:"Dunkel. Man hört Wasser tropfen und ein seltsames Klicken.", next:"crabs"},
+      {label:"Den rechten Gang", sub:"Eng und trocken. Am Ende sieht man drei Türen.", next:"doors"}]},
+    crabs:{type:"battle", scene:"Krebs-Alarm!", text:"Das Klicken sind Krebse! Hunderte krabbeln euch entgegen. Jede richtige Rechnung ist ein Sprung auf den nächsten trockenen Stein.", foe:"Krebse", hits:5, gen:"mix", tables:[4,6,7,8,9], hitLines:["Sprung geschafft!","Ein Krebs zwickt ins Leere!","Ben hüpft wie ein Känguru!","Fast drüben!"], missLine:"Autsch! Ein Krebs zwickt Ben in den Schuh.", win:"Ihr landet auf festem Boden. Hinter euch klicken die Krebse beleidigt.", lose:"Die Krebse drängen euch zurück zum Eingang. Neuer Anlauf!", clue:"Ihr seid durch den Krebs-Gang gekommen.", next:"chest"},
+    doors:{type:"pick", scene:"Die drei Türen", text:"Am Ende des Gangs sind drei Türen. Auf jeder steht ein Satz. Hansen hat dazugeschrieben: „Nur EIN Satz ist wahr.“", say:"Tür 1: Der Weg ist nicht hinter mir. · Tür 2: Der Weg ist hinter mir. · Tür 3: Der Weg ist nicht hinter Tür 2.", q:"Hinter welcher Tür ist der Weg?", options:["Tür 1","Tür 2","Tür 3"], answer:"Tür 1", sol:"Wäre der Weg hinter Tür 2 oder 3, wären zwei Sätze wahr. Nur bei Tür 1 ist genau ein Satz wahr (der von Tür 3).", clue:"Ihr habt das Türen-Rätsel geknackt. Tür 1 war richtig.", next:"chest"},
+    chest:{type:"num", scene:"Die Truhe", text:"In einer Felsnische steht eine eiserne Truhe. Das Schloss hat ein Schild: „Der Code ist die Spitze meiner Zahlenmauer, mal 2.“ Schau in dein Notizbuch!", q:"Wie lautet der Code?", answer:64, sol:"Die Spitze der Zahlenmauer war 32. Und 32 × 2 = 64.", clue:"Die Truhe hatte den Code 64.", next:"END"}
+   }},
+ { title:"Die Rote Möwe",
+   outro:"Zurück in Möwenbucht wartet schon die Wasserpolizei auf die Rote Möwe. Herr Lindqvist stellt Hansens Goldmünzen neben den Kompass in die Vitrine. Darunter hängt ein neues Schild: „Gefunden vom Detektivbüro Leuchtfeuer.“",
+   nodes:{
+    start:{type:"story", title:"Die Kapitänin", text:[
+      "Als ihr aus der Höhle kommt, steht sie vor euch: eine große Frau mit roter Mütze und einem goldenen Ohrring. Die Rote Möwe!",
+      "„Ihr habt die Karte gefunden“, sagt sie und lächelt schief. „Wie praktisch. Gebt sie her.“ Hinter ihr landen gerade ihre Boote am Strand."], next:"p1"},
+    p1:{type:"num", scene:"Die Mannschaft", text:"Die Rote Möwe hat 3 Boote mitgebracht. In jedem Boot sitzen 6 Matrosen. Jeder Matrose trägt 2 Schaufeln.", q:"Wie viele Schaufeln haben sie dabei?", answer:36, sol:"3 × 6 = 18 Matrosen. 18 × 2 = 36 Schaufeln.", clue:"Die Rote Möwe hat 18 Matrosen mit 36 Schaufeln dabei. Sie will die ganze Insel umgraben.", next:"d1"},
+    d1:{type:"decide", scene:"Was jetzt?", text:"Mila hält die Karte hinter dem Rücken fest. Ben schaut zu den Booten.", q:"Was macht ihr?", options:[
+      {label:"Mila verhandelt", sub:"Die Rote Möwe liebt Rätsel. Vielleicht gibt es einen Handel.", next:"riddle"},
+      {label:"Ben lenkt ab, ihr schleicht zum Boot", sub:"Riskant, aber schnell.", next:"sneak"}]},
+    riddle:{type:"num", scene:"Das Rätselduell", text:"Die Rote Möwe grinst. „Ein Rätsel. Löst ihr es, lasse ich euch gehen. Wenn nicht, gehört die Karte mir.“", say:"„Ich bin eine Zahl. Nimmst du mich mal 6, bekommst du 54. Nimmst du mich mal 9, bekommst du 81.“", q:"Welche Zahl ist gemeint?", answer:9, sol:"6 × 9 = 54 und 9 × 9 = 81. Die Zahl ist 9.", clue:"Ihr habt das Rätselduell gewonnen. Die Rote Möwe ist wütend.", next:"p2"},
+    sneak:{type:"battle", scene:"Leise zum Boot", text:"Ben ruft: „Da drüben glitzert etwas!“ Alle Matrosen drehen sich um. Jetzt schleicht ihr. Jede richtige Rechnung ist ein leiser Schritt.", foe:"Matrosen", hits:4, gen:"mul", tables:[6,7,8,9], hitLines:["Psst. Ein Schritt weiter.","Niemand hat euch gesehen.","Fast am Boot!"], missLine:"Knack! Ein Ast. Ein Matrose dreht sich um.", win:"Ihr erreicht das Boot. Die Matrosen suchen immer noch nach dem Glitzern.", lose:"Ein Matrose hat euch entdeckt! Ihr versteckt euch hinter einem Felsen und versucht es nochmal.", clue:"Ihr seid unbemerkt zum Boot geschlichen.", next:"p2"},
+    p2:{type:"pick", scene:"Das Muster auf der Karte", text:"Im Boot schaut ihr euch die zweite Karte genau an. Neben dem roten Kreuz stehen Zahlen. Die letzte fehlt.", say:"3 · 6 · 12 · 24 · ?", q:"Welche Zahl fehlt?", options:["30","36","48","50"], answer:"48", sol:"Jede Zahl wird verdoppelt: 24 + 24 = 48.", clue:"48! Das ist die Hausnummer vom alten Leuchtturmwärterhaus am Möwenturm. Dort wohnt das Licht!", next:"race"},
+    race:{type:"battle", scene:"Wettfahrt zum Hafen", text:"Die Rote Möwe hat gemerkt, dass ihr weg seid. Ihr Schiff jagt hinter euch her! Jede richtige Rechnung bringt euch näher an Möwenbucht.", foe:"Rote Möwe", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Volle Fahrt voraus!","Der Abstand wird größer!","Da hinten ist schon der Möwenturm!","Die roten Segel werden kleiner!"], missLine:"Die Rote Möwe holt auf!", win:"Ihr erreicht den Hafen. Das Schiff der Roten Möwe läuft auf eine Sandbank und bleibt stecken.", lose:"Die Rote Möwe ist zu nah! Ihr weicht aus und versucht es nochmal.", clue:"Ihr habt die Wettfahrt gewonnen. Die Rote Möwe sitzt auf einer Sandbank fest.", next:"gold"},
+    gold:{type:"num", pro:true, scene:"Der echte Schatz", text:"Im Keller des alten Leuchtturmwärterhauses, Hausnummer 48, findet ihr eine kleine Kiste. Darin liegen 8 Lederbeutel. In jedem Beutel sind 12 Goldmünzen.", q:"Wie viele Goldmünzen sind es zusammen?", answer:96, sol:"8 × 12 = 96. Rechne 8 × 10 = 80 und 8 × 2 = 16, zusammen 96.", clue:"Fall gelöst! 96 Goldmünzen von Kapitän Hansen sind gefunden.", next:"END"}
    }}
 ];
+
+const CASES=[
+  {title:"Das Rätsel vom Möwenturm", from:0, to:3, blurb:"Ein Kompass verschwindet, und der alte Leuchtturm blinkt mitten in der Nacht.", tag:"Einmaleins · Logik", color:"#ffd34d", done:"Der Kompass von Kapitän Hansen ist zurück im Museum."},
+  {title:"Das verschwundene Geburtstagsbild", from:4, to:7, blurb:"Ben feiert Geburtstag im Malatelier. Doch sein Überraschungsbild ist plötzlich weg.", tag:"Teilen · Farben · Muster", color:"#e57aa6", done:"Bens Bild ist wieder da, und die Feier war die beste in ganz Möwenbucht."},
+  {title:"Der Schatz der Möweninsel", from:8, to:11, blurb:"Im Kompass steckt eine geheime Botschaft. Sie führt zu einem Schatz auf einer Insel.", tag:"Profi-Rechnen · Knobeln", color:"#7fc8d9", done:"Kapitän Hansens Goldmünzen liegen jetzt im Museum, und die Rote Möwe ist gefasst."}
+];
+const caseOf=ch=>CASES.findIndex(c=>ch>=c.from&&ch<=c.to);
+const caseStars=ci=>{let t=0;for(let i=CASES[ci].from;i<=CASES[ci].to;i++)t+=chStars(i);return t;};
+
+/* Grafik-Bausteine */
+const COL={red:"#d9473a",blue:"#2f6db5",yellow:"#f2c230",green:"#3f9a55",orange:"#ee8a2b",purple:"#7d4ea8",pink:"#e57aa6",brown:"#8a5a3b",white:"#ffffff"};
+const CN={red:"Rot",blue:"Blau",yellow:"Gelb",green:"Grün",orange:"Orange",purple:"Lila",pink:"Rosa",brown:"Braun",white:"Weiß"};
+const KN={circle:"Kreis",square:"Quadrat",tri:"Dreieck",star:"Stern",heart:"Herz",balloon:"Ballon",muffin:"Muffin",brush:"Pinsel",box:"Karton"};
+function shape(kind,c,cx,cy,r){
+  const f=COL[c]||c, st='stroke="#1f2a33" stroke-width="2" stroke-linejoin="round"';
+  switch(kind){
+    case "circle": return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${f}" ${st}/>`;
+    case "square": return `<rect x="${cx-r}" y="${cy-r}" width="${2*r}" height="${2*r}" rx="3" fill="${f}" ${st}/>`;
+    case "tri": return `<polygon points="${cx},${cy-r} ${cx+r},${cy+r*.8} ${cx-r},${cy+r*.8}" fill="${f}" ${st}/>`;
+    case "star": {const p=[];for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.45:r;p.push((cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1));}return `<polygon points="${p.join(" ")}" fill="${f}" ${st}/>`;}
+    case "heart": return `<path d="M${cx},${cy+r*.85} C${cx-r*1.5},${cy-r*.1} ${cx-r*.7},${cy-r*1.3} ${cx},${cy-r*.45} C${cx+r*.7},${cy-r*1.3} ${cx+r*1.5},${cy-r*.1} ${cx},${cy+r*.85}Z" fill="${f}" ${st}/>`;
+    case "balloon": return `<path d="M${cx},${cy+r*.85} q${-r*.3},${r*.5} ${r*.1},${r*.95}" fill="none" stroke="#1f2a33" stroke-width="1.5"/><ellipse cx="${cx}" cy="${cy-r*.2}" rx="${r*.75}" ry="${r*.95}" fill="${f}" ${st}/>`;
+    case "muffin": return `<path d="M${cx-r*.8},${cy} L${cx+r*.8},${cy} L${cx+r*.55},${cy+r*.9} L${cx-r*.55},${cy+r*.9}Z" fill="#c9884f" ${st}/><path d="M${cx-r*.9},${cy+1} a${r*.9},${r*.95} 0 0 1 ${r*1.8},0Z" fill="${f}" ${st}/>`;
+    case "brush": return `<line x1="${cx-r*.8}" y1="${cy+r*.8}" x2="${cx+r*.3}" y2="${cy-r*.3}" stroke="#c9884f" stroke-width="${r*.35}" stroke-linecap="round"/><circle cx="${cx+r*.55}" cy="${cy-r*.55}" r="${r*.4}" fill="${f}" ${st}/>`;
+    case "box": return `<rect x="${cx-r}" y="${cy-r*.55}" width="${2*r}" height="${r*1.1}" rx="2" fill="${f}" ${st}/><line x1="${cx-r}" y1="${cy}" x2="${cx+r}" y2="${cy}" stroke="#1f2a33" stroke-width="1"/>`;
+    default: return "";
+  }
+}
+function tokLabel(t){
+  if(t.startsWith("mix:")){const [a,b]=t.slice(4).split("+");return CN[a]+" und "+CN[b];}
+  if(t.startsWith("blob:")) return CN[t.slice(5)];
+  const [k,c]=t.split(":"); return (CN[c]||"")+" "+(KN[k]||"");
+}
+function tok(t,size=44){
+  if(t.startsWith("mix:")){const [a,b]=t.slice(4).split("+");
+    return `<svg viewBox="0 0 96 44" width="${Math.round(size*2.2)}" height="${size}" role="img" aria-label="${tokLabel(t)}"><circle cx="20" cy="22" r="16" fill="${COL[a]}" stroke="#1f2a33" stroke-width="2"/><text x="48" y="30" text-anchor="middle" font-size="24" font-weight="700" fill="#1f2a33">+</text><circle cx="76" cy="22" r="16" fill="${COL[b]}" stroke="#1f2a33" stroke-width="2"/></svg>`;}
+  if(t.startsWith("blob:")) return `<svg viewBox="0 0 44 44" width="${size}" height="${size}" role="img" aria-label="${tokLabel(t)}"><circle cx="22" cy="22" r="18" fill="${COL[t.slice(5)]}" stroke="#1f2a33" stroke-width="2"/></svg>`;
+  if(t==="none") return `<svg viewBox="0 0 44 44" width="${size}" height="${size}" aria-label="leer"></svg>`;
+  const [k,c]=t.split(":");
+  return `<svg viewBox="0 0 44 44" width="${size}" height="${size}" role="img" aria-label="${tokLabel(t)}">${shape(k,c,22,22,15)}</svg>`;
+}
+function shareHtml(n,k,item,group){
+  return `<div class="share"><div class="pile" aria-label="${n} Stück">${Array.from({length:n},()=>item?tok(item,30):'<i class="dot2"></i>').join("")}</div>
+   <div class="arrow">verteilt auf ${k} ${esc(group||"")}</div>
+   <div class="plates">${Array.from({length:k},()=>`<svg viewBox="0 0 64 34" width="56" height="30" aria-hidden="true"><ellipse cx="32" cy="17" rx="29" ry="13" fill="#fff" stroke="#1f2a33" stroke-width="2"/><ellipse cx="32" cy="17" rx="18" ry="7" fill="none" stroke="#d8ccad" stroke-width="2"/></svg>`).join("")}</div></div>`;
+}
+function rng(seed){let s=seed;return()=>((s=Math.imul(s^(s>>>15),2246822507)+0x6D2B79F5|0)>>>0)/4294967296;}
+function countHtml(spec){
+  const items=[]; Object.entries(spec).forEach(([t,c])=>{for(let i=0;i<c;i++)items.push(t);});
+  const r=rng(items.length*97+7); for(let i=items.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[items[i],items[j]]=[items[j],items[i]];}
+  const cols=7, rows=Math.ceil(items.length/cols), W=cols*50, H=rows*50;
+  const body=items.map((t,i)=>{const [k,c]=t.split(":");const cx=25+(i%cols)*50+(r()-.5)*14, cy=25+Math.floor(i/cols)*50+(r()-.5)*14;return shape(k,c,Math.round(cx),Math.round(cy),Math.round(14+r()*3));}).join("");
+  return `<div class="pic"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Bild mit vielen bunten Formen">${body}</svg></div>`;
+}
+const ART={
+  pot:()=>{const c=50,cells=[];
+    for(let y=0;y<5;y++)for(let x=0;x<5;x++)cells.push(`<rect x="${x*c+2}" y="${y*c+2}" width="${c-4}" height="${c-4}" rx="6" fill="#fff8e3" stroke="#d8ccad" stroke-width="2"/>`);
+    const L=[["A",3,3],["B",2,2],["C",3,2],["D",1,3]].map(([l,x,y])=>`<circle cx="${x*c+25}" cy="${y*c+25}" r="16" fill="#fff" stroke="#1f2a33" stroke-width="2"/><text x="${x*c+25}" y="${y*c+32}" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2a33">${l}</text>`).join("");
+    return `<div class="pic" style="max-width:280px;align-self:center"><svg viewBox="0 0 250 250" width="100%" role="img" aria-label="Spielfeld mit 5 mal 5 Feldern. Der Stern ist unten links.">${cells.join("")}${shape("star","yellow",25,225,17)}${L}</svg></div>`;}
+};
+function seqHtml(seq){return `<div class="seq">${seq.map(t=>t==="?"?'<span class="qbox">?</span>':tok(t)).join("")}</div>`;}
+function paintTarget(left){return left.map(r=>r.split("").reverse().join(""));}
 
 const KEY="moewenturm-v2";
 let S=load(), view={screen:"title"}, entry="";
@@ -226,7 +463,8 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const totalStars=()=>Object.values(S.stars).reduce((a,b)=>a+b,0);
 const chStars=i=>Object.entries(S.stars).filter(([k])=>k.startsWith(i+":")).reduce((a,[,v])=>a+v,0);
-const unlocked=i=>i===0||!!S.done[i-1];
+const unlocked=i=>CASES.some(c=>c.from===i)||!!S.done[i-1];
+const resumeId=i=>{const p=S.pos[i];return p&&CHAPTERS[i].nodes[p]?p:"start";};
 const node=()=>CHAPTERS[view.ch].nodes[view.node];
 
 function award(stars,clue){
@@ -247,7 +485,7 @@ function bar(){
   return `<div class="bar"><div class="brand">Detektivbüro Leuchtfeuer</div>
   <div class="bar-actions"><span class="stars-total">★ ${totalStars()}</span>
   <button class="ghost" data-act="notes">Notizbuch</button>
-  ${view.screen!=="map"&&view.screen!=="title"?'<button class="ghost" data-act="map">Fälle</button>':""}</div></div>`;
+  ${view.screen!=="title"?'<button class="ghost" data-act="title">Fälle</button>':""}</div></div>`;
 }
 
 const towerSvg=`<svg class="tower" viewBox="0 0 44 140" aria-hidden="true"><rect x="12" y="6" width="20" height="14" rx="3" fill="#ffd34d"/><rect x="8" y="20" width="28" height="6" fill="#f3ead3"/><path d="M12 26h20l6 110H6z" fill="#f3ead3"/><path d="M10 52h24l1 14H9zM8 88h28l1 14H7z" fill="#b8352b"/></svg>`;
@@ -257,32 +495,48 @@ function render(){
 }
 
 function renderTitle(){
+  const cards=CASES.map((c,ci)=>{
+    let solved=0; for(let i=c.from;i<=c.to;i++) if(S.done[i]) solved++;
+    const total=c.to-c.from+1, started=Object.keys(S.pos).some(k=>+k>=c.from&&+k<=c.to);
+    const meta=solved===total?`Gelöst · ★ ${caseStars(ci)}`:started||solved?`${solved} von ${total} Kapiteln · weiterspielen`:`${total} Kapitel · neu`;
+    return `<button class="case" data-case="${ci}"><span class="case-badge" style="background:${c.color}">${ci+1}</span>
+      <span class="case-body"><span class="case-title">${esc(c.title)}</span><span class="case-blurb">${esc(c.blurb)}</span>
+      <span class="case-meta"><span>${esc(c.tag)}</span><span>${meta}</span></span></span></button>`;
+  }).join("");
   app.innerHTML=`<section class="hero"><div class="beam"></div>${towerSvg}
-   <div class="label" style="color:var(--beam);position:relative">Ein Detektiv-Abenteuer in 4 Kapiteln</div>
-   <h1>Das Rätsel vom Möwenturm</h1>
-   <p>Ein Kompass ist verschwunden, ein alter Leuchtturm blinkt mitten in der Nacht. Nur wer gut rechnet, findet die Spur. Und du entscheidest, welchen Weg ihr nehmt.</p>
+   <div class="label" style="color:var(--beam);position:relative">Detektivbüro Leuchtfeuer</div>
+   <h1>Fälle aus Möwenbucht</h1>
+   <p>Nur wer gut rechnet und scharf hinsieht, findet die Spur. Und du entscheidest, welchen Weg ihr nehmt.</p>
    <div class="namebox"><label for="detname">Dein Detektivname</label>
-   <input id="detname" maxlength="20" autocomplete="off" value="${esc(S.name)}" placeholder="z. B. Paul"></div>
-   <button class="big" id="start">${totalStars()?"Weiter ermitteln":"Fall übernehmen"}</button></section>`;
-  const inp=document.getElementById("detname"),btn=document.getElementById("start");
-  const upd=()=>btn.disabled=!inp.value.trim(); inp.addEventListener("input",upd); upd();
-  btn.onclick=()=>{S.name=inp.value.trim();save();view={screen:"map"};render();};
+   <input id="detname" maxlength="20" autocomplete="off" value="${esc(S.name)}" placeholder="z. B. Paul"></div></section>
+   <div class="label" style="color:#9bb7c3">Wähle deinen Fall</div>
+   <div class="cases">${cards}</div>
+   <p class="hint-name" id="hintname" ${S.name?"hidden":""}>Trag zuerst deinen Detektivnamen ein.</p>
+   <button class="ghost" data-act="reset" style="align-self:flex-start;font-size:14px;opacity:.7">Neues Spiel beginnen</button>`;
+  const inp=document.getElementById("detname");
+  const upd=()=>{const ok=!!inp.value.trim();app.querySelectorAll(".case").forEach(b=>b.disabled=!ok);document.getElementById("hintname").hidden=ok;};
+  inp.addEventListener("input",upd); upd();
+  app.querySelectorAll("[data-case]").forEach(b=>b.onclick=()=>{S.name=inp.value.trim();save();view={screen:"map",cs:+b.dataset.case};render();window.scrollTo(0,0);});
 }
 
 function renderMap(){
-  const cards=CHAPTERS.map((c,i)=>{
-    const meta=!unlocked(i)?"Noch verschlossen":S.pos[i]?"Angefangen · weiterspielen":S.done[i]?`Gelöst · ★ ${chStars(i)} · Nochmal mit anderem Weg?`:"Neuer Fall";
-    return `<button class="ch" data-ch="${i}" ${unlocked(i)?"":"disabled"}><span class="ch-num">${i+1}</span><span class="ch-body"><span class="ch-title">${esc(c.title)}</span><span class="ch-meta">${meta}</span></span></button>`;
-  }).join("");
-  app.innerHTML=bar()+`<div><div class="label" style="color:#9bb7c3">Fallakte</div><h2 style="color:var(--paper);font-size:30px">Hallo, Detektiv ${esc(S.name)}!</h2></div>
-   <div class="chapters">${cards}</div>
-   ${S.done[CHAPTERS.length-1]?'<button class="big" data-act="end">Urkunde ansehen</button>':""}
-   <button class="ghost" data-act="reset" style="align-self:flex-start;font-size:14px;opacity:.7">Neues Spiel beginnen</button>`;
-  app.querySelectorAll("[data-ch]").forEach(b=>b.onclick=()=>{view={screen:"node",ch:+b.dataset.ch}; go(S.pos[+b.dataset.ch]||"start");});
+  const ci=view.cs??0, cs=CASES[ci];
+  const card=i=>{
+    const c=CHAPTERS[i], k=i-cs.from+1;
+    const meta=!unlocked(i)?"Noch verschlossen":S.pos[i]?"Angefangen · weiterspielen":S.done[i]?`Gelöst · ★ ${chStars(i)} · Nochmal mit anderem Weg?`:"Neues Kapitel";
+    return `<button class="ch" data-ch="${i}" ${unlocked(i)?"":"disabled"}><span class="ch-num">${k}</span><span class="ch-body"><span class="ch-title">${esc(c.title)}</span><span class="ch-meta">${meta}</span></span></button>`;
+  };
+  const ids=[]; for(let i=cs.from;i<=cs.to;i++) ids.push(i);
+  app.innerHTML=bar()+`<div><div class="label" style="color:#9bb7c3">Fall ${ci+1} · Detektiv ${esc(S.name)}</div><h2 style="color:var(--paper);font-size:30px">${esc(cs.title)}</h2><p style="margin:6px 0 0;max-width:52ch">${esc(cs.blurb)}</p></div>
+   <div class="chapters">${ids.map(card).join("")}</div>
+   ${S.done[cs.to]?`<button class="big" data-end="${ci}">Urkunde ansehen</button>`:""}`;
+  app.querySelectorAll("[data-ch]").forEach(b=>b.onclick=()=>{const i=+b.dataset.ch;view={screen:"node",ch:i}; go(resumeId(i));});
+  app.querySelectorAll("[data-end]").forEach(b=>b.onclick=()=>{view={screen:"end",cs:+b.dataset.end};render();window.scrollTo(0,0);});
 }
 
 function head(n,stamp){
-  return `${stamp?`<div class="stamp">${stamp}</div>`:""}<div class="label">Kapitel ${view.ch+1} · ${esc(CHAPTERS[view.ch].title)}</div><h2>${esc(n.scene||n.title)}</h2>`;
+  const cs=caseOf(view.ch), k=view.ch-CASES[cs].from+1;
+  return `${stamp?`<div class="stamp">${stamp}</div>`:""}<div class="label">Fall ${cs+1} · Kapitel ${k} · ${esc(CHAPTERS[view.ch].title)}</div><h2>${esc(n.scene||n.title)}</h2>`;
 }
 
 function padHtml(){
@@ -304,17 +558,50 @@ function renderNode(){
   if(n.type==="battle") return renderBattle();
   const pick=n.type==="pick", limit=pick?2:3;
   const abc=n.abc?`<div class="abc">${"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((l,i)=>`<span>${l}=${i+1}</span>`).join("")}</div>`:"";
-  app.innerHTML=bar()+`<article class="file">${head(n,"Rätsel")}
+  const optHtml=o=>n.tokens?`<button class="choice tokchoice" data-opt="${esc(o)}" aria-label="${esc(tokLabel(o))}">${tok(o)}${o.startsWith("blob:")?`<span>${CN[o.slice(5)]}</span>`:""}</button>`:`<button class="choice" data-opt="${esc(o)}">${esc(o)}</button>`;
+  let answer;
+  if(pick) answer=`<div class="choices">${n.options.map(optHtml).join("")}</div>`;
+  else if(n.type==="diff"){
+    const d=n.diff, after=d.before.map((t,i)=>i===d.change?d.after:t), st=`grid-template-columns:repeat(${d.cols},1fr)`;
+    answer=`<div class="diffwrap"><figure><figcaption class="label">Vorher</figcaption><div class="diffgrid" style="${st}">${d.before.map(t=>`<div>${tok(t)}</div>`).join("")}</div></figure>
+     <figure><figcaption class="label">Jetzt · tippe auf den Unterschied</figcaption><div class="diffgrid" style="${st}">${after.map((t,i)=>`<button class="cellbtn" data-cell="${i}" aria-label="Feld ${i+1}">${tok(t)}</button>`).join("")}</div></figure></div>
+     <span class="tries" id="tries">${limit} Versuche</span>`;
+  }
+  else if(n.type==="paint"){
+    const p=n.paint, h=p.left.length, w=p.left[0].length;
+    if(!view.paint) view.paint=Array.from({length:h},()=>Array(w).fill(0));
+    let cells="";
+    for(let r=0;r<h;r++){
+      for(let c=0;c<w;c++) cells+=`<div class="pc ${p.left[r][c]==="1"?"on":""}"></div>`;
+      cells+=`<div class="axis"></div>`;
+      for(let c=0;c<w;c++) cells+=`<button class="pc pb ${view.paint[r][c]?"on":""}" data-r="${r}" data-c="${c}" aria-label="Zeile ${r+1}, Spalte ${c+1}" aria-pressed="${!!view.paint[r][c]}"></button>`;
+    }
+    answer=`<div class="paintwrap" style="--paintc:${COL[p.color]}"><div class="paintgrid" style="grid-template-columns:repeat(${w},34px) 6px repeat(${w},34px)">${cells}</div></div>
+     <div class="answer-row"><button class="key go" id="paintcheck" style="padding:14px 28px">Prüfen</button><span class="tries" id="tries">${limit} Versuche</span></div>`;
+  }
+  else answer=`<div class="answer-row"><div class="display empty" id="disp" aria-live="polite">?</div><span class="tries" id="tries">${limit} Versuche</span></div>${padHtml()}`;
+  app.innerHTML=bar()+`<article class="file">${head(n,n.pro?"Profi-Rätsel":"Rätsel")}
    <p>${esc(n.text)}</p>
    ${n.say?`<p class="speech">${esc(n.say)}</p>`:""}
    ${n.mirror?`<div class="mirror" aria-label="Wort in Spiegelschrift">${esc(n.mirror)}</div>`:""}
    ${n.code?`<div class="code">${esc(n.code)}</div>${abc}`:""}
+   ${n.seq?seqHtml(n.seq):""}
+   ${n.share?shareHtml(n.share.n,n.share.k,n.share.item,n.share.group):""}
+   ${n.count?countHtml(n.count):""}
+   ${n.art?ART[n.art]():""}
    ${n.extra?`<p><b>${esc(n.extra)}</b></p>`:""}
    <div class="question">${esc(n.q)}</div>
-   ${pick?`<div class="choices">${n.options.map(o=>`<button class="choice" data-opt="${esc(o)}">${esc(o)}</button>`).join("")}</div>`
-     :`<div class="answer-row"><div class="display empty" id="disp" aria-live="polite">?</div><span class="tries" id="tries">${limit} Versuche</span></div>${padHtml()}`}
+   ${answer}
    <div class="feedback" id="fb" aria-live="polite"></div></article>`;
   if(pick) app.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>check(b.dataset.opt,b));
+  else if(n.type==="diff") app.querySelectorAll("[data-cell]").forEach(b=>b.onclick=()=>check(b.dataset.cell,b));
+  else if(n.type==="paint"){
+    app.querySelectorAll(".pb").forEach(b=>b.onclick=()=>{const r=+b.dataset.r,c=+b.dataset.c;view.paint[r][c]^=1;b.classList.toggle("on");b.setAttribute("aria-pressed",!!view.paint[r][c]);document.getElementById("fb").textContent="";});
+    document.getElementById("paintcheck").onclick=()=>{
+      const tgt=paintTarget(n.paint.left), ok=view.paint.every((row,r)=>row.join("")===tgt[r]);
+      check(ok?"ok":"no");
+    };
+  }
   else app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>press(b.dataset.k));
 }
 
@@ -334,14 +621,14 @@ const praise=["Stark kombiniert!","Genau richtig!","Messerscharf!","Volltreffer,
 
 function finishPuzzle(fbHtml,cls,n){
   const fb=document.getElementById("fb"); fb.className="feedback "+cls; fb.innerHTML=fbHtml;
-  app.querySelectorAll(".key,.choice").forEach(b=>b.disabled=true);
+  app.querySelectorAll(".key,.choice,.cellbtn,.pb").forEach(b=>b.disabled=true);
   const next=document.createElement("button"); next.className="big"; next.textContent="Weiter";
   next.onclick=()=>go(n.next); fb.after(next); next.focus();
 }
 
 function check(val,btn){
   const n=node(), limit=n.type==="pick"?2:3;
-  if(String(val)===String(n.answer)){
+  if(String(val)===String(n.type==="paint"?"ok":n.answer)){
     const stars=[3,2,1][view.tries]||1;
     award(stars,n.clue);
     finishPuzzle(`${rnd(praise)} ${"★".repeat(stars)}<br><span style="font-weight:500">Notiz: ${esc(n.clue)}</span>`,"good",n);
@@ -352,6 +639,8 @@ function check(val,btn){
   entry=""; const d=document.getElementById("disp"); if(d){d.textContent="?";d.classList.add("empty");d.classList.remove("shake");void d.offsetWidth;d.classList.add("shake");}
   if(view.tries>=limit){
     award(0,n.clue);
+    if(n.type==="paint"){const tgt=paintTarget(n.paint.left);app.querySelectorAll(".pb").forEach(b=>b.classList.toggle("on",tgt[+b.dataset.r][+b.dataset.c]==="1"));}
+    if(n.type==="diff"){const c=app.querySelector(`[data-cell="${n.answer}"]`);c&&c.classList.add("right");}
     finishPuzzle(`Mila hat nachgerechnet: ${esc(n.sol)}<br><span style="font-weight:500">Diesmal gibt es keinen Stern. Notiz: ${esc(n.clue)}</span>`,"bad",n);
     return;
   }
@@ -368,7 +657,7 @@ function newTask(){
   do{
     const a=rnd(n.tables), b=2+Math.floor(Math.random()*9);
     const div=n.gen==="div"||(n.gen==="mix"&&Math.random()<.4);
-    t=div?{txt:`${a*b} : ${a}`,ans:b}:(Math.random()<.5?{txt:`${a} × ${b}`,ans:a*b}:{txt:`${b} × ${a}`,ans:a*b});
+    t=div?{txt:`${a*b} : ${a}`,ans:b,d:[a*b,a]}:(Math.random()<.5?{txt:`${a} × ${b}`,ans:a*b}:{txt:`${b} × ${a}`,ans:a*b});
   }while(t.txt===view.b.last);
   view.b.task=t; view.b.last=t.txt;
 }
@@ -380,6 +669,7 @@ function renderBattle(){
   if(b.over==="win") body=`<p class="feedback good">${esc(n.win)} ${"★".repeat(b.hp)}</p><p><b>Notiz:</b> ${esc(n.clue)}</p><button class="big" id="bnext">Weiter</button>`;
   else if(b.over==="lose") body=`<p class="feedback bad">${esc(n.lose)}</p><button class="big" id="bretry">Nochmal kämpfen</button>`;
   else body=`<div class="question" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>Aufgabe ${b.hits+1} von ${n.hits}</span></div>
+     ${b.task.d?shareHtml(b.task.d[0],b.task.d[1],null,"Gruppen"):""}
      <div class="answer-row"><span class="task">${b.task.txt} =</span><div class="display empty" id="disp" aria-live="polite">?</div></div>
      ${padHtml()}<div class="feedback ${b.msgCls||""}" id="fb" aria-live="polite">${esc(b.msg)}</div>`;
   app.innerHTML=bar()+`<article class="file">${head(n,"Kampf")}<p>${esc(n.text)}</p>
@@ -404,22 +694,28 @@ function battleAnswer(val){
 }
 
 function renderOutro(){
-  const c=CHAPTERS[view.ch], last=view.ch===CHAPTERS.length-1;
-  app.innerHTML=bar()+`<article class="file"><div class="stamp">Gelöst</div><div class="label">Kapitel ${view.ch+1} abgeschlossen · ★ ${chStars(view.ch)}</div>
+  const c=CHAPTERS[view.ch], cs=caseOf(view.ch), last=view.ch===CASES[cs].to;
+  app.innerHTML=bar()+`<article class="file"><div class="stamp">Gelöst</div><div class="label">Fall ${cs+1} · Kapitel ${view.ch-CASES[cs].from+1} abgeschlossen · ★ ${chStars(view.ch)}</div>
    <h2>${esc(c.title)}</h2><p>${esc(c.outro)}</p>
    <p style="color:var(--muted)">Tipp für später: Spiel das Kapitel nochmal und nimm den anderen Weg. Dort warten andere Rätsel.</p>
    <button class="big" id="go">${last?"Zur Urkunde":"Nächstes Kapitel"}</button></article>`;
-  document.getElementById("go").onclick=()=>{ if(last){view={screen:"end"};render();} else {view={screen:"node",ch:view.ch+1}; go(S.pos[view.ch]||"start");} };
+  document.getElementById("go").onclick=()=>{ if(last){view={screen:"end",cs};render();window.scrollTo(0,0);} else {view={screen:"node",ch:view.ch+1}; go(resumeId(view.ch));} };
 }
 
 function renderEnd(){
-  const t=totalStars(), rank=t>=90?"Meisterdetektiv":t>=60?"Oberdetektiv":"Detektiv";
-  app.innerHTML=bar()+`<article class="file certificate"><div class="label">Urkunde</div><div class="seal">★</div>
+  const ci=view.cs??0, cs=CASES[ci];
+  let t=0; for(let i=cs.from;i<=cs.to;i++) t+=chStars(i);
+  const rank=t>=45?"Meisterdetektiv":t>=30?"Oberdetektiv":"Detektiv";
+  const next=CASES[ci+1];
+  app.innerHTML=bar()+`<article class="file certificate"><div class="label">Urkunde · Fall ${ci+1}</div><div class="seal">★</div>
    <h2>${esc(S.name)} ist ${rank}!</h2>
-   <p>Das Detektivbüro Leuchtfeuer bestätigt: Das Rätsel vom Möwenturm ist gelöst. Der Kompass von Kapitän Hansen ist zurück im Museum.</p>
+   <p>Das Detektivbüro Leuchtfeuer bestätigt: „${esc(cs.title)}“ ist gelöst. ${esc(cs.done)}</p>
    <div class="starline">★ ${t}</div>
-   <p>Ab 60 Sternen wirst du Oberdetektiv, ab 90 Meisterdetektiv. Die gibt es nur, wenn du auch die anderen Wege spielst.</p>
-   <button class="big" data-act="map" style="align-self:center">Zu den Fällen</button></article>`;
+   <p>Ab 30 Sternen in diesem Fall wirst du Oberdetektiv, ab 45 Meisterdetektiv. Die gibt es nur, wenn du auch die anderen Wege spielst.</p>
+   ${next?`<button class="big" id="nextcase" style="align-self:center">Nächster Fall: ${esc(next.title)}</button>`:""}
+   <button class="ghost" data-act="title" style="align-self:center;color:var(--ink);border-color:var(--ink)">Zur Fallauswahl</button></article>`;
+  const nb=document.getElementById("nextcase");
+  if(nb) nb.onclick=()=>{view={screen:"map",cs:ci+1};render();window.scrollTo(0,0);};
 }
 
 function openNotes(){
@@ -438,7 +734,7 @@ app.addEventListener("click",e=>{
   const a=e.target.closest("[data-act]"); if(!a) return;
   const act=a.dataset.act;
   if(act==="notes") openNotes();
-  else if(act==="map"){view={screen:"map"};render();}
+  else if(act==="title"){view={screen:"title"};render();window.scrollTo(0,0);}
   else if(act==="end"){view={screen:"end"};render();}
   else if(act==="reset"){
     if(!resetArmed){resetArmed=true;a.textContent="Wirklich alles löschen? Nochmal tippen";a.style.opacity=1;setTimeout(()=>{resetArmed=false;if(a.isConnected){a.textContent="Neues Spiel beginnen";a.style.opacity=.7}},4000);return;}
