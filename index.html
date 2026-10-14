@@ -151,6 +151,19 @@ h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;le
 .pb{cursor:pointer;background:#fff8e3}
 .axis{background:var(--stamp);border-radius:3px}
 @media (max-width:380px){.pc{width:28px;height:28px}.paintgrid{grid-template-columns:repeat(4,28px) 6px repeat(4,28px)!important}}
+.legend{font-family:var(--f-type);font-size:13px;color:var(--muted);text-align:center;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:6px}
+.lg-door{display:inline-block;width:18px;height:7px;border-radius:2px;background:#ee8a2b;border:1.5px solid var(--ink)}
+.pathgrid{display:grid;gap:5px;background:#5b4a3a;border:3px solid var(--ink);border-radius:12px;padding:8px;max-width:420px;width:100%;align-self:center}
+.pathbtn{aspect-ratio:1;border-radius:8px;border:2px solid #3b2f25;background:#d9b98a;color:var(--ink);font-family:var(--f-body);font-weight:700;font-size:clamp(14px,4.2vw,19px);padding:0;min-width:0}
+.pathbtn.start{background:#9ad08c}
+.pathbtn.goal{background:var(--beam)}
+.pathbtn.on{background:#fff3c4;outline:3px solid var(--ok);outline-offset:-3px}
+.pathbtn.start.on{background:#9ad08c}
+.pathbtn.bad{background:var(--stamp);color:#fff}
+.cardsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px}
+.cardbtn{display:flex;gap:12px;align-items:center;text-align:left;padding:12px 14px;border-radius:12px;border:3px solid var(--line);background:#fff;color:var(--ink);font-size:16px;line-height:1.35}
+.cardbtn svg{flex:none}
+.cardbtn.sel{border-color:var(--ok);background:#e6f3e8}
 .certificate{text-align:center;align-items:center}
 .certificate h2{padding-right:0}
 .certificate .seal{font-family:var(--f-display);font-size:64px;color:var(--stamp);line-height:1}
@@ -384,13 +397,79 @@ const CHAPTERS = [
     p2:{type:"pick", scene:"Das Muster auf der Karte", text:"Im Boot schaut ihr euch die zweite Karte genau an. Neben dem roten Kreuz stehen Zahlen. Die letzte fehlt.", say:"3 · 6 · 12 · 24 · ?", q:"Welche Zahl fehlt?", options:["30","36","48","50"], answer:"48", sol:"Jede Zahl wird verdoppelt: 24 + 24 = 48.", clue:"48! Das ist die Hausnummer vom alten Leuchtturmwärterhaus am Möwenturm. Dort wohnt das Licht!", next:"race"},
     race:{type:"battle", scene:"Wettfahrt zum Hafen", text:"Die Rote Möwe hat gemerkt, dass ihr weg seid. Ihr Schiff jagt hinter euch her! Jede richtige Rechnung bringt euch näher an Möwenbucht.", foe:"Rote Möwe", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Volle Fahrt voraus!","Der Abstand wird größer!","Da hinten ist schon der Möwenturm!","Die roten Segel werden kleiner!"], missLine:"Die Rote Möwe holt auf!", win:"Ihr erreicht den Hafen. Das Schiff der Roten Möwe läuft auf eine Sandbank und bleibt stecken.", lose:"Die Rote Möwe ist zu nah! Ihr weicht aus und versucht es nochmal.", clue:"Ihr habt die Wettfahrt gewonnen. Die Rote Möwe sitzt auf einer Sandbank fest.", next:"gold"},
     gold:{type:"num", pro:true, scene:"Der echte Schatz", text:"Im Keller des alten Leuchtturmwärterhauses, Hausnummer 48, findet ihr eine kleine Kiste. Darin liegen 8 Lederbeutel. In jedem Beutel sind 12 Goldmünzen.", q:"Wie viele Goldmünzen sind es zusammen?", answer:96, sol:"8 × 12 = 96. Rechne 8 × 10 = 80 und 8 × 2 = 16, zusammen 96.", clue:"Fall gelöst! 96 Goldmünzen von Kapitän Hansen sind gefunden.", next:"END"}
+   }},
+
+ /* ===== Fall 4: Die Goldene Möwe ===== */
+ { title:"Der Festtag",
+   outro:"Im Technikraum steht eine offene Kiste. Darin führt eine Leiter nach unten. Kowalski kratzt sich am Kopf: „Den Gang hab ich nicht gebaut. Der ist viel älter als die Bühne!“",
+   nodes:{
+    start:{type:"story", title:"Das Hafenfest", text:[
+      "Ganz Möwenbucht feiert das große Hafenfest. Es gibt Zuckerwatte, ein Karussell und am Nachmittag das Drachenbootrennen.",
+      "Auf der Festbühne steht in einer Glasvitrine der Siegerpokal: die Goldene Möwe.",
+      "Um 15 Uhr kommt Bürgermeisterin Petersen angerannt. „Die Goldene Möwe ist weg! Und in zwei Stunden ist die Siegerehrung!“"], next:"lamp"},
+    lamp:{type:"num", scene:"Die Lampions", text:"Über dem Festplatz hängen Lampionketten. Es sind 6 Ketten mit je 9 Lampions. Mila zählt nach, ob einer fehlt. Diebe nehmen manchmal Lampen mit, um im Dunkeln zu suchen.", q:"Wie viele Lampions müssten es sein?", answer:54, sol:"6 × 9 = 54", clue:"Alle 54 Lampions hängen noch. Der Dieb brauchte also kein Licht von hier.", next:"d1"},
+    d1:{type:"decide", scene:"Wo fangt ihr an?", text:"Der Festplatz ist voller Leute. Ihr müsst euch entscheiden.", q:"Wohin geht ihr zuerst?", options:[
+      {label:"Zur Vitrine", sub:"Vielleicht hat der Dieb Spuren hinterlassen.", next:"vit"},
+      {label:"Zum Bühnenbauer", sub:"Herr Kowalski hat die Bühne gebaut und kennt jede Schraube.", next:"kow"}]},
+    vit:{type:"num", scene:"Konfetti an der Vitrine", text:"Rund um die leere Vitrine liegt buntes Konfetti. Mila sammelt nur das goldene Sternen-Konfetti ein.", count:{"star:yellow":6,"star:blue":4,"circle:red":7,"heart:pink":5,"square:green":5}, q:"Wie viele GOLDENE Sterne liegen da?", answer:6, sol:"Es sind 6 goldene Sterne. Die blauen zählen nicht.", clue:"BEWEIS: An der Vitrine lag goldenes Sternen-Konfetti.", next:"vit2"},
+    vit2:{type:"pick", scene:"Die Vitrine", text:"Ihr untersucht die Vitrine. Das Schloss ist zu. Alle vier Glaswände sind heil. Der Deckel ist fest verschraubt.", q:"Wie ist der Dieb an den Pokal gekommen?", options:["Durch die Glaswand","Mit dem Schlüssel","Von unten","Durch den Deckel"], answer:"Von unten", sol:"Schloss, Wände und Deckel sind unversehrt. Bleibt nur der Weg von unten, durch die Bühne.", clue:"Der Dieb kam von unten an den Pokal, durch die Bühne.", next:"plan1"},
+    kow:{type:"num", scene:"Bühnenbauer Kowalski", text:"Herr Kowalski wischt sich die Hände an der Latzhose ab. „Diese Bühne? Hab ich selbst gebaut. 8 Reihen mit je 7 Brettern, alles festgeschraubt.“", q:"Wie viele Bretter hat Kowalski verlegt?", answer:56, sol:"8 × 7 = 56", clue:"Kowalski hat die Bühne gebaut und hat den Bauplan dabei.", next:"plan1"},
+    plan1:{type:"pick", tries:3, scene:"Der Bauplan", text:"Kowalski rollt den Bauplan der Festbühne aus. Jedes Kästchen ist ein Quadratmeter, die orangen Striche sind Türen. „Wer sich hier verstecken will“, sagt er, „nimmt einen Raum, der größer ist als die Garderobe, nicht direkt neben der Bühne liegt und genau 2 Türen hat.“", art:"plan", plan:{w:12,h:8, rooms:[{id:"A",name:"Bühne",x:0,y:0,w:6,h:4},{id:"B",name:"Backstage",x:6,y:0,w:3,h:4},{id:"C",name:"Garderobe",x:9,y:0,w:3,h:3},{id:"D",name:"Technik",x:9,y:3,w:3,h:5},{id:"E",name:"Lager",x:0,y:4,w:4,h:4},{id:"F",name:"Werkstatt",x:4,y:4,w:5,h:4}], doors:[[6,2,"v"],[2,4,"h"],[9,1.5,"v"],[7.5,4,"h"],[10.5,3,"h"],[9,6,"v"],[4,6,"v"]]}, q:"In welchem Raum sucht ihr?", options:["A Bühne","B Backstage","C Garderobe","D Technik","E Lager","F Werkstatt"], answer:"D Technik", sol:"Größer als die Garderobe (9 Kästchen) sind Bühne, Backstage, Technik, Lager und Werkstatt. Direkt neben der Bühne liegen Backstage, Lager und Werkstatt. Übrig bleibt die Technik: 15 Kästchen und genau 2 Türen.", clue:"Im Technikraum führt eine Leiter unter die Bühne.", next:"END"}
+   }},
+ { title:"Unter der Bühne",
+   outro:"Der Tunnel endet hinter der Bühne. Als ihr die Klappe aufdrückt, steht ihr mitten zwischen drei bunten Künstlerzelten.",
+   nodes:{
+    start:{type:"story", title:"Der alte Gang", text:[
+      "Mit Taschenlampen klettert ihr hinunter. Der Gang ist niedrig und riecht nach altem Holz.",
+      "Über euch hört ihr die Festmusik und die Schritte der Leute auf der Bühne."], next:"area"},
+    area:{type:"num", scene:"Die Decke", text:"Über euch seht ihr die Unterseite der Bühne. Sie besteht aus Bodenplatten: 6 Platten lang und 4 Platten breit. Genau wie auf dem Bauplan.", q:"Aus wie vielen Platten besteht die Decke?", answer:24, sol:"6 × 4 = 24", clue:"Die Bühne hat 24 Bodenplatten. Eine davon muss sich öffnen lassen.", next:"trap"},
+    trap:{type:"pick", scene:"Die Falltür", text:"Kowalski hat euch einen zweiten Plan mitgegeben: die Bühne von oben. Darauf sind das Mikrofon und die Scheinwerfer eingezeichnet. Die Vitrine stand zwei Felder links vom Mikrofon und direkt unter einem Scheinwerfer.", art:"stage", q:"Wo ist die Falltür, genau unter der Vitrine?", options:["A","B","C","D"], answer:"A", sol:"Zwei Felder links vom Mikrofon liegen A. Und A liegt direkt unter einem Scheinwerfer. C liegt zwar auch unter einem Scheinwerfer, aber drei Felder links vom Mikrofon.", clue:"BEWEIS: Unter der Vitrine ist eine Falltür. Sie führt in den alten Tunnel.", next:"path1"},
+    path1:{type:"path", scene:"Morsche Bretter", text:"Der Boden im Tunnel ist voller morscher Bretter. Nur die Bretter mit einer Zahl aus der 7er-Reihe halten. Tippe Feld für Feld einen Weg vom Start zum Ziel. Tippst du nochmal auf das letzte Feld, gehst du einen Schritt zurück.", grid:[[7,14,26,32,40],[12,21,30,27,45],[36,28,25,49,50],[44,56,63,70,34],[9,48,38,42,35]], start:[0,0], goal:[4,4], rule:"seven", q:"Finde einen sicheren Weg zum Ziel.", clue:"Auf den sicheren Brettern liegt goldenes Sternen-Konfetti. Der Dieb ist hier entlanggegangen.", next:"d1"},
+    d1:{type:"decide", scene:"Die Gabelung", text:"Der Gang teilt sich. Links glitzert Konfetti auf dem Boden. Rechts scheint ein schwaches Licht.", q:"Welchen Weg nehmt ihr?", options:[
+      {label:"Dem Konfetti folgen", sub:"Die Bretter dort wackeln bedenklich.", next:"wobble"},
+      {label:"Dem Licht folgen", sub:"Dort hängt ein Kasten mit Schaltern.", next:"switch"}]},
+    wobble:{type:"battle", scene:"Wackelige Bretter", text:"Die Bretter schwanken bei jedem Schritt! Jede richtige Rechnung ist ein sicherer Tritt. Gemischte Aufgaben!", foe:"Wackelbretter", hits:4, gen:"mix", tables:[6,7,8,9], hitLines:["Sicherer Tritt!","Das Brett hält!","Ben balanciert wie ein Seiltänzer!"], missLine:"Knarz! Ihr rutscht zurück.", win:"Ihr erreicht festen Boden. Vor euch ist eine Holzklappe.", lose:"Ihr seid zurück auf festem Boden gerutscht. Nochmal!", clue:"Ihr seid über die wackeligen Bretter balanciert.", next:"END"},
+    switch:{type:"pick", tokens:true, scene:"Der Schalterkasten", text:"Am Ende des Gangs ist eine Klappe, die nur mit dem richtigen Schalter aufgeht. Die vier Schalter hängen nebeneinander, von links: Blau, Gelb, Rot, Grün. Auf einem Zettel steht: „Der richtige Schalter hängt nicht ganz links. Er hängt nicht neben dem gelben. Er ist nicht gelb.“", q:"Welchen Schalter drückt ihr?", options:["blob:blue","blob:yellow","blob:red","blob:green"], answer:"blob:green", sol:"Blau hängt ganz links. Rot hängt neben Gelb. Gelb ist ausgeschlossen. Es bleibt Grün.", clue:"Der grüne Schalter hat die Klappe am Tunnelende geöffnet.", next:"END"}
+   }},
+ { title:"Drei Künstler",
+   outro:"Mila klappt ihr Notizbuch zu. „Ich glaube, ich weiß, wer es war. Aber wir brauchen Beweise, die zusammenpassen.“",
+   nodes:{
+    start:{type:"story", title:"Die Künstlerzelte", text:[
+      "Drei Künstler treten heute auf der Festbühne auf: Zauberer Zappo, Jongleurin Jule und Clown Pinsel-Paul, den ihr schon von Bens Geburtstag kennt.",
+      "Alle drei konnten heute in den Tunnel. Wer von ihnen war es?"], next:"times"},
+    times:{type:"pick", tries:3, scene:"Der Auftrittsplan", text:"Jeder Künstler hatte heute genau einen Auftritt: um 14, um 15 oder um 16 Uhr. Am Zelt hängt ein zerrissener Plan. Ihr wisst nur: Jule ist nicht um 14 Uhr aufgetreten. Paul trat genau eine Stunde nach Jule auf.", q:"Wer stand um 15 Uhr auf der Bühne, als der Pokal verschwand?", options:["Zappo","Jule","Paul"], answer:"Jule", sol:"Paul kommt eine Stunde nach Jule. Wäre Jule um 16 Uhr dran, gäbe es danach keinen Termin mehr für Paul. Um 14 Uhr war Jule nicht dran. Also: Jule um 15, Paul um 16, Zappo um 14 Uhr.", clue:"BEWEIS: Jule stand um 15 Uhr auf der Bühne. Sie kann es nicht gewesen sein.", next:"cards"},
+    cards:{type:"num", scene:"Zappos Kartentrick", text:"Vor seinem Zelt übt Zappo einen Kartentrick. Er verteilt die Karten gerecht an die Zuschauer.", share:{n:32,k:4,item:"card:red",group:"Zuschauer"}, q:"Wie viele Karten bekommt jeder Zuschauer?", answer:8, sol:"32 : 4 = 8", clue:"Zappo übt für seine große Abendshow.", next:"d1"},
+    d1:{type:"decide", scene:"Die Zelte", text:"Zappo und Paul sind kurz weg. Ihr habt Zeit für ein Zelt.", q:"Welches Zelt durchsucht ihr?", options:[
+      {label:"Zappos Zelt", sub:"Sternenmuster und ein großer Spiegel.", next:"zt"},
+      {label:"Pauls Zelt", sub:"Bunt, voller Ballons und Hupen.", next:"pt"}]},
+    zt:{type:"diff", scene:"Zappos Zaubertisch", text:"Auf Zappos Plakat ist sein Zaubertisch vom Morgen abgebildet. Vergleicht das Plakat (links) mit dem Tisch jetzt (rechts).", diff:{cols:4, before:["card:red","circle:blue","tri:purple","heart:red","square:green","none","star:blue","card:red","circle:orange","tri:green","square:purple","circle:red"], change:5, after:"star:yellow"}, q:"Tippe im rechten Bild auf das, was neu dazugekommen ist.", answer:"5", sol:"Neu ist das goldene Sternen-Konfetti.", clue:"BEWEIS: Nur Zappo benutzt goldenes Sternen-Konfetti in seiner Show.", next:"jule"},
+    pt:{type:"pick", scene:"Pauls Zelt", text:"Paul hat einen Zettel an seinen Spiegel geklebt. „Den hab ich heute Mittag im Tunnel gefunden“, hat er zu Ben gesagt. „Ich dachte, das ist ein Scherz.“ Der Zettel ist in Spiegelschrift geschrieben.", mirror:"ZAUBERHUT", q:"Was steht auf dem Zettel?", options:["ZUCKERHUT","ZAUBERSTAB","ZAUBERHUT","ZAUNPFAHL"], answer:"ZAUBERHUT", sol:"Gespiegelt gelesen heißt es ZAUBERHUT.", clue:"BEWEIS: Im Tunnel lag ein Zettel mit dem Wort ZAUBERHUT. Paul trägt nur eine Clownsmütze, Zappo einen Zauberhut.", next:"jule"},
+    jule:{type:"num", scene:"Jule jongliert", text:"Jule kommt vorbei und zeigt euch einen Trick. Sie jongliert mit 5 Bällen und wirft jeden Ball 7 Mal hoch, ohne dass einer herunterfällt.", q:"Wie oft wirft Jule insgesamt?", answer:35, sol:"5 × 7 = 35", clue:"Jule erzählt: Paul hatte den ganzen Tag beide Hände voller Ballons.", next:"END"}
+   }},
+ { title:"Die Beweiswand",
+   outro:"Zappo gibt alles zu. Er wollte den Pokal in seiner Abendshow verschwinden und wieder auftauchen lassen, als größten Trick seines Lebens. Die Bürgermeisterin ist streng, aber gnädig: Nächstes Jahr darf Zappo den Trick zeigen, mit Erlaubnis. Und das Detektivbüro Leuchtfeuer sitzt in der ersten Reihe.",
+   nodes:{
+    start:{type:"story", title:"Halb fünf", text:[
+      "Bürgermeisterin Petersen schaut auf die Uhr. „Halb fünf! In einer halben Stunde ist die Siegerehrung!“",
+      "Ihr hängt alle Beweise an eine Wand im Festzelt. Jetzt muss alles zusammenpassen."], next:"combine"},
+    combine:{type:"combine", tries:3, scene:"Die Beweiswand", text:"Sechs Hinweise hängen an der Wand. Nicht alle helfen weiter.", combine:{pick:3, answer:["konfetti","falltuer","nurzappo"], cards:[
+      {id:"konfetti", icon:"star:yellow", text:"An der Vitrine und im Tunnel lag goldenes Sternen-Konfetti."},
+      {id:"zucker", icon:"heart:pink", text:"Am Bühnengeländer klebte Zuckerwatte."},
+      {id:"falltuer", icon:"square:brown", text:"Unter der Vitrine ist eine Falltür. Der Tunnel führt zu den Künstlerzelten."},
+      {id:"ballons", icon:"balloon:red", text:"Paul hatte den ganzen Tag beide Hände voller Ballons."},
+      {id:"nurzappo", icon:"tri:purple", text:"Nur Zappo benutzt goldenes Sternen-Konfetti in seiner Show."},
+      {id:"lampions", icon:"circle:orange", text:"Alle 54 Lampions hängen noch."}]}, q:"Wähle die 3 Beweise, die zusammen zeigen, wer den Pokal genommen hat und wie.", sol:"Das goldene Konfetti lag am Tatort und im Tunnel. Nur Zappo benutzt dieses Konfetti. Und die Falltür erklärt, wie der Pokal aus der verschlossenen Vitrine kam.", clue:"Die Beweise zeigen auf Zauberer Zappo.", next:"route"},
+    route:{type:"path", scene:"Quer über den Festplatz", text:"Zappo ist schon auf dem Weg zur Abendshow! Der schnellste Weg führt über den Festplatz. Ihr dürft nur über Stände gehen, deren Rechnung 24 ergibt.", grid:[["4×6","3×8","5×5","7×4"],["9×3","8×3","6×5","3×9"],["4×7","6×4","2×12","8×4"],["5×4","7×3","3×8","Ziel"]], start:[0,0], goal:[3,3], rule:"24", q:"Finde den Weg zur Bühne.", clue:"Ihr habt den schnellsten Weg über den Festplatz gefunden.", next:"show"},
+    show:{type:"battle", scene:"Die große Zaubershow", text:"Zappo steht schon auf der Bühne und hebt den Zauberstab. Gleich lässt er den Pokal für immer verschwinden! Jede richtige Rechnung bringt euch einen Schritt näher.", foe:"Zappo", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Durch die Zuschauer gedrängelt!","Die Bühnentreppe hoch!","Zappo zuckt zusammen!","Nur noch ein Schritt!"], missLine:"Eine Rauchwolke! Ihr seht nichts mehr.", win:"Ihr springt auf die Bühne. Zappo erschrickt so sehr, dass ihm der Zauberhut runterfällt. Heraus rollt die Goldene Möwe!", lose:"Der Rauch ist zu dicht. Wartet, bis er sich verzieht, und versucht es nochmal.", clue:"Die Goldene Möwe war in Zappos Zauberhut.", next:"prize"},
+    prize:{type:"num", scene:"Die Siegerehrung", text:"Pünktlich um 17 Uhr überreicht die Bürgermeisterin die Goldene Möwe. Dazu verteilt sie Lose für die Tombola an die Ruderer des Siegerboots.", share:{n:45,k:9,item:"card:yellow",group:"Ruderer"}, q:"Wie viele Lose bekommt jeder Ruderer?", answer:5, sol:"45 : 9 = 5", clue:"Fall gelöst! Die Goldene Möwe ist zurück, und die Siegerehrung war pünktlich.", next:"END"}
    }}
 ];
 
 const CASES=[
   {title:"Das Rätsel vom Möwenturm", from:0, to:3, blurb:"Ein Kompass verschwindet, und der alte Leuchtturm blinkt mitten in der Nacht.", tag:"Einmaleins · Logik", color:"#ffd34d", done:"Der Kompass von Kapitän Hansen ist zurück im Museum."},
   {title:"Das verschwundene Geburtstagsbild", from:4, to:7, blurb:"Ben feiert Geburtstag im Malatelier. Doch sein Überraschungsbild ist plötzlich weg.", tag:"Teilen · Farben · Muster", color:"#e57aa6", done:"Bens Bild ist wieder da, und die Feier war die beste in ganz Möwenbucht."},
-  {title:"Der Schatz der Möweninsel", from:8, to:11, blurb:"Im Kompass steckt eine geheime Botschaft. Sie führt zu einem Schatz auf einer Insel.", tag:"Profi-Rechnen · Knobeln", color:"#7fc8d9", done:"Kapitän Hansens Goldmünzen liegen jetzt im Museum, und die Rote Möwe ist gefasst."}
+  {title:"Der Schatz der Möweninsel", from:8, to:11, blurb:"Im Kompass steckt eine geheime Botschaft. Sie führt zu einem Schatz auf einer Insel.", tag:"Profi-Rechnen · Knobeln", color:"#7fc8d9", done:"Kapitän Hansens Goldmünzen liegen jetzt im Museum, und die Rote Möwe ist gefasst."},
+  {title:"Die Goldene Möwe", from:12, to:15, blurb:"Beim Hafenfest verschwindet der Siegerpokal aus einer verschlossenen Vitrine. Ein alter Bauplan führt unter die Bühne.", tag:"Baupläne · Logik · Wege · Beweise", color:"#9ad08c", done:"Die Goldene Möwe ist zurück, und die Siegerehrung fand pünktlich statt."}
 ];
 const caseOf=ch=>CASES.findIndex(c=>ch>=c.from&&ch<=c.to);
 const caseStars=ci=>{let t=0;for(let i=CASES[ci].from;i<=CASES[ci].to;i++)t+=chStars(i);return t;};
@@ -398,7 +477,7 @@ const caseStars=ci=>{let t=0;for(let i=CASES[ci].from;i<=CASES[ci].to;i++)t+=chS
 /* Grafik-Bausteine */
 const COL={red:"#d9473a",blue:"#2f6db5",yellow:"#f2c230",green:"#3f9a55",orange:"#ee8a2b",purple:"#7d4ea8",pink:"#e57aa6",brown:"#8a5a3b",white:"#ffffff"};
 const CN={red:"Rot",blue:"Blau",yellow:"Gelb",green:"Grün",orange:"Orange",purple:"Lila",pink:"Rosa",brown:"Braun",white:"Weiß"};
-const KN={circle:"Kreis",square:"Quadrat",tri:"Dreieck",star:"Stern",heart:"Herz",balloon:"Ballon",muffin:"Muffin",brush:"Pinsel",box:"Karton"};
+const KN={card:"Karte",circle:"Kreis",square:"Quadrat",tri:"Dreieck",star:"Stern",heart:"Herz",balloon:"Ballon",muffin:"Muffin",brush:"Pinsel",box:"Karton"};
 function shape(kind,c,cx,cy,r){
   const f=COL[c]||c, st='stroke="#1f2a33" stroke-width="2" stroke-linejoin="round"';
   switch(kind){
@@ -411,6 +490,7 @@ function shape(kind,c,cx,cy,r){
     case "muffin": return `<path d="M${cx-r*.8},${cy} L${cx+r*.8},${cy} L${cx+r*.55},${cy+r*.9} L${cx-r*.55},${cy+r*.9}Z" fill="#c9884f" ${st}/><path d="M${cx-r*.9},${cy+1} a${r*.9},${r*.95} 0 0 1 ${r*1.8},0Z" fill="${f}" ${st}/>`;
     case "brush": return `<line x1="${cx-r*.8}" y1="${cy+r*.8}" x2="${cx+r*.3}" y2="${cy-r*.3}" stroke="#c9884f" stroke-width="${r*.35}" stroke-linecap="round"/><circle cx="${cx+r*.55}" cy="${cy-r*.55}" r="${r*.4}" fill="${f}" ${st}/>`;
     case "box": return `<rect x="${cx-r}" y="${cy-r*.55}" width="${2*r}" height="${r*1.1}" rx="2" fill="${f}" ${st}/><line x1="${cx-r}" y1="${cy}" x2="${cx+r}" y2="${cy}" stroke="#1f2a33" stroke-width="1"/>`;
+    case "card": return `<rect x="${cx-r*.7}" y="${cy-r}" width="${r*1.4}" height="${r*2}" rx="3" fill="#fff" ${st}/>${shape("heart",c,cx,cy,r*.45)}`;
     default: return "";
   }
 }
@@ -441,6 +521,22 @@ function countHtml(spec){
   return `<div class="pic"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Bild mit vielen bunten Formen">${body}</svg></div>`;
 }
 const ART={
+  plan:(n)=>{const p=n.plan,U=26,o=3,W=p.w*U+o*2,H=p.h*U+o*2,fills=["#fde7b0","#d7ecf5","#f6d6e3","#dcefd9","#e9e0f5","#f8e3cf"];
+    let g="";
+    p.rooms.forEach((r,i)=>{g+=`<rect x="${o+r.x*U}" y="${o+r.y*U}" width="${r.w*U}" height="${r.h*U}" fill="${fills[i%6]}"/>`;});
+    for(let x=1;x<p.w;x++)g+=`<line x1="${o+x*U}" y1="${o}" x2="${o+x*U}" y2="${o+p.h*U}" stroke="#1f2a33" stroke-opacity=".13"/>`;
+    for(let y=1;y<p.h;y++)g+=`<line x1="${o}" y1="${o+y*U}" x2="${o+p.w*U}" y2="${o+y*U}" stroke="#1f2a33" stroke-opacity=".13"/>`;
+    p.rooms.forEach(r=>{g+=`<rect x="${o+r.x*U}" y="${o+r.y*U}" width="${r.w*U}" height="${r.h*U}" fill="none" stroke="#1f2a33" stroke-width="3"/>`;
+      const cx=o+(r.x+r.w/2)*U, cy=o+(r.y+r.h/2)*U;
+      g+=`<text x="${cx}" y="${cy-2}" text-anchor="middle" font-size="22" font-weight="700" fill="#1f2a33">${r.id}</text><text x="${cx}" y="${cy+15}" text-anchor="middle" font-size="11" fill="#1f2a33">${r.name}</text>`;});
+    p.doors.forEach(([x,y,d])=>{g+=d==="v"?`<rect x="${o+x*U-4}" y="${o+(y-.5)*U+3}" width="8" height="${U-6}" rx="2" fill="#ee8a2b" stroke="#1f2a33" stroke-width="1.5"/>`:`<rect x="${o+(x-.5)*U+3}" y="${o+y*U-4}" width="${U-6}" height="8" rx="2" fill="#ee8a2b" stroke="#1f2a33" stroke-width="1.5"/>`;});
+    return `<div class="pic" style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:300px" role="img" aria-label="Bauplan der Festbühne mit sechs Räumen A bis F">${g}</svg><div class="legend"><span class="lg-door"></span> Tür · 1 Kästchen = 1 m²</div></div>`;},
+  stage:()=>{const U=46,cols=6,rows=4;let g="";
+    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++)g+=`<rect x="${x*U+2}" y="${y*U+2}" width="${U-4}" height="${U-4}" rx="5" fill="#f3d9a8" stroke="#c49a5a" stroke-width="2"/>`;
+    g+=shape("star","yellow",2*U+U/2,1*U+U/2,15)+shape("star","yellow",1*U+U/2,1*U+U/2,15);
+    g+=`<rect x="${4*U+U/2-3}" y="${2*U+U/2}" width="6" height="16" fill="#1f2a33"/><circle cx="${4*U+U/2}" cy="${2*U+U/2-2}" r="9" fill="#1f2a33"/>`;
+    g+=[["A",2,2],["B",3,2],["C",1,2],["D",2,3]].map(([l,x,y])=>`<circle cx="${x*U+U/2}" cy="${y*U+U/2}" r="15" fill="#fff" stroke="#1f2a33" stroke-width="2"/><text x="${x*U+U/2}" y="${y*U+U/2+7}" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2a33">${l}</text>`).join("");
+    return `<div class="pic" style="max-width:320px;align-self:center"><svg viewBox="0 0 ${cols*U+4} ${rows*U+4}" width="100%" role="img" aria-label="Bühne von oben mit Mikrofon, zwei Scheinwerfern und den Feldern A bis D">${g}</svg><div class="legend">★ Scheinwerfer · ● Mikrofon</div></div>`;},
   pot:()=>{const c=50,cells=[];
     for(let y=0;y<5;y++)for(let x=0;x<5;x++)cells.push(`<rect x="${x*c+2}" y="${y*c+2}" width="${c-4}" height="${c-4}" rx="6" fill="#fff8e3" stroke="#d8ccad" stroke-width="2"/>`);
     const L=[["A",3,3],["B",2,2],["C",3,2],["D",1,3]].map(([l,x,y])=>`<circle cx="${x*c+25}" cy="${y*c+25}" r="16" fill="#fff" stroke="#1f2a33" stroke-width="2"/><text x="${x*c+25}" y="${y*c+32}" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2a33">${l}</text>`).join("");
@@ -556,7 +652,7 @@ function renderNode(){
     app.querySelectorAll(".path").forEach(b=>b.onclick=()=>go(n.options[+b.dataset.i].next)); return;
   }
   if(n.type==="battle") return renderBattle();
-  const pick=n.type==="pick", limit=pick?2:3;
+  const pick=n.type==="pick", limit=n.tries||(pick?2:3);
   const abc=n.abc?`<div class="abc">${"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((l,i)=>`<span>${l}=${i+1}</span>`).join("")}</div>`:"";
   const optHtml=o=>n.tokens?`<button class="choice tokchoice" data-opt="${esc(o)}" aria-label="${esc(tokLabel(o))}">${tok(o)}${o.startsWith("blob:")?`<span>${CN[o.slice(5)]}</span>`:""}</button>`:`<button class="choice" data-opt="${esc(o)}">${esc(o)}</button>`;
   let answer;
@@ -566,6 +662,20 @@ function renderNode(){
     answer=`<div class="diffwrap"><figure><figcaption class="label">Vorher</figcaption><div class="diffgrid" style="${st}">${d.before.map(t=>`<div>${tok(t)}</div>`).join("")}</div></figure>
      <figure><figcaption class="label">Jetzt · tippe auf den Unterschied</figcaption><div class="diffgrid" style="${st}">${after.map((t,i)=>`<button class="cellbtn" data-cell="${i}" aria-label="Feld ${i+1}">${tok(t)}</button>`).join("")}</div></figure></div>
      <span class="tries" id="tries">${limit} Versuche</span>`;
+  }
+  else if(n.type==="path"){
+    if(!view.path) view.path=[n.start];
+    const on=(r,c)=>view.path.some(([a,b])=>a===r&&b===c);
+    let cells=""; n.grid.forEach((row,r)=>row.forEach((v,c)=>{
+      const cls=["pathbtn"]; if(r===n.start[0]&&c===n.start[1])cls.push("start"); if(r===n.goal[0]&&c===n.goal[1])cls.push("goal"); if(on(r,c))cls.push("on");
+      cells+=`<button class="${cls.join(" ")}" data-r="${r}" data-c="${c}">${esc(v)}</button>`;}));
+    answer=`<div class="pathgrid" style="grid-template-columns:repeat(${n.grid[0].length},1fr)">${cells}</div>
+     <div class="answer-row"><button class="small" id="pathreset">Zurück zum Start</button><span class="tries" id="tries">${limit} Versuche</span></div>`;
+  }
+  else if(n.type==="combine"){
+    if(!view.sel) view.sel=[];
+    answer=`<div class="cardsgrid">${n.combine.cards.map(c=>`<button class="cardbtn ${view.sel.includes(c.id)?"sel":""}" data-id="${c.id}" aria-pressed="${view.sel.includes(c.id)}">${tok(c.icon,36)}<span>${esc(c.text)}</span></button>`).join("")}</div>
+     <div class="answer-row"><button class="key go" id="combcheck" style="padding:14px 28px" disabled>Prüfen</button><span class="tries" id="selcount">${view.sel.length} von ${n.combine.pick} gewählt</span><span class="tries" id="tries">${limit} Versuche</span></div>`;
   }
   else if(n.type==="paint"){
     const p=n.paint, h=p.left.length, w=p.left[0].length;
@@ -588,13 +698,20 @@ function renderNode(){
    ${n.seq?seqHtml(n.seq):""}
    ${n.share?shareHtml(n.share.n,n.share.k,n.share.item,n.share.group):""}
    ${n.count?countHtml(n.count):""}
-   ${n.art?ART[n.art]():""}
+   ${n.art?ART[n.art](n):""}
    ${n.extra?`<p><b>${esc(n.extra)}</b></p>`:""}
    <div class="question">${esc(n.q)}</div>
    ${answer}
    <div class="feedback" id="fb" aria-live="polite"></div></article>`;
   if(pick) app.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>check(b.dataset.opt,b));
   else if(n.type==="diff") app.querySelectorAll("[data-cell]").forEach(b=>b.onclick=()=>check(b.dataset.cell,b));
+  else if(n.type==="path") bindPath(n,limit);
+  else if(n.type==="combine"){
+    const btn=document.getElementById("combcheck"), upd=()=>{btn.disabled=view.sel.length!==n.combine.pick;document.getElementById("selcount").textContent=`${view.sel.length} von ${n.combine.pick} gewählt`;};
+    app.querySelectorAll(".cardbtn").forEach(b=>b.onclick=()=>{const id=b.dataset.id,i=view.sel.indexOf(id);if(i>=0)view.sel.splice(i,1);else if(view.sel.length<n.combine.pick)view.sel.push(id);else return;b.classList.toggle("sel",i<0);b.setAttribute("aria-pressed",i<0);document.getElementById("fb").textContent="";upd();});
+    upd();
+    btn.onclick=()=>{const ok=[...view.sel].sort().join()===[...n.combine.answer].sort().join();check(ok?"ok":"no");};
+  }
   else if(n.type==="paint"){
     app.querySelectorAll(".pb").forEach(b=>b.onclick=()=>{const r=+b.dataset.r,c=+b.dataset.c;view.paint[r][c]^=1;b.classList.toggle("on");b.setAttribute("aria-pressed",!!view.paint[r][c]);document.getElementById("fb").textContent="";});
     document.getElementById("paintcheck").onclick=()=>{
@@ -603,6 +720,34 @@ function renderNode(){
     };
   }
   else app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>press(b.dataset.k));
+}
+
+const RULES={seven:v=>typeof v==="number"&&v%7===0&&v<=70, "24":v=>{const m=/^(\d+)×(\d+)$/.exec(v);return !!m&&m[1]*m[2]===24;}};
+function walkable(n,r,c){return (r===n.goal[0]&&c===n.goal[1])||(r===n.start[0]&&c===n.start[1])||RULES[n.rule](n.grid[r][c]);}
+function solvePath(n){const R=n.grid.length,C=n.grid[0].length,prev={},q=[n.start],k=(a)=>a.join(",");prev[k(n.start)]=null;
+  while(q.length){const cur=q.shift();if(cur[0]===n.goal[0]&&cur[1]===n.goal[1])break;
+    for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){const nr=cur[0]+dr,nc=cur[1]+dc;if(nr<0||nc<0||nr>=R||nc>=C||k([nr,nc]) in prev||!walkable(n,nr,nc))continue;prev[k([nr,nc])]=cur;q.push([nr,nc]);}}
+  const path=[];let c=n.goal;while(c){path.unshift(c);c=prev[k(c)];}return path;}
+function paintPath(){app.querySelectorAll(".pathbtn").forEach(b=>b.classList.toggle("on",view.path.some(([a,c])=>a===+b.dataset.r&&c===+b.dataset.c)));}
+function bindPath(n,limit){
+  const fb=()=>document.getElementById("fb");
+  document.getElementById("pathreset").onclick=()=>{view.path=[n.start];paintPath();fb().textContent="";};
+  app.querySelectorAll(".pathbtn").forEach(b=>b.onclick=()=>{
+    const r=+b.dataset.r,c=+b.dataset.c,last=view.path[view.path.length-1];
+    if(last[0]===r&&last[1]===c){ if(view.path.length>1){view.path.pop();paintPath();} return; }
+    if(view.path.some(([a,d])=>a===r&&d===c)) return;
+    if(Math.abs(last[0]-r)+Math.abs(last[1]-c)!==1){fb().className="feedback bad";fb().textContent="Du kannst nur auf ein Nachbarfeld gehen.";return;}
+    if(!walkable(n,r,c)){
+      view.tries++; b.classList.add("bad"); setTimeout(()=>b.classList.remove("bad"),700);
+      if(view.tries>=limit){award(0,n.clue);view.path=solvePath(n);paintPath();
+        finishPuzzle(`Mila zeigt dir den Weg. Diesmal gibt es keinen Stern.<br><span style="font-weight:500">Notiz: ${esc(n.clue)}</span>`,"bad",n);return;}
+      view.path=[n.start];paintPath();const left=limit-view.tries;
+      fb().className="feedback bad";fb().textContent=`Plumps! Das Feld hält nicht. Zurück zum Start. Noch ${left} ${left===1?"Versuch":"Versuche"}.`;
+      document.getElementById("tries").textContent=`${left} ${left===1?"Versuch":"Versuche"}`;return;}
+    view.path.push([r,c]);paintPath();fb().textContent="";
+    if(r===n.goal[0]&&c===n.goal[1]){const stars=[3,2,1][view.tries]||1;award(stars,n.clue);
+      finishPuzzle(`${rnd(praise)} ${"★".repeat(stars)}<br><span style="font-weight:500">Notiz: ${esc(n.clue)}</span>`,"good",n);}
+  });
 }
 
 function press(k){
@@ -621,14 +766,14 @@ const praise=["Stark kombiniert!","Genau richtig!","Messerscharf!","Volltreffer,
 
 function finishPuzzle(fbHtml,cls,n){
   const fb=document.getElementById("fb"); fb.className="feedback "+cls; fb.innerHTML=fbHtml;
-  app.querySelectorAll(".key,.choice,.cellbtn,.pb").forEach(b=>b.disabled=true);
+  app.querySelectorAll(".key,.choice,.cellbtn,.pb,.pathbtn,.cardbtn,#pathreset,#combcheck,#paintcheck").forEach(b=>b.disabled=true);
   const next=document.createElement("button"); next.className="big"; next.textContent="Weiter";
   next.onclick=()=>go(n.next); fb.after(next); next.focus();
 }
 
 function check(val,btn){
-  const n=node(), limit=n.type==="pick"?2:3;
-  if(String(val)===String(n.type==="paint"?"ok":n.answer)){
+  const n=node(), limit=n.tries||(n.type==="pick"?2:3);
+  if(String(val)===String(n.type==="paint"||n.type==="combine"?"ok":n.answer)){
     const stars=[3,2,1][view.tries]||1;
     award(stars,n.clue);
     finishPuzzle(`${rnd(praise)} ${"★".repeat(stars)}<br><span style="font-weight:500">Notiz: ${esc(n.clue)}</span>`,"good",n);
@@ -640,6 +785,7 @@ function check(val,btn){
   if(view.tries>=limit){
     award(0,n.clue);
     if(n.type==="paint"){const tgt=paintTarget(n.paint.left);app.querySelectorAll(".pb").forEach(b=>b.classList.toggle("on",tgt[+b.dataset.r][+b.dataset.c]==="1"));}
+    if(n.type==="combine"){app.querySelectorAll(".cardbtn").forEach(b=>b.classList.toggle("sel",n.combine.answer.includes(b.dataset.id)));}
     if(n.type==="diff"){const c=app.querySelector(`[data-cell="${n.answer}"]`);c&&c.classList.add("right");}
     finishPuzzle(`Mila hat nachgerechnet: ${esc(n.sol)}<br><span style="font-weight:500">Diesmal gibt es keinen Stern. Notiz: ${esc(n.clue)}</span>`,"bad",n);
     return;
