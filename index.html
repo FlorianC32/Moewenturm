@@ -195,6 +195,15 @@ body.mood-dark .arena{background:#0e1412;box-shadow:inset 0 0 0 1px #2c3a36}
 body.mood-dark .arrow{color:#8aa39a}
 body.mood-dark .small{color:#dcd6c4;border-color:#8aa39a}
 @media (prefers-reduced-motion:reduce){body.mood-dark::before{animation:none}}
+body.mood-halloween{background-color:#07040a;background-image:radial-gradient(ellipse at 50% -10%,#3d1f4f 0%,#170b21 50%,#07040a 100%)}
+body.mood-halloween::before{background:radial-gradient(closest-side,rgba(232,131,58,.13),transparent 70%) 15% 25%/55% 40% no-repeat,radial-gradient(closest-side,rgba(170,120,220,.12),transparent 70%) 85% 65%/70% 45% no-repeat,radial-gradient(closest-side,rgba(232,131,58,.08),transparent 70%) 55% 95%/60% 30% no-repeat}
+body.mood-halloween .brand,body.mood-halloween .ch-num{color:#f0a35e}
+body.mood-halloween .file,body.mood-halloween .file::before{background:#1f1a26}
+body.mood-halloween .file{box-shadow:0 14px 40px rgba(0,0,0,.6),0 0 0 1px #3a2f45}
+body.mood-halloween .file h2{text-shadow:0 0 18px rgba(240,163,94,.35)}
+body.mood-halloween .question{background:#2b2335;border-color:#4a3a5a}
+body.mood-halloween .ch{background:#1a1222;border-color:#3a2a48}
+body.mood-halloween .task{text-shadow:0 0 14px rgba(240,163,94,.4)}
 .certificate{text-align:center;align-items:center}
 .certificate h2{padding-right:0}
 .certificate .seal{font-family:var(--f-display);font-size:64px;color:var(--stamp);line-height:1}
@@ -218,6 +227,15 @@ const PLAN_STAGE={w:12,h:8, rooms:[
   {id:"F",name:"Werkstatt",r:[[4,4,4,4]],l:[6,6]},
   {id:"G",name:"Kostüme",r:[[8,5,4,3]],l:[10,6.5]}],
   doors:[[5,1.5,"v"],[8,0.5,"v"],[9.5,3,"h"],[9.5,5,"h"],[2.5,4,"h"],[5.5,4,"h"],[4,6.5,"v"],[8,6.5,"v"]]};
+const PLAN_SCHOOL={w:12,h:8, rooms:[
+  {id:"A",name:"Klasse 3a",r:[[0,0,4,3]],l:[2,1.5]},
+  {id:"B",name:"Musikraum",r:[[4,0,3,3]],l:[5.5,1.5]},
+  {id:"C",name:"Lehrerzimmer",r:[[7,0,5,2],[9,2,3,1]],l:[9.5,1]},
+  {id:"D",name:"Flur",r:[[0,3,9,2],[7,2,2,1]],l:[3,4]},
+  {id:"E",name:"Turnhalle",r:[[9,3,3,5]],l:[10.5,5.5]},
+  {id:"F",name:"Bibliothek",r:[[0,5,5,3]],l:[2.5,6.5]},
+  {id:"G",name:"Werkraum",r:[[5,5,4,3]],l:[7,6.5]}],
+  doors:[[1.5,3,"h"],[4,1.5,"v"],[7,0.5,"v"],[5.5,3,"h"],[10.5,3,"h"],[6.5,5,"h"],[9,6.5,"v"],[5,6.5,"v"]]};
 const CHAPTERS = [
  { title:"Der Brief ohne Absender",
    outro:"Ben pfeift leise. „Wer auch immer den Kompass hat: Er kannte den Code. Und er hat etwas mit dem Leuchtturm zu tun.“ Mila nickt. „Morgen Abend gehen wir zum Möwenturm.“",
@@ -563,6 +581,63 @@ const CHAPTERS = [
       {id:"svea", icon:"star:green", text:"Svea hat neue Ersatzpaddel besorgt."}]}, q:"Wähle die 3 Beweise, die zusammen zeigen, dass Knut die Boote beschädigt hat.", sol:"Die hellblaue Farbe am Schloss stammt vom Team Seeteufel. Und nur Knut konnte an den Schlüssel.", clue:"Der Schiedsrichter schließt Knut vom Rennen aus.", next:"race"},
     race:{type:"speed", scene:"Das Rennen", text:"Startschuss! Der Nebel ist so dicht, dass ihr die anderen Boote nur hört. Knut darf nicht mitfahren, aber sein Team ist trotzdem stark. Jetzt kommen alle Aufgaben, die dir schwerfallen, besonders oft. 14 richtige bis ins Ziel!", speed:{secs:200, goal:14, tables:[6,7,8,9], core:true, weak:true, setSize:8}, win:"Aus dem Nebel taucht die Ziellinie auf. Mit einer Bootsspitze Vorsprung rauscht die Leuchtfeuer hinüber!", lose:"Knapp verloren. Zum Glück war das nur der Vorlauf. Gleich startet das Finale!", clue:"Die Leuchtfeuer hat das Drachenbootrennen gewonnen.", next:"party"},
     party:{type:"num", scene:"Die Siegerfeier", text:"Bäcker Jansen bringt Muffins für die Sieger. Er verteilt sie gerecht auf die 9 Ruderbänke.", share:{n:36,k:9,item:"muffin:yellow",group:"Bänke"}, q:"Wie viele Muffins bekommt jede Bank?", answer:4, sol:"36 : 9 = 4", clue:"Fall gelöst! Die Leuchtfeuer hat gewonnen, und Knut repariert alle Boote.", next:"END"}
+   }},
+
+ /* ===== Fall 6: Die Geisterschule ===== */
+ { title:"Die Halloween-Nacht",
+   outro:"Im Werkraum ist niemand. Auf der Hobelbank liegt nur ein Zettel, wieder in grüner Kreide: „Zu langsam. Sucht mich im ersten Stock.“ Irgendwo über euch kichert es leise.",
+   nodes:{
+    start:{type:"story", title:"Mitternacht", text:[
+      "Es ist Halloween. Die Grundschule von Möwenbucht feiert eine Gruselnacht: Alle Kinder übernachten in der Schule, mit Kürbissen, Kerzen und Gruselgeschichten. Klassenlehrerin Frau Lindgren hat sich krankgemeldet, Hausmeister Kruse ist im Urlaub.",
+      "Punkt Mitternacht geht das Licht aus. Alle Türen fallen gleichzeitig ins Schloss.",
+      "An der Tafel erscheint in leuchtend grüner Kreide: „Wer meine Rätsel nicht löst, bleibt für immer in der Geisterschule.“"], next:"candy"},
+    candy:{type:"num", scene:"Bonbons im Kerzenschein", text:"Lotta weint ein bisschen. Mila zündet eine Kerze an und verteilt erst einmal Bonbons, damit alle ruhig werden. Jedes Kind soll gleich viele bekommen.", share:{n:42,k:7,item:"candy:orange",group:"Kinder"}, q:"Wie viele Bonbons bekommt jedes Kind?", answer:6, sol:"42 : 7 = 6", clue:"Jedes Kind hat 6 Bonbons. Alle sind ein bisschen ruhiger.", next:"corridor"},
+    corridor:{type:"path", scene:"Der dunkle Flur", text:"Im Flur sind fast alle Kerzen erloschen. Nur auf manchen Fliesen flackert noch ein Licht: auf denen, deren Rechnung 6 ergibt. Tippe Feld für Feld einen Weg durch den Flur. Tippst du nochmal auf das letzte Feld, gehst du einen Schritt zurück.", grid:[["24:4", "42:6", "54:9", "54:9", "54:9"], ["18:3", "36:6", "18:3", "40:5", "48:8"], ["48:8", "24:3", "35:7", "18:3", "30:5"], ["12:2", "54:9", "14:2", "54:9", "14:2"], ["14:2", "10:2", "40:8", "12:2", "Ziel"]], start:[0,0], goal:[4,4], rule:"d6", q:"Finde einen hellen Weg durch den Flur.", clue:"Ihr habt den dunklen Flur durchquert.", next:"plan"},
+    plan:{type:"pick", tries:3, scene:"Der alte Grundriss", text:"Am Ende des Flurs hängt ein vergilbter Grundriss des Erdgeschosses. Jedes Kästchen ist ein Quadratmeter, die orangen Striche sind Türen. Da knistert der Lautsprecher, und eine heisere Stimme flüstert: „Ich warte in einem Raum, der Wand an Wand mit der Turnhalle liegt. Er ist kleiner als die Turnhalle. Und er hat genau 3 Türen.“", art:"plan", plan:PLAN_SCHOOL, q:"In welchem Raum wartet die Stimme?", options:["A Klasse 3a","B Musikraum","C Lehrerzimmer","D Flur","E Turnhalle","F Bibliothek","G Werkraum"], answer:"G Werkraum", sol:"Wand an Wand mit der Turnhalle liegen Lehrerzimmer, Flur und Werkraum. Kleiner als die Turnhalle (15) sind nur Lehrerzimmer (13) und Werkraum (12). Genau 3 Türen hat nur der Werkraum.", clue:"Die Stimme hat euch in den Werkraum gelockt.", next:"END"}
+   }},
+ { title:"Die Ahnengalerie",
+   outro:"Die winzigen Monster kauen zufrieden. Eines zeigt mit seiner kleinen Kralle den Gang hinunter, zur alten Bibliothek. Dann sind sie alle gleichzeitig verschwunden.",
+   nodes:{
+    start:{type:"story", title:"Die Treppe", text:[
+      "Zum ersten Stock führt der Weg an der Ahnengalerie vorbei: alte Bilder von Schulgespenstern, die euch mit leeren Augen ansehen.",
+      "Ben flüstert: „Hat sich da gerade eins bewegt?“"], next:"gallery"},
+    gallery:{type:"diff", scene:"Die Ahnengalerie", text:"Mila leuchtet mit der Taschenlampe auf die Bilder. Links ist ein altes Foto der Galerie aus dem Schulflyer, rechts die Galerie jetzt. Eines der Gesichter hat sich verändert.", diff:{cols:5, before:["ghost:white","ghost:white","pumpkin:orange","ghost:white","ghost:white","ghost:white","pumpkin:orange","ghost:white","ghost:white","ghost:white","ghost:white","ghost:white","ghost:white","pumpkin:orange","ghost:white","ghost:white","pumpkin:orange","ghost:white","ghost:white","ghost:white"], change:11, after:"ghost:white:wink"}, q:"Tippe im rechten Bild auf den Unterschied.", answer:"11", sol:"Einer der Geister zwinkert jetzt mit einem Auge.", clue:"Ein Geist auf dem Bild hat euch zugezwinkert. Oder war es Einbildung?", next:"liars"},
+    liars:{type:"pick", tries:3, scene:"Drei Geister", text:"Vor euch schweben drei Geister. Nur wer die Wahrheit sagt, zeigt euch den richtigen Weg.", say:"Geist Blass: „Geist Grau lügt.“ · Geist Grau: „Geist Grün lügt.“ · Geist Grün: „Blass und Grau lügen beide.“", q:"Welchem Geist könnt ihr glauben?", options:["Geist Blass","Geist Grau","Geist Grün"], answer:"Geist Grau", sol:"Würde Grün die Wahrheit sagen, müsste Blass lügen. Dann würde Grau die Wahrheit sagen, also würde Grün doch lügen. Das geht nicht. Also lügt Grün. Damit sagt Grau die Wahrheit, und Blass lügt.", clue:"Geist Grau hat die Wahrheit gesagt und euch den Weg gezeigt.", next:"d1"},
+    d1:{type:"decide", scene:"Zwei Wege", text:"Geist Grau zeigt auf zwei Türen. „Beide führen weiter. Aber keine ist ungefährlich.“", q:"Welchen Weg nehmt ihr?", options:[
+      {label:"Die knarrende Treppe hoch", sub:"Viele Stufen sind morsch.", next:"stairs"},
+      {label:"Durch den Keller", sub:"Dort hängen die dicksten Spinnennetze.", next:"spiders"}]},
+    stairs:{type:"path", scene:"Die knarrende Treppe", text:"Die alte Treppe ächzt bei jedem Schritt. Nur Stufen, deren Rechnung 8 ergibt, halten euch. Ihr startet unten links.", grid:[["56:8", "56:7", "48:8", "56:7", "40:4", "Ziel"], ["24:4", "16:2", "30:5", "72:9", "50:5", "48:6"], ["18:2", "32:4", "48:6", "48:6", "24:4", "72:9"], ["49:7", "56:7", "24:4", "40:5", "64:8", "56:7"], ["24:3", "24:3", "28:4", "16:2", "32:4", "64:8"], ["16:2", "42:7", "24:4", "63:9", "80:8", "42:7"]], start:[5,0], goal:[0,5], rule:"d8", q:"Finde einen sicheren Weg nach oben.", clue:"Ihr seid die Treppe hochgekommen, ohne einzubrechen.", next:"monsters"},
+    spiders:{type:"battle", scene:"Der Spinnenschwarm", text:"Im Keller hängen dicke Spinnennetze. Hunderte winzige Spinnen seilen sich herab! Jede richtige Geteilt-Aufgabe pustet ein Netz weg.", foe:"Spinnen", hits:5, gen:"div", tables:[6,7,8,9], hitLines:["Ein Netz zerreißt!","Die Spinnen flüchten!","Weggepustet!","Weiter, schnell!"], missLine:"Eine Spinne krabbelt Ben in den Kragen!", win:"Das letzte Netz zerreißt. Am Ende des Kellers führt eine Leiter nach oben.", lose:"Die Netze sind zu dicht. Ihr weicht zurück und versucht es nochmal.", clue:"Ihr habt euch durch den Spinnenkeller gekämpft.", next:"monsters"},
+    monsters:{type:"num", scene:"Winzige Monster", text:"Oben im Gang sitzen winzige Monster, kaum größer als Radiergummis. Sie quieken und versperren den Weg. Durchlassen wollen sie euch nur, wenn jedes Monster gleich viele Bonbons bekommt.", share:{n:56,k:8,item:"candy:purple",group:"Monster"}, q:"Wie viele Bonbons bekommt jedes Monster?", answer:7, sol:"56 : 8 = 7", clue:"Die winzigen Monster haben euch durchgelassen.", next:"END"}
+   }},
+ { title:"Die verbotene Bibliothek",
+   outro:"Hinter dem letzten Regal klebt ein Zettel in grüner Kreide: „Nicht schlecht. Aber schafft ihr es hinaus, bevor die Uhr drei schlägt?“ In der Ferne beginnt eine Uhr zu ticken.",
+   nodes:{
+    start:{type:"story", title:"Eiskalt", text:[
+      "In der Bibliothek ist es eiskalt. Euer Atem bildet kleine Wolken.",
+      "Plötzlich fallen Bücher aus den Regalen, eins nach dem anderen, wie von Geisterhand."], next:"count"},
+    count:{type:"num", scene:"Monster zwischen den Büchern", text:"Zwischen den Büchern wimmelt es. Die winzigen Monster sind wieder da, und dazu Geister und Kürbisse. Die grünen Monster sind die frechen, die die Bücher herunterwerfen.", count:{"monster:green":7,"monster:purple":5,"ghost:white":6,"pumpkin:orange":5}, q:"Wie viele GRÜNE Monster siehst du?", answer:7, sol:"Es sind 7 grüne Monster. Die lila Monster zählen nicht.", clue:"7 grüne Monster werfen Bücher aus den Regalen.", next:"names"},
+    names:{type:"pick", tries:3, tokens:true, scene:"Wer ist wer?", text:"Drei winzige Monster heißen Zisch, Krümel und Glibber. Eins ist grün, eins lila, eins orange. Jedes mag eine andere Süßigkeit: Lakritz, Kaugummi oder Schokolade. Ihr wisst: Krümel ist lila. Glibber mag Kaugummi. Das orange Monster mag Schokolade.", q:"Welche Farbe hat Glibber?", options:["blob:green","blob:purple","blob:orange"], answer:"blob:green", sol:"Krümel ist lila. Das orange Monster mag Schokolade, Glibber mag aber Kaugummi. Also ist Glibber nicht orange. Es bleibt Grün.", clue:"Glibber ist grün und mag Kaugummi. Er ist der Anführer der frechen Monster.", next:"books"},
+    books:{type:"num", scene:"Bücher einräumen", text:"Glibber verspricht, aufzuhören, wenn ihr die heruntergefallenen Bücher wieder einräumt. In jedes Regal gleich viele.", share:{n:54,k:6,item:"box:purple",group:"Regale"}, q:"Wie viele Bücher kommen in jedes Regal?", answer:9, sol:"54 : 6 = 9", clue:"Alle Bücher stehen wieder im Regal.", next:"area"},
+    area:{type:"num", tries:3, scene:"Der Grundriss", text:"In einem der Bücher liegt derselbe Grundriss wie unten im Flur. Daneben steht in grüner Kreide: „Der Ausgang liegt dort, wo Lehrerzimmer und Flur zusammen so viele Quadratmeter haben, wie die Zahl auf der Tür.“", art:"plan", plan:PLAN_SCHOOL, q:"Wie viele Quadratmeter haben Lehrerzimmer und Flur zusammen?", answer:33, sol:"Lehrerzimmer: 5 × 2 + 3 × 1 = 13. Flur: 9 × 2 + 2 × 1 = 20. Zusammen 33.", clue:"Die Zahl auf der Ausgangstür ist 33.", next:"shelves"},
+    shelves:{type:"path", scene:"Zwischen den Regalen", text:"Zwischen den Regalen liegen Bücher auf dem Boden, auf jedem Buchrücken eine Rechnung. Nur auf die Bücher, deren Rechnung 9 ergibt, dürft ihr treten. Die anderen beißen.", grid:[["45:5", "36:4", "28:4", "36:4", "18:2", "56:7"], ["80:8", "63:7", "63:9", "72:8", "36:4", "45:5"], ["27:3", "81:9", "48:6", "81:9", "90:9", "36:4"], ["18:2", "60:6", "45:5", "81:9", "48:6", "72:8"], ["81:9", "54:6", "45:5", "63:9", "64:8", "18:2"], ["42:6", "30:3", "54:6", "18:2", "35:5", "Ziel"]], start:[0,0], goal:[5,5], rule:"d9", q:"Finde den Weg aus der Bibliothek.", clue:"Ihr seid aus der Bibliothek entkommen.", next:"pattern"},
+    pattern:{type:"pick", tokens:true, scene:"Das Muster an der Tür", text:"An der Bibliothekstür sind Geister und Kürbisse aufgemalt. Ein Feld ist leer.", seq:["ghost:white","pumpkin:orange","ghost:white","pumpkin:orange","pumpkin:orange","ghost:white","pumpkin:orange","pumpkin:orange","pumpkin:orange","?"], q:"Was gehört in das leere Feld?", options:["ghost:white","pumpkin:orange","monster:green"], answer:"ghost:white", sol:"Nach jedem Geist kommt ein Kürbis mehr: 1, dann 2, dann 3. Nach den drei Kürbissen kommt wieder ein Geist.", clue:"Ihr habt das Türmuster gelöst.", next:"END"}
+   }},
+ { title:"Der Ausgang",
+   outro:"Die Tür springt auf. Draußen steht Frau Lindgren, ganz und gar nicht krank, mit Kakao und Kürbiskuchen. „Ihr habt meine Halloween-Rätselnacht gelöst!“, lacht sie und zeigt ihre grünen Kreidefinger. Alle jubeln. Nur Ben schaut noch einmal zurück ins dunkle Klassenzimmer. An der Tafel stehen neue Worte, in grüner Kreide: „Bis nächstes Jahr.“ Frau Lindgren steht die ganze Zeit neben ihm.",
+   nodes:{
+    start:{type:"story", title:"Die Geisteruhr", text:[
+      "In der Aula tickt die große Schuluhr so laut, dass es in den Ohren dröhnt. Gleich schlägt sie drei.",
+      "Auf dem Ziffernblatt erscheinen leuchtende Geteilt-Aufgaben."], next:"clock"},
+    clock:{type:"speed", scene:"Die Geisteruhr", text:"Bevor die Uhr drei schlägt, müsst ihr die Aufgaben auf dem Ziffernblatt lösen. Die Aufgaben, die dir schwerfallen, kommen öfter.", speed:{secs:120, goal:8, tables:[6,7,8,9], op:"div", core:true, setSize:7}, win:"Die Zeiger bleiben stehen. Es ist ganz still.", lose:"Die Uhr schlägt drei. Doch dann dreht sie sich mit einem Knirschen zurück. Noch eine Chance!", clue:"Ihr habt die Geisteruhr angehalten.", next:"exit"},
+    exit:{type:"path", scene:"Zum Ausgang", text:"Der Weg zum Ausgang führt über den Schulhof. Auf den Pflastersteinen leuchten Rechnungen. Nur die, deren Ergebnis 7 ist, sind sicher. Ihr startet oben rechts.", grid:[["48:6", "21:3", "28:4", "63:9", "30:5", "35:5"], ["36:4", "21:3", "30:6", "56:8", "21:3", "42:6"], ["54:6", "14:2", "35:7", "42:6", "35:5", "24:3"], ["56:7", "56:8", "42:6", "14:2", "48:8", "14:2"], ["42:6", "25:5", "20:4", "35:5", "25:5", "81:9"], ["Ausgang", "28:4", "42:6", "49:7", "48:6", "24:3"]], start:[0,5], goal:[5,0], rule:"d7", q:"Finde den Weg zum Ausgang.", clue:"Ihr steht vor der Ausgangstür mit der Nummer 33.", next:"combine"},
+    combine:{type:"combine", tries:3, scene:"Wer ist das Schulgespenst?", text:"Vor der Tür hält Mila alle an. „Wir wissen, wer die Botschaften geschrieben hat.“ Sie legt die Hinweise nebeneinander.", combine:{pick:2, answer:["kreide","nurgruen"], cards:[
+      {id:"kreide", icon:"ghost:white", text:"Alle Geisterbotschaften sind mit grüner Kreide geschrieben."},
+      {id:"spinnen", icon:"monster:purple", text:"Im Keller wohnen viele Spinnen."},
+      {id:"schluessel", icon:"square:yellow", text:"Schlüssel für die Schultüren haben nur Hausmeister Kruse und Frau Lindgren."},
+      {id:"nurgruen", icon:"circle:green", text:"Nur Frau Lindgren schreibt mit grüner Kreide."},
+      {id:"bonbons", icon:"candy:orange", text:"Ihr habt 42 Bonbons gerecht verteilt."},
+      {id:"kuerbis", icon:"pumpkin:orange", text:"In der Aula stehen 12 Kürbisse."}]}, q:"Wähle die 2 Beweise, die zusammen zeigen, wer die Geisterbotschaften geschrieben hat.", sol:"Die Botschaften sind in grüner Kreide geschrieben, und nur Frau Lindgren schreibt mit grüner Kreide.", clue:"Fall gelöst! Frau Lindgren hat die Halloween-Rätselnacht vorbereitet. Aber wer schrieb die letzte Botschaft?", next:"END"}
    }}
 ];
 
@@ -571,7 +646,8 @@ const CASES=[
   {title:"Das verschwundene Geburtstagsbild", from:4, to:7, blurb:"Ben feiert Geburtstag im Malatelier. Doch sein Überraschungsbild ist plötzlich weg.", tag:"Teilen · Farben · Muster", color:"#e57aa6", done:"Bens Bild ist wieder da, und die Feier war die beste in ganz Möwenbucht."},
   {title:"Der Schatz der Möweninsel", from:8, to:11, blurb:"Im Kompass steckt eine geheime Botschaft. Sie führt zu einem Schatz auf einer Insel.", tag:"Profi-Rechnen · Knobeln", color:"#7fc8d9", done:"Kapitän Hansens Goldmünzen liegen jetzt im Museum, und die Rote Möwe ist gefasst."},
   {title:"Die Goldene Möwe", from:12, to:15, blurb:"Beim Hafenfest verschwindet der Siegerpokal aus einer verschlossenen Vitrine. Ein alter Bauplan führt unter die Bühne.", tag:"Baupläne · Logik · Wege · Beweise", color:"#9ad08c", done:"Die Goldene Möwe ist zurück, und die Siegerehrung fand pünktlich statt."},
-  {title:"Der Nebelkapitän", from:16, to:19, mood:"dark", blurb:"In der Nacht vor dem Drachenbootrennen geistert eine Gestalt mit grüner Laterne durch den nebligen Hafen. Am Morgen sind die Paddel angesägt.", tag:"Speed-Rechnen · Wege · Beweise", color:"#6fbf8f", done:"Der Nebelkapitän ist entlarvt, und die Leuchtfeuer hat das Drachenbootrennen gewonnen."}
+  {title:"Der Nebelkapitän", from:16, to:19, mood:"dark", blurb:"In der Nacht vor dem Drachenbootrennen geistert eine Gestalt mit grüner Laterne durch den nebligen Hafen. Am Morgen sind die Paddel angesägt.", tag:"Speed-Rechnen · Wege · Beweise", color:"#6fbf8f", done:"Der Nebelkapitän ist entlarvt, und die Leuchtfeuer hat das Drachenbootrennen gewonnen."},
+  {title:"Die Geisterschule", from:20, to:23, mood:"halloween", blurb:"Halloween-Nacht in der Schule. Um Mitternacht gehen die Lichter aus, und eine Stimme flüstert: Löst meine Rätsel, oder bleibt für immer hier.", tag:"Geteilt · Wege · Grundrisse · Logik", color:"#e8833a", done:"Ihr seid aus der Geisterschule entkommen. Aber wer schrieb die letzte Botschaft?"}
 ];
 const caseOf=ch=>CASES.findIndex(c=>ch>=c.from&&ch<=c.to);
 const caseStars=ci=>{let t=0;for(let i=CASES[ci].from;i<=CASES[ci].to;i++)t+=chStars(i);return t;};
@@ -579,15 +655,15 @@ const caseStars=ci=>{let t=0;for(let i=CASES[ci].from;i<=CASES[ci].to;i++)t+=chS
 /* Grafik-Bausteine */
 const COL={red:"#d9473a",blue:"#2f6db5",yellow:"#f2c230",green:"#3f9a55",orange:"#ee8a2b",purple:"#7d4ea8",pink:"#e57aa6",brown:"#8a5a3b",white:"#ffffff",lightblue:"#8fc3e8"};
 const CN={red:"Rot",blue:"Blau",yellow:"Gelb",green:"Grün",orange:"Orange",purple:"Lila",pink:"Rosa",brown:"Braun",white:"Weiß",lightblue:"Hellblau"};
-const KN={paddle:"Paddel",card:"Karte",circle:"Kreis",square:"Quadrat",tri:"Dreieck",star:"Stern",heart:"Herz",balloon:"Ballon",muffin:"Muffin",brush:"Pinsel",box:"Karton"};
+const KN={ghost:"Geist",monster:"Monster",pumpkin:"Kürbis",candy:"Bonbon",paddle:"Paddel",card:"Karte",circle:"Kreis",square:"Quadrat",tri:"Dreieck",star:"Stern",heart:"Herz",balloon:"Ballon",muffin:"Muffin",brush:"Pinsel",box:"Karton"};
 function shape(kind,c,cx,cy,r,m){
-  const rr=m==="small"?r*.8:r; let out=shapeBase(kind,c,cx,cy,rr);
+  const rr=m==="small"?r*.8:r; let out=shapeBase(kind,c,cx,cy,rr,m);
   if(m==="gold") out+=shapeBase("star","yellow",cx+rr*.42,cy-rr*.62,rr*.3);
   if(m==="cut") out+=`<line x1="${cx-rr*.42}" y1="${cy-rr*.15}" x2="${cx-rr*.12}" y2="${cy-rr*.3}" stroke="#b8352b" stroke-width="2.2" stroke-linecap="round"/>`;
   if(m==="dot") out+=`<circle cx="${cx}" cy="${cy}" r="${rr*.14}" fill="#1f2a33"/>`;
   return out;
 }
-function shapeBase(kind,c,cx,cy,r){
+function shapeBase(kind,c,cx,cy,r,m){
   const f=COL[c]||c, st='stroke="#1f2a33" stroke-width="2" stroke-linejoin="round"';
   switch(kind){
     case "circle": return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${f}" ${st}/>`;
@@ -600,6 +676,12 @@ function shapeBase(kind,c,cx,cy,r){
     case "brush": return `<line x1="${cx-r*.8}" y1="${cy+r*.8}" x2="${cx+r*.3}" y2="${cy-r*.3}" stroke="#c9884f" stroke-width="${r*.35}" stroke-linecap="round"/><circle cx="${cx+r*.55}" cy="${cy-r*.55}" r="${r*.4}" fill="${f}" ${st}/>`;
     case "box": return `<rect x="${cx-r}" y="${cy-r*.55}" width="${2*r}" height="${r*1.1}" rx="2" fill="${f}" ${st}/><line x1="${cx-r}" y1="${cy}" x2="${cx+r}" y2="${cy}" stroke="#1f2a33" stroke-width="1"/>`;
     case "card": return `<rect x="${cx-r*.7}" y="${cy-r}" width="${r*1.4}" height="${r*2}" rx="3" fill="#fff" ${st}/>${shapeBase("heart",c,cx,cy+r*.1,r*.42)}`;
+    case "ghost": {const ey=cy-r*.15, el=`<circle cx="${cx-r*.28}" cy="${ey}" r="${r*.13}" fill="#1f2a33"/>`, er=m==="wink"?`<line x1="${cx+r*.16}" y1="${ey}" x2="${cx+r*.4}" y2="${ey}" stroke="#1f2a33" stroke-width="2.2" stroke-linecap="round"/>`:`<circle cx="${cx+r*.28}" cy="${ey}" r="${r*.13}" fill="#1f2a33"/>`;
+      const w=r*.75, b=cy+r*.85, s4=w*2/4;
+      return `<path d="M${cx-w},${b} L${cx-w},${cy-r*.1} A${w},${w} 0 0 1 ${cx+w},${cy-r*.1} L${cx+w},${b} l${-s4/2},${-r*.22} l${-s4/2},${r*.22} l${-s4/2},${-r*.22} l${-s4/2},${r*.22} l${-s4/2},${-r*.22} l${-s4/2},${r*.22} l${-s4/2},${-r*.22} l${-s4/2},${r*.22}Z" fill="${f}" ${st}/>${el}${er}`;}
+    case "monster": return `<polygon points="${cx-r*.55},${cy-r*.45} ${cx-r*.35},${cy-r*.95} ${cx-r*.15},${cy-r*.55}" fill="${f}" ${st}/><polygon points="${cx+r*.55},${cy-r*.45} ${cx+r*.35},${cy-r*.95} ${cx+r*.15},${cy-r*.55}" fill="${f}" ${st}/><circle cx="${cx}" cy="${cy+r*.1}" r="${r*.72}" fill="${f}" ${st}/><circle cx="${cx-r*.25}" cy="${cy-r*.05}" r="${r*.2}" fill="#fff" stroke="#1f2a33" stroke-width="1.2"/><circle cx="${cx+r*.25}" cy="${cy-r*.05}" r="${r*.2}" fill="#fff" stroke="#1f2a33" stroke-width="1.2"/><circle cx="${cx-r*.22}" cy="${cy}" r="${r*.08}" fill="#1f2a33"/><circle cx="${cx+r*.28}" cy="${cy}" r="${r*.08}" fill="#1f2a33"/><path d="M${cx-r*.25},${cy+r*.4} q${r*.25},${r*.2} ${r*.5},0" fill="none" stroke="#1f2a33" stroke-width="1.5"/>`;
+    case "pumpkin": return `<rect x="${cx-r*.08}" y="${cy-r*.95}" width="${r*.16}" height="${r*.3}" fill="#3f9a55"/><ellipse cx="${cx}" cy="${cy+r*.05}" rx="${r*.9}" ry="${r*.72}" fill="${f}" ${st}/><ellipse cx="${cx}" cy="${cy+r*.05}" rx="${r*.38}" ry="${r*.72}" fill="none" stroke="#1f2a33" stroke-width="1.3" stroke-opacity=".55"/>`;
+    case "candy": return `<polygon points="${cx-r*.45},${cy} ${cx-r*.95},${cy-r*.35} ${cx-r*.95},${cy+r*.35}" fill="${f}" ${st}/><polygon points="${cx+r*.45},${cy} ${cx+r*.95},${cy-r*.35} ${cx+r*.95},${cy+r*.35}" fill="${f}" ${st}/><circle cx="${cx}" cy="${cy}" r="${r*.5}" fill="${f}" ${st}/>`;
     case "paddle": return `<line x1="${cx-r*.85}" y1="${cy+r*.85}" x2="${cx+r*.1}" y2="${cy-r*.1}" stroke="#8a5a3b" stroke-width="${r*.22}" stroke-linecap="round"/><ellipse cx="${cx+r*.42}" cy="${cy-r*.42}" rx="${r*.62}" ry="${r*.3}" transform="rotate(-45 ${cx+r*.42} ${cy-r*.42})" fill="${f}" ${st}/>`;
     default: return "";
   }
@@ -706,7 +788,9 @@ const towerSvg=`<svg class="tower" viewBox="0 0 44 140" aria-hidden="true"><rect
 function render(){
   if(window.spTimer){clearInterval(window.spTimer);window.spTimer=null;}
   const chx=view.ch!=null?view.ch:((view.screen==="map"||view.screen==="end")&&view.cs!=null?CASES[view.cs].from:null);
-  document.body.classList.toggle("mood-dark",chx!=null&&CASES[caseOf(chx)].mood==="dark");
+  const mood=chx!=null?CASES[caseOf(chx)].mood:null;
+  document.body.classList.toggle("mood-dark",mood==="dark"||mood==="halloween");
+  document.body.classList.toggle("mood-halloween",mood==="halloween");
   ({title:renderTitle,map:renderMap,node:renderNode,outro:renderOutro,end:renderEnd,training:renderTraining})[view.screen]();
 }
 
@@ -849,6 +933,7 @@ function renderNode(){
 function ruleOk(rule,v){
   if(rule==="seven") rule="m7"; if(rule==="24") rule="e24";
   if(rule[0]==="m"){const k=+rule.slice(1);return typeof v==="number"&&v%k===0&&v<=10*k;}
+  if(rule[0]==="d"){const m=/^(\d+):(\d+)$/.exec(v);return !!m&&m[1]%m[2]===0&&m[1]/m[2]===+rule.slice(1);}
   if(rule[0]==="e"){const m=/^(\d+)×(\d+)$/.exec(v);return !!m&&m[1]*m[2]===+rule.slice(1);}
   return false;
 }
@@ -930,13 +1015,14 @@ function check(val,btn){
 const CORE=["6×7","6×8","7×7","7×8","7×9","8×8","8×9","6×9","9×9","4×7","4×8","3×7","3×8","6×6"];
 const fkey=(a,b)=>`${Math.min(a,b)}×${Math.max(a,b)}`;
 const fact=k=>(S.facts[k]||(S.facts[k]={box:0,seen:0,wrong:0}));
-function weakList(){return Object.entries(S.facts||{}).filter(([k,f])=>f.seen&&f.box<=2).sort((a,b)=>a[1].box-b[1].box||b[1].wrong-a[1].wrong).map(([k])=>k);}
+function weakList(P=""){return Object.entries(S.facts||{}).filter(([k,f])=>f.seen&&f.box<=2&&(P?k.startsWith(P):!k.startsWith("D"))).sort((a,b)=>a[1].box-b[1].box||b[1].wrong-a[1].wrong).map(([k])=>P?k.slice(P.length):k);}
 function buildSet(cfg){
   const cand=new Set();
   cfg.tables.forEach(a=>{for(let b=2;b<=10;b++)cand.add(fkey(a,b));});
   if(cfg.core) CORE.forEach(k=>cand.add(k));
-  if(cfg.weak) weakList().forEach(k=>cand.add(k));
-  const W=k=>{const f=S.facts[k];let w=!f||!f.seen?3:[6,6,4,2,1,.5][Math.min(f.box,5)];if(CORE.includes(k))w*=1.5;if(k.startsWith("2×")||k.endsWith("×10"))w*=.4;return w;};
+  const P=cfg.op==="div"?"D":"";
+  if(cfg.weak) weakList(P).forEach(k=>cand.add(k));
+  const W=k=>{const f=S.facts[P+k];let w=!f||!f.seen?3:[6,6,4,2,1,.5][Math.min(f.box,5)];if(CORE.includes(k))w*=1.5;if(k.startsWith("2×")||k.endsWith("×10"))w*=.4;return w;};
   const pool=[...cand], out=[], target=Math.min(cfg.setSize||6,pool.length);
   while(out.length<target){
     const tot=pool.reduce((a,k)=>a+W(k),0); let r=Math.random()*tot, i=0;
@@ -951,9 +1037,11 @@ function spNext(){
   if(due>=0) k=sp.redo.splice(due,1)[0].k;
   else{ const opts=sp.set.filter(x=>x!==sp.last); k=opts[Math.floor(Math.random()*opts.length)]; }
   const [a,b]=k.split("×").map(Number), sw=Math.random()<.5;
-  sp.task={k,a:sw?b:a,b:sw?a:b,ans:a*b,t0:performance.now(),miss:false}; sp.last=k; sp.entry="";
+  if(sp.cfg.op==="div"){ const d=sw?a:b; sp.task={k,txt:`${a*b} : ${d}`,ans:a*b/d,t0:performance.now(),miss:false}; }
+  else sp.task={k,txt:`${sw?b:a} × ${sw?a:b}`,ans:a*b,t0:performance.now(),miss:false};
+  sp.last=k; sp.entry="";
 }
-function startSpeed(cfg){ view.sp={state:"ready",cfg,correct:0,set:buildSet(cfg),redo:[],flag:new Set(),last:null}; }
+function startSpeed(cfg){ view.sp={state:"ready",cfg,correct:0,set:buildSet(cfg),redo:[],flag:new Map(),last:null}; }
 function renderSpeed(cfg,n){
   if(!view.sp||view.sp.cfg!==cfg) startSpeed(cfg);
   const sp=view.sp, inStory=!!n;
@@ -961,19 +1049,19 @@ function renderSpeed(cfg,n){
   let body="";
   if(sp.state==="ready"){
     body=`<div class="question">Schaffe ${cfg.goal} richtige Antworten in ${cfg.secs} Sekunden. Du musst nicht auf Prüfen tippen: Sobald die Zahl stimmt, kommt die nächste Aufgabe.</div>
-     <div><div class="label">Diese Aufgaben kommen dran</div><p style="margin:6px 0 0">${sp.set.map(k=>`<span class="chip">${k}</span>`).join(" ")}</p></div>
+     <div><div class="label">Diese Aufgaben kommen dran</div><p style="margin:6px 0 0">${sp.set.map(k=>{const [a,b]=k.split("×").map(Number);return `<span class="chip">${cfg.op==="div"?`${a*b} : ${b}`:k}</span>`;}).join(" ")}</p></div>
      <button class="big" id="spgo">Los!</button>`;
   } else if(sp.state==="run"){
     body=`<div class="spbar"><div class="spfill" id="spfill"></div></div>
      <div class="spstat"><span id="spcount">✓ ${sp.correct} / ${cfg.goal}</span><span id="sptime">${cfg.secs} s</span></div>
-     <div class="answer-row"><span class="task" id="sptask">${sp.task.a} × ${sp.task.b} =</span><div class="display empty" id="disp">?</div></div>
+     <div class="answer-row"><span class="task" id="sptask">${sp.task.txt} =</span><div class="display empty" id="disp">?</div></div>
      <div class="pad">${[1,2,3,4,5,6,7,8,9].map(d=>`<button class="key" data-sk="${d}">${d}</button>`).join("")}<button class="key del" data-sk="del" aria-label="Löschen">⌫</button><button class="key" data-sk="0">0</button></div>
      <div class="feedback" id="fb" aria-live="polite"></div>`;
   } else {
-    const won=sp.state==="won", flags=[...sp.flag];
+    const won=sp.state==="won", flags=[...sp.flag.values()];
     body=`<p class="feedback ${won?"good":"bad"}">${esc(won?(inStory?n.win:"Geschafft!"):(inStory?n.lose:"Die Zeit ist um."))} ${won?"★".repeat(sp.stars):""}</p>
      <p>${sp.correct} richtige Antworten${won?` in ${sp.used} Sekunden`:""}.</p>
-     ${flags.length?`<div><div class="label">Merkliste: diese Aufgaben kommen öfter wieder</div><p style="margin:6px 0 0">${flags.map(k=>`<span class="chip hot">${k} = ${k.split("×").reduce((x,y)=>x*y,1)}</span>`).join(" ")}</p></div>`:`<p>Keine Aufgabe auf der Merkliste. Stark!</p>`}
+     ${flags.length?`<div><div class="label">Merkliste: diese Aufgaben kommen öfter wieder</div><p style="margin:6px 0 0">${flags.map(t=>`<span class="chip hot">${t}</span>`).join(" ")}</p></div>`:`<p>Keine Aufgabe auf der Merkliste. Stark!</p>`}
      ${won&&inStory?`<p><b>Notiz:</b> ${esc(n.clue)}</p><button class="big" id="spnext">Weiter</button>`:`<button class="big" id="spretry">${won?"Nochmal trainieren":"Nochmal versuchen"}</button>`}`;
   }
   app.innerHTML=bar()+`<article class="file">${header}${body}</article>`;
@@ -999,7 +1087,7 @@ function spEnd(won){
   if(won){const rest=1-sp.used/sp.cfg.secs; sp.stars=rest>=.33?3:rest>=.15?2:1; if(view.spCtx.n) award(sp.stars,view.spCtx.n.clue);}
   save(); renderSpeed(view.spCtx.cfg,view.spCtx.n);
 }
-function spShowTask(){const sp=view.sp,d=document.getElementById("disp");document.getElementById("sptask").textContent=`${sp.task.a} × ${sp.task.b} =`;d.textContent="?";d.classList.add("empty");}
+function spShowTask(){const sp=view.sp,d=document.getElementById("disp");document.getElementById("sptask").textContent=`${sp.task.txt} =`;d.textContent="?";d.classList.add("empty");}
 function spPress(k){
   const sp=view.sp; if(!sp||sp.state!=="run"||sp.lock) return;
   const d=document.getElementById("disp"), fb=document.getElementById("fb");
@@ -1007,19 +1095,19 @@ function spPress(k){
   d.textContent=sp.entry||"?"; d.classList.toggle("empty",!sp.entry); d.classList.remove("shake");
   const ans=String(sp.task.ans);
   if(sp.entry.length<ans.length) return;
-  const f=fact(sp.task.k), dt=(performance.now()-sp.task.t0)/1000;
+  const f=fact((sp.cfg.op==="div"?"D":"")+sp.task.k), dt=(performance.now()-sp.task.t0)/1000, lbl=`${sp.task.txt} = ${ans}`;
   if(sp.entry===ans){
     f.seen++;
     if(dt<=4) f.box=Math.min(5,f.box+1);
-    else if(dt>7){ f.box=Math.max(1,f.box-1); sp.flag.add(sp.task.k); sp.redo.push({k:sp.task.k,wait:3}); }
+    else if(dt>7){ f.box=Math.max(1,f.box-1); sp.flag.set(sp.task.k,lbl); sp.redo.push({k:sp.task.k,wait:3}); }
     else if(f.box===0) f.box=1;
     sp.correct++; document.getElementById("spcount").textContent=`✓ ${sp.correct} / ${sp.cfg.goal}`;
     fb.className="feedback good"; fb.textContent=dt<=4?"Blitzschnell!":dt>7?"Richtig, aber langsam. Die kommt nochmal.":"Richtig!";
     if(sp.correct>=sp.cfg.goal) return spEnd(true);
     spNext(); spShowTask();
   } else {
-    f.seen++; f.wrong++; f.box=1; sp.flag.add(sp.task.k); sp.redo.push({k:sp.task.k,wait:2});
-    fb.className="feedback bad"; fb.textContent=`${sp.task.a} × ${sp.task.b} = ${ans}. Merk sie dir, sie kommt gleich wieder!`;
+    f.seen++; f.wrong++; f.box=1; sp.flag.set(sp.task.k,lbl); sp.redo.push({k:sp.task.k,wait:2});
+    fb.className="feedback bad"; fb.textContent=`${lbl}. Merk sie dir, sie kommt gleich wieder!`;
     sp.entry=""; void d.offsetWidth; d.classList.add("shake"); sp.lock=true;
     setTimeout(()=>{ sp.lock=false; if(view.sp===sp&&sp.state==="run"){ spNext(); spShowTask(); } },1300);
   }
