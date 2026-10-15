@@ -40,6 +40,8 @@ h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;le
 .hero h1{font-size:clamp(34px,8vw,54px);line-height:1.05;color:var(--paper);position:relative;max-width:12ch}
 .hero p{margin:0;color:var(--foam);position:relative;max-width:min(42ch,calc(100% - 70px))}
 .stamp + .label{padding-right:100px}
+.stamp.wide{max-width:150px;text-align:center;line-height:1.15}
+.stamp.wide + .label{padding-right:170px}
 .big{background:var(--beam);color:var(--ink);border:none;border-radius:14px;padding:16px 26px;font-size:20px;font-weight:700;box-shadow:0 5px 0 #b38f1f;position:relative;align-self:flex-start}
 .big:active{transform:translateY(3px);box-shadow:0 2px 0 #b38f1f}
 .big:disabled{opacity:.45;cursor:default}
@@ -171,6 +173,16 @@ h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;le
 .cardbtn{display:flex;gap:12px;align-items:center;text-align:left;padding:12px 14px;border-radius:12px;border:3px solid var(--line);background:#fff;color:var(--ink);font-size:16px;line-height:1.35}
 .cardbtn svg{flex:none}
 .cardbtn.sel{border-color:var(--ok);background:#e6f3e8}
+.spdots{display:flex;gap:4px}
+.spdots span{flex:1;height:10px;border-radius:5px;background:#e3d6b4}
+.spdots span.d{background:var(--ok)}
+.spdots span.c{background:var(--beam)}
+.spresult{text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center}
+.spavg{font-family:var(--f-display);font-size:56px;line-height:1.05;font-variant-numeric:tabular-nums}
+.sptimes{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;margin-top:6px}
+.sptimes span{display:flex;justify-content:space-between;gap:6px;font-family:var(--f-type);font-size:15px;background:#fff;color:var(--ink);border:2px solid var(--line);border-radius:8px;padding:4px 8px}
+.sptimes span.slow{border-color:var(--stamp)}
+.sptimes span.fast{border-color:var(--ok)}
 .spbar{height:16px;background:#e3d6b4;border-radius:999px;overflow:hidden;border:2px solid var(--ink)}
 .spfill{height:100%;width:100%;background:var(--ok);transition:width .1s linear}
 .spfill.low{background:var(--stamp)}
@@ -196,7 +208,10 @@ body.mood-dark .ch{background:#121c19;border-color:#24372f}
 body.mood-dark .ch-num{color:#8fe0a8}
 body.mood-dark .spbar{background:#2c3a36;border-color:#8aa39a}
 body.mood-dark .spfill{background:#5fd08a}
-body.mood-dark .spstat{color:#eef5ea}
+body.mood-dark .spstat,body.mood-dark .spavg{color:#eef5ea}
+body.mood-dark .spdots span{background:#2c3a36}
+body.mood-dark .spdots span.d{background:#5fd08a}
+body.mood-dark .spdots span.c{background:var(--beam)}
 body.mood-dark .task{color:#ffffff;text-shadow:0 0 14px rgba(120,220,150,.35)}
 body.mood-dark .arena{background:#0e1412;box-shadow:inset 0 0 0 1px #2c3a36}
 body.mood-dark .arrow{color:#8aa39a}
@@ -542,7 +557,7 @@ const CHAPTERS = [
       "Eine Woche nach dem Hafenfest wird das Drachenbootrennen nachgeholt. Diesmal rudert auch das Detektivbüro mit, im eigenen Boot: der „Leuchtfeuer“.",
       "Beim Abendtraining kriecht Nebel vom Meer herein. Trainerin Svea senkt die Stimme. „Kennt ihr die Legende vom Nebelkapitän? Vor hundert Jahren verschwand er beim Rennen im Nebel. Seitdem rudert er in der Nacht vor jedem Rennen mit einer grünen Laterne durch den Hafen. Und wessen Boot er berührt …“",
       "Sie macht eine Pause. „… das kommt nie im Ziel an.“ Ben lacht nervös. Niemand lacht mit."], next:"speed1"},
-    speed1:{type:"speed", scene:"Trommeltakt", text:"Der Nebel wird dichter. Svea schlägt die Trommel, damit ihr den Weg zurück zum Steg findet. Bei jedem Schlag muss eine Rechnung sitzen. Du musst nicht auf Prüfen tippen: Sobald die Zahl stimmt, kommt die nächste Aufgabe.", speed:{secs:120, goal:6, tables:[7], setSize:6}, win:"Der Steg taucht aus dem Nebel auf. Geschafft! Doch draußen auf dem Wasser glimmt kurz ein grünes Licht.", lose:"Ihr treibt im Nebel. Svea trommelt lauter. Nochmal, schneller!", clue:"Erstes Training geschafft. Die 7er-Reihe wird schneller.", next:"bench"},
+    speed1:{type:"speed", scene:"Trommeltakt", text:"Der Nebel wird dichter. Svea schlägt die Trommel, damit ihr den Weg zurück zum Steg findet. Bei jedem Schlag muss eine Rechnung sitzen. Du musst nicht auf Prüfen tippen: Sobald die Zahl stimmt, kommt die nächste Aufgabe.", speed:{tables:[7], setSize:6}, win:"Der Steg taucht aus dem Nebel auf. Geschafft! Doch draußen auf dem Wasser glimmt kurz ein grünes Licht.", lose:"Ihr treibt im Nebel. Svea trommelt lauter. Nochmal, schneller!", clue:"Erstes Training geschafft. Die 7er-Reihe wird schneller.", next:"bench"},
     bench:{type:"num", scene:"Das Drachenboot", text:"Ein Drachenboot hat 9 Bänke. Auf jeder Bank sitzen 2 Ruderer. Dazu kommen ein Trommler vorne und eine Steuerfrau hinten.", q:"Wie viele Leute sitzen im Boot?", answer:20, sol:"9 × 2 = 18 Ruderer. Dazu Trommler und Steuerfrau: 18 + 2 = 20.", clue:"In der Leuchtfeuer sitzen 20 Leute.", next:"d1"},
     d1:{type:"decide", scene:"Das Bootshaus", text:"Die Leuchtfeuer liegt über Nacht im alten Bootshaus. Das Holz knarrt, die Laternen am Kai flackern. Mila hat ein ungutes Gefühl.", q:"Was macht ihr?", options:[
       {label:"Nachtwache halten", sub:"Mit Taschenlampe hinter den Netzen verstecken. Wenn ihr euch traut.", next:"watch"},
@@ -556,7 +571,7 @@ const CHAPTERS = [
     start:{type:"story", title:"Die Probefahrt", text:[
       "Svea hat Ersatzpaddel besorgt. Bei der Probefahrt im Morgennebel ist es totenstill. Nur das Wasser gluckert.",
       "Dann knackt es unter euren Füßen. Durch ein Loch im Rumpf sprudelt eiskaltes Wasser ins Boot! Und aus dem Nebel ertönt ein heiseres Lachen."], next:"speed2"},
-    speed2:{type:"speed", scene:"Wasser schöpfen", text:"Schöpft, so schnell ihr könnt! Jede richtige Rechnung ist ein Eimer Wasser. Schafft 8 Eimer, dann seid ihr am Ufer.", speed:{secs:120, goal:8, tables:[6,8], setSize:6}, win:"Ihr erreicht das Ufer, bevor das Boot sinkt.", lose:"Das Wasser steht euch bis zu den Knöcheln. Schnell, nochmal!", clue:"Ihr habt die Leuchtfeuer ans Ufer gerettet.", next:"buckets"},
+    speed2:{type:"speed", scene:"Wasser schöpfen", text:"Schöpft, so schnell ihr könnt! Jede richtige Rechnung ist ein Eimer Wasser. 15 Eimer, dann seid ihr am Ufer.", speed:{tables:[6,8], setSize:6}, win:"Ihr erreicht das Ufer, bevor das Boot sinkt.", lose:"Das Wasser steht euch bis zu den Knöcheln. Schnell, nochmal!", clue:"Ihr habt die Leuchtfeuer ans Ufer gerettet.", next:"buckets"},
     buckets:{type:"num", scene:"Am Ufer", text:"Am Ufer kippt ihr das geschöpfte Wasser in Eimer, in jeden gleich viel.", share:{n:48,k:6,item:"circle:blue",group:"Eimer"}, q:"Wie viele Liter kommen in jeden Eimer?", answer:8, sol:"48 : 6 = 8", clue:"Ihr habt 48 Liter Wasser geschöpft.", next:"captains"},
     captains:{type:"pick", tries:3, scene:"Wer hatte den Schlüssel?", text:"Das Loch im Rumpf wurde gebohrt. Der Bootshausschlüssel hängt im Vereinsheim, und dort dürfen nur die vier Kapitäne hinein: Svea vom Team Leuchtfeuer, Ole vom Team Möwe, Knut vom Team Seeteufel und Pia von den Hafenkatzen. Svea war den ganzen Abend mit euch beim Training. Ole ist seit einer Woche im Urlaub. Pia hat einen Gips am Arm und kann weder sägen noch bohren.", q:"Wer kann es gewesen sein?", options:["Svea","Ole","Knut","Pia"], answer:"Knut", sol:"Svea hat ein Alibi, Ole ist verreist, Pia kann nicht sägen. Es bleibt Knut.", clue:"BEWEIS: Nur Knut, der Kapitän der Seeteufel, konnte an den Bootshausschlüssel.", next:"END"}
    }},
@@ -571,7 +586,7 @@ const CHAPTERS = [
     d1:{type:"decide", scene:"Knut haut ab!", text:"Aus einer der Hütten tritt Knut. Unter seinem Arm klemmt ein schwarzes Bündel. Als er euch sieht, springt er aufs Fahrrad.", q:"Was macht ihr?", options:[
       {label:"Hinterher!", sub:"Mit den Fahrrädern quer durch den Hafen.", next:"chase"},
       {label:"In die dunkle Hütte gehen", sub:"Die Tür quietscht und steht einen Spalt offen.", next:"shop"}]},
-    chase:{type:"speed", scene:"Fahrrad-Verfolgung", text:"Knut tritt kräftig in die Pedale! Jede richtige Rechnung ist ein Tritt. Jetzt kommen alle schweren Aufgaben durcheinander.", speed:{secs:120, goal:10, tables:[6,7,8,9], core:true, setSize:7}, win:"Am Fischmarkt holt ihr Knut ein. Das Bündel fällt herunter: ein schwarzer Umhang mit Kapuze. Und sein Fahrrad ist frisch hellblau gestrichen.", lose:"Knut ist um die Ecke verschwunden. Ihr nehmt eine Abkürzung und versucht es nochmal.", clue:"BEWEIS: Gestern hat nur das Team Seeteufel sein Boot hellblau gestrichen.", next:"END"},
+    chase:{type:"speed", scene:"Fahrrad-Verfolgung", text:"Knut tritt kräftig in die Pedale! Jede richtige Rechnung ist ein Tritt. Jetzt kommen alle schweren Aufgaben durcheinander.", speed:{tables:[6,7,8,9], core:true, setSize:7}, win:"Am Fischmarkt holt ihr Knut ein. Das Bündel fällt herunter: ein schwarzer Umhang mit Kapuze. Und sein Fahrrad ist frisch hellblau gestrichen.", lose:"Knut ist um die Ecke verschwunden. Ihr nehmt eine Abkürzung und versucht es nochmal.", clue:"BEWEIS: Gestern hat nur das Team Seeteufel sein Boot hellblau gestrichen.", next:"END"},
     shop:{type:"num", scene:"Die dunkle Hütte", text:"In der Hütte riecht es nach Farbe und Kerzenwachs. An einem Haken hängt eine grüne Laterne. Im Licht eurer Taschenlampe seht ihr ein Regal voller Farbdosen.", count:{"circle:lightblue":5,"circle:blue":4,"circle:white":3,"circle:green":2,"circle:red":2}, q:"Wie viele HELLBLAUE Dosen siehst du?", answer:5, sol:"Es sind 5 hellblaue Dosen. Die dunkelblauen zählen nicht.", clue:"BEWEIS: Gestern hat nur das Team Seeteufel sein Boot hellblau gestrichen.", next:"END"}
    }},
  { title:"Das Rennen im Nebel",
@@ -586,7 +601,7 @@ const CHAPTERS = [
       {id:"wasser", icon:"circle:blue", text:"Ihr habt 48 Liter Wasser aus dem Boot geschöpft."},
       {id:"schluessel", icon:"square:yellow", text:"Den Bootshausschlüssel konnte nur Knut holen."},
       {id:"svea", icon:"star:green", text:"Svea hat neue Ersatzpaddel besorgt."}]}, q:"Wähle die 3 Beweise, die zusammen zeigen, dass Knut die Boote beschädigt hat.", sol:"Die hellblaue Farbe am Schloss stammt vom Team Seeteufel. Und nur Knut konnte an den Schlüssel.", clue:"Der Schiedsrichter schließt Knut vom Rennen aus.", next:"race"},
-    race:{type:"speed", scene:"Das Rennen", text:"Startschuss! Der Nebel ist so dicht, dass ihr die anderen Boote nur hört. Knut darf nicht mitfahren, aber sein Team ist trotzdem stark. Jetzt kommen alle Aufgaben, die dir schwerfallen, besonders oft. 14 richtige bis ins Ziel!", speed:{secs:200, goal:14, tables:[6,7,8,9], core:true, weak:true, setSize:8}, win:"Aus dem Nebel taucht die Ziellinie auf. Mit einer Bootsspitze Vorsprung rauscht die Leuchtfeuer hinüber!", lose:"Knapp verloren. Zum Glück war das nur der Vorlauf. Gleich startet das Finale!", clue:"Die Leuchtfeuer hat das Drachenbootrennen gewonnen.", next:"party"},
+    race:{type:"speed", scene:"Das Rennen", text:"Startschuss! Der Nebel ist so dicht, dass ihr die anderen Boote nur hört. Knut darf nicht mitfahren, aber sein Team ist trotzdem stark. Jetzt kommen alle Aufgaben, die dir schwerfallen, besonders oft. 15 Aufgaben bis ins Ziel!", speed:{tables:[6,7,8,9], core:true, weak:true, setSize:8}, win:"Aus dem Nebel taucht die Ziellinie auf. Mit einer Bootsspitze Vorsprung rauscht die Leuchtfeuer hinüber!", lose:"Knapp verloren. Zum Glück war das nur der Vorlauf. Gleich startet das Finale!", clue:"Die Leuchtfeuer hat das Drachenbootrennen gewonnen.", next:"party"},
     party:{type:"num", scene:"Die Siegerfeier", text:"Bäcker Jansen bringt Muffins für die Sieger. Er verteilt sie gerecht auf die 9 Ruderbänke.", share:{n:36,k:9,item:"muffin:yellow",group:"Bänke"}, q:"Wie viele Muffins bekommt jede Bank?", answer:4, sol:"36 : 9 = 4", clue:"Fall gelöst! Die Leuchtfeuer hat gewonnen, und Knut repariert alle Boote.", next:"END"}
    }},
 
@@ -636,7 +651,7 @@ const CHAPTERS = [
     start:{type:"story", title:"Die Geisteruhr", text:[
       "In der Aula tickt die große Schuluhr so laut, dass es in den Ohren dröhnt. Gleich schlägt sie drei.",
       "Auf dem Ziffernblatt erscheinen leuchtende Geteilt-Aufgaben."], next:"clock"},
-    clock:{type:"speed", scene:"Die Geisteruhr", text:"Bevor die Uhr drei schlägt, müsst ihr die Aufgaben auf dem Ziffernblatt lösen. Die Aufgaben, die dir schwerfallen, kommen öfter.", speed:{secs:120, goal:8, tables:[6,7,8,9], op:"div", core:true, setSize:7}, win:"Die Zeiger bleiben stehen. Es ist ganz still.", lose:"Die Uhr schlägt drei. Doch dann dreht sie sich mit einem Knirschen zurück. Noch eine Chance!", clue:"Ihr habt die Geisteruhr angehalten.", next:"exit"},
+    clock:{type:"speed", scene:"Die Geisteruhr", text:"Bevor die Uhr drei schlägt, müsst ihr die 15 Aufgaben auf dem Ziffernblatt lösen, so schnell ihr könnt. Die Aufgaben, die dir schwerfallen, kommen öfter.", speed:{tables:[6,7,8,9], op:"div", core:true, setSize:7}, win:"Die Zeiger bleiben stehen. Es ist ganz still.", lose:"Die Uhr schlägt drei. Doch dann dreht sie sich mit einem Knirschen zurück. Noch eine Chance!", clue:"Ihr habt die Geisteruhr angehalten.", next:"exit"},
     exit:{type:"path", scene:"Zum Ausgang", text:"Der Weg zum Ausgang führt über den Schulhof. Auf den Pflastersteinen leuchten Rechnungen. Nur die, deren Ergebnis 7 ist, sind sicher. Ihr startet oben rechts.", grid:[["48:6", "21:3", "28:4", "63:9", "30:5", "35:5"], ["36:4", "21:3", "30:6", "56:8", "21:3", "42:6"], ["54:6", "14:2", "35:7", "42:6", "35:5", "24:3"], ["56:7", "56:8", "42:6", "14:2", "48:8", "14:2"], ["42:6", "25:5", "20:4", "35:5", "25:5", "81:9"], ["Ausgang", "28:4", "42:6", "49:7", "48:6", "24:3"]], start:[0,5], goal:[5,0], rule:"d7", q:"Finde den Weg zum Ausgang.", clue:"Ihr steht vor der Ausgangstür mit der Nummer 33.", next:"combine"},
     combine:{type:"combine", tries:3, scene:"Wer ist das Schulgespenst?", text:"Vor der Tür hält Mila alle an. „Wir wissen, wer die Botschaften geschrieben hat.“ Sie legt die Hinweise nebeneinander.", combine:{pick:2, answer:["kreide","nurgruen"], cards:[
       {id:"kreide", icon:"ghost:white", text:"Alle Geisterbotschaften sind mit grüner Kreide geschrieben."},
@@ -823,7 +838,7 @@ function renderTitle(){
    <div class="cases">${cards}</div>
    <p class="hint-name" id="hintname" ${S.name?"hidden":""}>Trag zuerst deinen Detektivnamen ein.</p>
    <div class="label" style="color:#9bb7c3">Zwischendurch</div>
-   <button class="case" id="trainbtn"><span class="case-badge" style="background:#cfe3ea">⏱</span><span class="case-body"><span class="case-title">Rechen-Training</span><span class="case-blurb">Deine kniffligen Malaufgaben, so schnell du kannst.</span><span class="case-meta"><span>${weakList().length} Aufgaben auf der Merkliste</span></span></span></button>
+   <button class="case" id="trainbtn"><span class="case-badge" style="background:#cfe3ea">⏱</span><span class="case-body"><span class="case-title">So schnell du kannst</span><span class="case-blurb">15 knifflige Malaufgaben. Wie schnell bist du im Schnitt?</span><span class="case-meta"><span>${weakList().length} Aufgaben auf der Merkliste</span>${S.best&&S.best.train?`<span>Bestzeit ${fmtS(S.best.train)}</span>`:""}</span></span></button>
    <button class="ghost" data-act="reset" style="align-self:flex-start;font-size:14px;opacity:.7">Neues Spiel beginnen</button>`;
   const inp=document.getElementById("detname");
   const upd=()=>{const ok=!!inp.value.trim();app.querySelectorAll(".case").forEach(b=>b.disabled=!ok);document.getElementById("hintname").hidden=ok;};
@@ -849,7 +864,7 @@ function renderMap(){
 
 function head(n,stamp){
   const cs=caseOf(view.ch), k=view.ch-CASES[cs].from+1;
-  return `${stamp?`<div class="stamp">${stamp}</div>`:""}<div class="label">Fall ${cs+1} · Kapitel ${k} · ${esc(CHAPTERS[view.ch].title)}</div><h2>${esc(n.scene||n.title)}</h2>`;
+  return `${stamp?`<div class="stamp${stamp.length>12?" wide":""}">${stamp}</div>`:""}<div class="label">Fall ${cs+1} · Kapitel ${k} · ${esc(CHAPTERS[view.ch].title)}</div><h2>${esc(n.scene||n.title)}</h2>`;
 }
 
 function padHtml(){
@@ -1047,57 +1062,64 @@ function spNext(){
   if(due>=0) k=sp.redo.splice(due,1)[0].k;
   else{ const opts=sp.set.filter(x=>x!==sp.last); k=opts[Math.floor(Math.random()*opts.length)]; }
   const [a,b]=k.split("×").map(Number), sw=Math.random()<.5;
-  if(sp.cfg.op==="div"){ const d=sw?a:b; sp.task={k,txt:`${a*b} : ${d}`,ans:a*b/d,t0:performance.now(),miss:false}; }
-  else sp.task={k,txt:`${sw?b:a} × ${sw?a:b}`,ans:a*b,t0:performance.now(),miss:false};
+  if(sp.cfg.op==="div"){ const d=sw?a:b; sp.task={k,txt:`${a*b} : ${d}`,ans:a*b/d,t0:performance.now(),miss:false,tries:0}; }
+  else sp.task={k,txt:`${sw?b:a} × ${sw?a:b}`,ans:a*b,t0:performance.now(),miss:false,tries:0};
   sp.last=k; sp.entry="";
 }
-function startSpeed(cfg){ view.sp={state:"ready",cfg,correct:0,set:buildSet(cfg),redo:[],flag:new Map(),last:null}; }
+const SP_N=15;
+const fmtS=t=>t.toFixed(1).replace(".",",")+" s";
+function startSpeed(cfg){ view.sp={state:"ready",cfg,done:0,times:[],set:buildSet(cfg),redo:[],flag:new Map(),last:null}; }
+function spBestKey(n){ return n?`${view.ch}:${view.node}`:"train"; }
 function renderSpeed(cfg,n){
   if(!view.sp||view.sp.cfg!==cfg) startSpeed(cfg);
   const sp=view.sp, inStory=!!n;
-  const header=inStory?`${head(n,"Speed")}<p>${esc(n.text)}</p>`:`<div class="label">Training · Detektiv ${esc(S.name)}</div><h2>Rechen-Training</h2><p>Hier kommen deine kniffligen Malaufgaben. Was du falsch oder langsam rechnest, kommt öfter wieder. Was schnell sitzt, kommt seltener.</p>`;
+  const header=inStory?`${head(n,"So schnell du kannst")}<p>${esc(n.text)}</p>`:`<div class="label">Detektiv ${esc(S.name)}</div><h2>So schnell du kannst</h2><p>Hier kommen deine kniffligen Aufgaben. Was du falsch oder langsam rechnest, kommt öfter wieder. Was schnell sitzt, kommt seltener.</p>`;
+  const best=(S.best||{})[spBestKey(n)];
   let body="";
   if(sp.state==="ready"){
-    body=`<div class="question">Schaffe ${cfg.goal} richtige Antworten in ${cfg.secs} Sekunden. Du musst nicht auf Prüfen tippen: Sobald die Zahl stimmt, kommt die nächste Aufgabe.</div>
+    body=`<div class="question">${SP_N} Aufgaben, so schnell du kannst. Die Uhr läuft bei jeder Aufgabe mit. Am Ende siehst du deine Durchschnittszeit.</div>
+     ${best?`<p class="tries">Deine Bestzeit hier: ${fmtS(best)} pro Aufgabe</p>`:""}
      <div><div class="label">Diese Aufgaben kommen dran</div><p style="margin:6px 0 0">${sp.set.map(k=>{const [a,b]=k.split("×").map(Number);return `<span class="chip">${cfg.op==="div"?`${a*b} : ${b}`:k}</span>`;}).join(" ")}</p></div>
      <button class="big" id="spgo">Los!</button>`;
   } else if(sp.state==="run"){
-    body=`<div class="spbar"><div class="spfill" id="spfill"></div></div>
-     <div class="spstat"><span id="spcount">✓ ${sp.correct} / ${cfg.goal}</span><span id="sptime">${cfg.secs} s</span></div>
+    body=`<div class="spdots">${Array.from({length:SP_N},(_,i)=>`<span class="${i<sp.done?"d":i===sp.done?"c":""}"></span>`).join("")}</div>
+     <div class="spstat"><span id="spcount">Aufgabe ${sp.done+1} von ${SP_N}</span><span id="sptime">0,0 s</span></div>
      <div class="answer-row"><span class="task" id="sptask">${sp.task.txt} =</span><div class="display empty" id="disp">?</div></div>
      <div class="pad">${[1,2,3,4,5,6,7,8,9].map(d=>`<button class="key" data-sk="${d}">${d}</button>`).join("")}<button class="key del" data-sk="del" aria-label="Löschen">⌫</button><button class="key" data-sk="0">0</button></div>
      <div class="feedback" id="fb" aria-live="polite"></div>`;
   } else {
-    const won=sp.state==="won", flags=[...sp.flag.values()];
-    body=`<p class="feedback ${won?"good":"bad"}">${esc(won?(inStory?n.win:"Geschafft!"):(inStory?n.lose:"Die Zeit ist um."))} ${won?"★".repeat(sp.stars):""}</p>
-     <p>${sp.correct} richtige Antworten${won?` in ${sp.used} Sekunden`:""}.</p>
+    const flags=[...sp.flag.values()], avg=sp.avg, rows=sp.times.slice().sort((x,y)=>y.t-x.t);
+    body=`<div class="spresult"><div class="label">Deine Durchschnittszeit</div><div class="spavg">${fmtS(avg)}</div><div class="tries">pro Aufgabe ${"★".repeat(sp.stars)}${sp.newBest?" · Neue Bestzeit!":best?` · Bestzeit ${fmtS(best)}`:""}</div></div>
+     ${inStory?`<p class="feedback good">${esc(n.win)}</p>`:""}
+     <div><div class="label">Deine Zeiten, langsamste zuerst</div><div class="sptimes">${rows.map(r=>`<span class="${r.t>7||r.wrong?"slow":r.t<=4?"fast":""}">${esc(r.txt)}<b>${fmtS(r.t)}</b></span>`).join("")}</div></div>
      ${flags.length?`<div><div class="label">Merkliste: diese Aufgaben kommen öfter wieder</div><p style="margin:6px 0 0">${flags.map(t=>`<span class="chip hot">${t}</span>`).join(" ")}</p></div>`:`<p>Keine Aufgabe auf der Merkliste. Stark!</p>`}
-     ${won&&inStory?`<p><b>Notiz:</b> ${esc(n.clue)}</p><button class="big" id="spnext">Weiter</button>`:`<button class="big" id="spretry">${won?"Nochmal trainieren":"Nochmal versuchen"}</button>`}`;
+     <p class="tries">Sterne: ★★★ bis 4 Sekunden, ★★ bis 6 Sekunden, ★ darüber.</p>
+     ${inStory?`<p><b>Notiz:</b> ${esc(n.clue)}</p><div class="answer-row"><button class="big" id="spnext">Weiter</button><button class="small" id="spretry">Nochmal versuchen</button></div>`:`<button class="big" id="spretry">Nochmal</button>`}`;
   }
   app.innerHTML=bar()+`<article class="file">${header}${body}</article>`;
   view.spCtx={cfg,n};
-  if(sp.state==="ready") document.getElementById("spgo").onclick=()=>{sp.state="run";spNext();sp.tStart=performance.now();renderSpeed(cfg,n);spTick(cfg);};
+  if(sp.state==="ready") document.getElementById("spgo").onclick=()=>{sp.state="run";spNext();renderSpeed(cfg,n);spTick();};
   else if(sp.state==="run") app.querySelectorAll("[data-sk]").forEach(b=>b.onclick=()=>spPress(b.dataset.sk));
-  else if(document.getElementById("spnext")) document.getElementById("spnext").onclick=()=>go(n.next);
-  else document.getElementById("spretry").onclick=()=>{startSpeed(cfg);renderSpeed(cfg,n);};
+  else { const nx=document.getElementById("spnext"); if(nx) nx.onclick=()=>go(n.next); document.getElementById("spretry").onclick=()=>{startSpeed(cfg);renderSpeed(cfg,n);}; }
 }
-function spTick(cfg){
+function spTick(){
   if(window.spTimer) clearInterval(window.spTimer);
   window.spTimer=setInterval(()=>{
     const sp=view.sp; if(!sp||sp.state!=="run"){clearInterval(window.spTimer);window.spTimer=null;return;}
-    const left=Math.max(0,cfg.secs-(performance.now()-sp.tStart)/1000);
-    const f=document.getElementById("spfill"), t=document.getElementById("sptime");
-    if(f){f.style.width=(left/cfg.secs*100)+"%";f.classList.toggle("low",left<10);} if(t) t.textContent=Math.ceil(left)+" s";
-    if(left<=0) spEnd(false);
+    const t=document.getElementById("sptime"); if(t) t.textContent=fmtS((performance.now()-sp.task.t0)/1000);
   },100);
 }
-function spEnd(won){
+function spEnd(){
   const sp=view.sp; clearInterval(window.spTimer); window.spTimer=null;
-  sp.state=won?"won":"lost"; sp.used=Math.round((performance.now()-sp.tStart)/1000);
-  if(won){const rest=1-sp.used/sp.cfg.secs; sp.stars=rest>=.33?3:rest>=.15?2:1; if(view.spCtx.n) award(sp.stars,view.spCtx.n.clue);}
+  sp.state="done"; sp.avg=sp.times.reduce((a,r)=>a+r.t,0)/sp.times.length;
+  sp.stars=sp.avg<=4?3:sp.avg<=6?2:1;
+  S.best=S.best||{}; const k=spBestKey(view.spCtx.n);
+  if(!S.best[k]||sp.avg<S.best[k]){ sp.newBest=!!S.best[k]; S.best[k]=sp.avg; }
+  if(view.spCtx.n) award(sp.stars,view.spCtx.n.clue);
   save(); renderSpeed(view.spCtx.cfg,view.spCtx.n);
 }
-function spShowTask(){const sp=view.sp,d=document.getElementById("disp");document.getElementById("sptask").textContent=`${sp.task.txt} =`;d.textContent="?";d.classList.add("empty");}
+function spShowTask(){const sp=view.sp,d=document.getElementById("disp");document.getElementById("sptask").textContent=`${sp.task.txt} =`;d.textContent="?";d.classList.add("empty");document.getElementById("spcount").textContent=`Aufgabe ${sp.done+1} von ${SP_N}`;
+  app.querySelectorAll(".spdots span").forEach((s,i)=>{s.className=i<sp.done?"d":i===sp.done?"c":"";});}
 function spPress(k){
   const sp=view.sp; if(!sp||sp.state!=="run"||sp.lock) return;
   const d=document.getElementById("disp"), fb=document.getElementById("fb");
@@ -1105,26 +1127,30 @@ function spPress(k){
   d.textContent=sp.entry||"?"; d.classList.toggle("empty",!sp.entry); d.classList.remove("shake");
   const ans=String(sp.task.ans);
   if(sp.entry.length<ans.length) return;
-  const f=fact((sp.cfg.op==="div"?"D":"")+sp.task.k), dt=(performance.now()-sp.task.t0)/1000, lbl=`${sp.task.txt} = ${ans}`;
+  const f=fact((sp.cfg.op==="div"?"D":"")+sp.task.k), lbl=`${sp.task.txt} = ${ans}`;
   if(sp.entry===ans){
+    const dt=(performance.now()-sp.task.t0)/1000;
     f.seen++;
-    if(dt<=4) f.box=Math.min(5,f.box+1);
+    if(sp.task.miss){ sp.redo.push({k:sp.task.k,wait:3}); }
+    else if(dt<=4) f.box=Math.min(5,f.box+1);
     else if(dt>7){ f.box=Math.max(1,f.box-1); sp.flag.set(sp.task.k,lbl); sp.redo.push({k:sp.task.k,wait:3}); }
     else if(f.box===0) f.box=1;
-    sp.correct++; document.getElementById("spcount").textContent=`✓ ${sp.correct} / ${sp.cfg.goal}`;
-    fb.className="feedback good"; fb.textContent=dt<=4?"Blitzschnell!":dt>7?"Richtig, aber langsam. Die kommt nochmal.":"Richtig!";
-    if(sp.correct>=sp.cfg.goal) return spEnd(true);
+    sp.times.push({txt:sp.task.txt,t:dt,wrong:sp.task.miss}); sp.done++;
+    fb.className="feedback good"; fb.textContent=dt<=4?`Blitzschnell! ${fmtS(dt)}`:`Richtig! ${fmtS(dt)}`;
+    if(sp.done>=SP_N){ save(); return spEnd(); }
     spNext(); spShowTask();
   } else {
-    f.seen++; f.wrong++; f.box=1; sp.flag.set(sp.task.k,lbl); sp.redo.push({k:sp.task.k,wait:2});
-    fb.className="feedback bad"; fb.textContent=`${lbl}. Merk sie dir, sie kommt gleich wieder!`;
-    sp.entry=""; void d.offsetWidth; d.classList.add("shake"); sp.lock=true;
-    setTimeout(()=>{ sp.lock=false; if(view.sp===sp&&sp.state==="run"){ spNext(); spShowTask(); } },1300);
+    sp.task.tries=(sp.task.tries||0)+1;
+    if(!sp.task.miss){ f.seen++; f.wrong++; f.box=1; sp.flag.set(sp.task.k,lbl); sp.task.miss=true; }
+    sp.entry=""; void d.offsetWidth; d.classList.add("shake");
+    fb.className="feedback bad";
+    fb.textContent=sp.task.tries>=2?`Richtig ist ${ans}. Tippe es ein, die Uhr läuft weiter.`:"Falsch. Nochmal, die Uhr läuft weiter!";
   }
   save();
 }
-const TRAIN={secs:120, goal:10, tables:[3,4,6,7,8,9], core:true, weak:true, setSize:8};
+const TRAIN={tables:[3,4,6,7,8,9], core:true, weak:true, setSize:8};
 function renderTraining(){ renderSpeed(TRAIN,null); }
+
 
 /* Kampf */
 function startBattle(){ view.b={hp:3,hits:0,msg:"",over:null,last:""}; newTask(); entry=""; }
