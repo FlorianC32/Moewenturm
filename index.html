@@ -169,6 +169,8 @@ h1,h2{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;le
 .pathbtn.on{background:#fff3c4;outline:3px solid var(--ok);outline-offset:-3px}
 .pathbtn.start.on{background:#9ad08c}
 .pathbtn.bad{background:var(--stamp);color:#fff}
+.pathbtn.hid{background:#0b0909;border-color:#1a1414;color:transparent;box-shadow:none}
+.pathbtn:not(.hid):not(.on){box-shadow:0 0 12px rgba(255,214,120,.25)}
 .cardsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px}
 .cardbtn{display:flex;gap:12px;align-items:center;text-align:left;padding:12px 14px;border-radius:12px;border:3px solid var(--line);background:#fff;color:var(--ink);font-size:16px;line-height:1.35}
 .cardbtn svg{flex:none}
@@ -217,6 +219,23 @@ body.mood-dark .arena{background:#0e1412;box-shadow:inset 0 0 0 1px #2c3a36}
 body.mood-dark .arrow{color:#8aa39a}
 body.mood-dark .small{color:#dcd6c4;border-color:#8aa39a}
 @media (prefers-reduced-motion:reduce){body.mood-dark::before{animation:none}}
+/* Gruselfall */
+body.mood-horror{background-color:#040303;background-image:radial-gradient(ellipse at 50% -10%,#3a0d12 0%,#140607 45%,#040303 100%)}
+body.mood-horror::before{background:radial-gradient(closest-side,rgba(200,60,60,.10),transparent 70%) 15% 25%/60% 40% no-repeat,radial-gradient(closest-side,rgba(180,180,200,.07),transparent 70%) 85% 70%/70% 45% no-repeat}
+body.mood-horror::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:5;background:#dfe6ff;opacity:0;animation:lightning 13s linear infinite}
+@keyframes lightning{0%,91%,93.5%,96%,100%{opacity:0}92%{opacity:.22}95%{opacity:.12}}
+body.mood-horror .brand,body.mood-horror .ch-num{color:#e06a6a}
+body.mood-horror .file,body.mood-horror .file::before{background:#1a1414}
+body.mood-horror .file{box-shadow:0 14px 40px rgba(0,0,0,.75),0 0 0 1px #3a2222}
+body.mood-horror .file h2{text-shadow:0 0 18px rgba(224,90,90,.45)}
+body.mood-horror .question{background:#261b1b;border-color:#4a2c2c}
+body.mood-horror .ch{background:#170f10;border-color:#3a2324}
+body.mood-horror .task{text-shadow:0 0 14px rgba(224,90,90,.45)}
+.file.scare{animation:flicker 1.2s steps(1,end)}
+@keyframes flicker{0%{opacity:.15}8%{opacity:1}14%{opacity:.25}22%{opacity:1}30%{opacity:.6}36%{opacity:1}100%{opacity:1}}
+.whisper{font-style:italic;color:#ff9c9c;border-left:3px solid #8a2c2c;padding-left:12px;opacity:0;animation:whisperIn 1.6s ease 2.2s forwards}
+@keyframes whisperIn{from{opacity:0;letter-spacing:.12em;filter:blur(3px)}to{opacity:1;letter-spacing:0;filter:none}}
+@media (prefers-reduced-motion:reduce){body.mood-horror::after{animation:none}.file.scare{animation:none}.whisper{animation:none;opacity:1}}
 body.mood-halloween{background-color:#07040a;background-image:radial-gradient(ellipse at 50% -10%,#3d1f4f 0%,#170b21 50%,#07040a 100%)}
 body.mood-halloween::before{background:radial-gradient(closest-side,rgba(232,131,58,.13),transparent 70%) 15% 25%/55% 40% no-repeat,radial-gradient(closest-side,rgba(170,120,220,.12),transparent 70%) 85% 65%/70% 45% no-repeat,radial-gradient(closest-side,rgba(232,131,58,.08),transparent 70%) 55% 95%/60% 30% no-repeat}
 body.mood-halloween .brand,body.mood-halloween .ch-num{color:#f0a35e}
@@ -249,6 +268,15 @@ const PLAN_STAGE={w:12,h:8, rooms:[
   {id:"F",name:"Werkstatt",r:[[4,4,4,4]],l:[6,6]},
   {id:"G",name:"Kostüme",r:[[8,5,4,3]],l:[10,6.5]}],
   doors:[[5,1.5,"v"],[8,0.5,"v"],[9.5,3,"h"],[9.5,5,"h"],[2.5,4,"h"],[5.5,4,"h"],[4,6.5,"v"],[8,6.5,"v"]]};
+const PLAN_VILLA={w:12,h:8, rooms:[
+  {id:"A",name:"Eingangshalle",r:[[0,0,4,4]],l:[2,2]},
+  {id:"B",name:"Salon",r:[[4,0,4,3]],l:[6,1.5]},
+  {id:"C",name:"Bibliothek",r:[[8,0,4,3]],l:[10,1.5]},
+  {id:"D",name:"Flur",r:[[4,3,6,2]],l:[7,4]},
+  {id:"E",name:"Küche",r:[[0,4,4,4]],l:[2,6]},
+  {id:"F",name:"Puppenstube",r:[[4,5,4,3]],l:[6,6.5]},
+  {id:"G",name:"Werkstatt",r:[[10,3,2,5],[8,5,2,3]],l:[10,6.5]}],
+  doors:[[4,1.5,"v"],[1.5,4,"h"],[5.5,3,"h"],[8,1.5,"v"],[8.5,3,"h"],[10.5,3,"h"],[4,4.5,"v"],[5.5,5,"h"],[10,3.5,"v"],[4,6.5,"v"]]};
 const PLAN_SCHOOL={w:12,h:8, rooms:[
   {id:"A",name:"Klasse 3a",r:[[0,0,4,3]],l:[2,1.5]},
   {id:"B",name:"Musikraum",r:[[4,0,3,3]],l:[5.5,1.5]},
@@ -660,6 +688,73 @@ const CHAPTERS = [
       {id:"nurgruen", icon:"circle:green", text:"Nur Frau Lindgren schreibt mit grüner Kreide."},
       {id:"bonbons", icon:"candy:orange", text:"Ihr habt 42 Bonbons gerecht verteilt."},
       {id:"kuerbis", icon:"pumpkin:orange", text:"In der Aula stehen 12 Kürbisse."}]}, q:"Wähle die 2 Beweise, die zusammen zeigen, wer die Geisterbotschaften geschrieben hat.", sol:"Die Botschaften sind in grüner Kreide geschrieben, und nur Frau Lindgren schreibt mit grüner Kreide.", clue:"Fall gelöst! Frau Lindgren hat die Halloween-Rätselnacht vorbereitet. Aber wer schrieb die letzte Botschaft?", next:"END"}
+   }},
+
+ /* ===== Fall 7: Die Uhrenpuppen ===== */
+ { title:"Das Haus auf der Klippe",
+   outro:"In der Werkstatt ticken hundert Uhren. Alle zeigen fünf vor zwölf. Auf der Werkbank liegt Lottas Haarspange. Und daneben sitzt eine Puppe, die genauso aussieht wie Lotta.",
+   nodes:{
+    start:{type:"story", scare:true, title:"Halloween", text:[
+      "Halloween. Mila, Ben und du ziehen verkleidet durch Möwenbucht und sammelt Süßigkeiten. Bens kleine Cousine Lotta ist als Fledermaus mit dabei.",
+      "Am Ende der Klippenstraße steht die alte Villa Krähenstein. Seit hundert Jahren wohnt dort niemand mehr. Man erzählt sich, der Uhrmacher Grimmwald habe dort Puppen gebaut. Puppen, die um Mitternacht die Augen öffnen.",
+      "Plötzlich faucht eine schwarze Katze und rennt durch das rostige Tor. „Mitternacht! Komm zurück!“, ruft Lotta und rennt hinterher. Die Haustür der Villa knarrt auf. Lotta verschwindet im Dunkeln. Und die Tür fällt mit einem Knall zu."], whisper:"Oben im Fenster bewegt sich ein Vorhang. Dahinter schaut ein weißes Puppengesicht auf euch herab.", next:"gate"},
+    gate:{type:"num", tries:3, scene:"Das rostige Tor", text:"Das Gartentor hat ein altes Zahlenschloss. In das Eisen ist eine Rechnung eingeritzt, halb zugewachsen mit Efeu.", say:"(72 : 8) − (42 : 7)", q:"Welche Zahl öffnet das Tor?", answer:3, sol:"72 : 8 = 9 und 42 : 7 = 6. 9 − 6 = 3.", clue:"Das Tor ließ sich mit der 3 öffnen. Es quietschte fürchterlich.", next:"garden"},
+    garden:{type:"path", dark:true, scene:"Der finstere Garten", text:"Im Garten ist es stockfinster. Deine Taschenlampe leuchtet nur einen Schritt weit. Nur die Steinplatten, deren Rechnung 6 ergibt, sind fest. Dazwischen ist schwarzer Matsch, in dem etwas blubbert. Tippe Feld für Feld. Tippst du nochmal auf das letzte Feld, gehst du einen Schritt zurück.", grid:[["32:4", "54:9", "10:2", "15:3", "Tür"], ["8:2", "18:3", "12:2", "54:9", "36:6"], ["16:2", "48:8", "25:5", "18:3", "20:5"], ["54:9", "54:9", "30:5", "24:4", "14:2"], ["54:9", "63:9", "24:4", "54:9", "35:7"]], start:[4,0], goal:[0,4], rule:"d6", q:"Finde den Weg zur Haustür.", clue:"Ihr habt den finsteren Garten durchquert.", next:"d1"},
+    d1:{type:"decide", scene:"Hinein, aber wie?", text:"Die Haustür ist wieder verschlossen. Neben der Treppe ist ein zerbrochenes Kellerfenster.", q:"Wie kommt ihr hinein?", options:[
+      {label:"Durch die Haustür", sub:"Auf der Tür ist etwas eingeritzt.", next:"door"},
+      {label:"Durchs Kellerfenster", sub:"Aus dem Keller hört man ein Kratzen.", next:"rats"}]},
+    door:{type:"pick", scene:"Die Warnung", text:"In das Holz der Haustür hat jemand ein Wort gekratzt. Es steht in Spiegelschrift da, als hätte es jemand von innen geschrieben.", mirror:"UMKEHREN", q:"Was steht auf der Tür?", options:["UHRWERK","UMKEHREN","UNTERHALB","UMGEHEN"], answer:"UMKEHREN", sol:"Gespiegelt gelesen heißt es UMKEHREN.", clue:"Auf der Haustür stand UMKEHREN. Von innen geschrieben.", next:"hall"},
+    rats:{type:"battle", scene:"Die Kellerratten", text:"Im Keller rascheln Dutzende Ratten mit roten Augen. Jede richtige Geteilt-Aufgabe scheucht eine Ratte in ihr Loch zurück.", foe:"Ratten", hits:5, gen:"div", tables:[6,7,8,9], hitLines:["Eine Ratte quiekt und flüchtet!","Weg ist sie!","Das Rascheln wird leiser!","Nur noch wenige!"], missLine:"Eine Ratte huscht über Bens Schuh!", win:"Die letzte Ratte verschwindet. Eine Treppe führt nach oben in die Halle.", lose:"Die Ratten drängen euch zum Fenster zurück. Nochmal!", clue:"Ihr habt euch durch den Rattenkeller gekämpft.", next:"hall"},
+    hall:{type:"pick", tries:3, scene:"Der Grundriss in der Halle", text:"In der Eingangshalle hängt ein staubiger Grundriss der Villa. Jedes Kästchen ist ein Quadratmeter, die orangen Striche sind Türen. Da hört ihr Lottas Stimme, ganz leise, irgendwo im Haus: „Ich bin in einem Raum, der größer ist als der Salon. Er liegt nicht neben dem Salon. Und er hat genau 2 Türen.“", art:"plan", plan:PLAN_VILLA, q:"Wo ist Lotta?", options:["A Eingangshalle","B Salon","C Bibliothek","D Flur","E Küche","F Puppenstube","G Werkstatt"], answer:"G Werkstatt", sol:"Größer als der Salon (12) sind Eingangshalle, Küche und Werkstatt (je 16). Neben dem Salon liegt die Eingangshalle, also fällt sie weg. Die Küche hat 3 Türen. Es bleibt die Werkstatt mit genau 2 Türen.", clue:"Lottas Stimme kam aus der Werkstatt des Uhrmachers.", next:"END"}
+   }},
+ { title:"Die Puppenstube",
+   outro:"Oben auf dem Dachboden steht ein riesiger Schrank. Von innen klopft es. Einmal. Zweimal. Dreimal. Dann ist es still.",
+   nodes:{
+    start:{type:"story", scare:true, title:"Die Puppen", text:[
+      "Von der Werkstatt führt eine Tür in die Puppenstube. Auf langen Regalen sitzen Dutzende Porzellanpuppen. Alle haben die Augen geschlossen.",
+      "Die alte Standuhr schlägt einmal. Und dann hört ihr es: klick. Irgendwo hat eine Puppe die Augen geöffnet."], whisper:"Ben flüstert: „Nicht hinsehen. Bitte nicht hinsehen.“", next:"eyes"},
+    eyes:{type:"diff", scene:"Klick", text:"Mila hält ihr Handyfoto von vorhin hoch: das Regal, als ihr hereingekommen seid. Links das Foto, rechts das Regal jetzt.", diff:{cols:5, before:["doll:pink","doll:white","doll:blue","doll:white","doll:pink","doll:blue","doll:pink","doll:white","doll:white","doll:blue","doll:white","doll:pink","doll:blue","doll:white","doll:pink","doll:pink","doll:blue","doll:white","doll:pink","doll:white"], change:13, after:"doll:white:open"}, q:"Welche Puppe hat die Augen geöffnet? Tippe sie im rechten Bild an.", answer:"13", sol:"Diese Puppe hat jetzt die Augen offen.", clue:"Eine Puppe hat die Augen geöffnet. Sie schaut genau zur Dachbodentreppe.", next:"keys"},
+    keys:{type:"pick", tries:3, scene:"Drei Puppen, ein Schlüssel", text:"Drei Puppen sitzen vor einer verschlossenen Tür. Eine von ihnen hält den Schlüssel in den Porzellanhänden. Mit knarzenden Stimmen sprechen sie. Jede Puppe lügt immer oder sagt immer die Wahrheit. Genau eine Puppe sagt die Wahrheit.", say:"Puppe Rosa: „Der Schlüssel ist nicht bei mir.“ · Puppe Blau: „Der Schlüssel ist bei Rosa.“ · Puppe Weiß: „Der Schlüssel ist nicht bei mir.“", q:"Welche Puppe hat den Schlüssel?", options:["Puppe Rosa","Puppe Blau","Puppe Weiß"], answer:"Puppe Weiß", sol:"Probiere jede aus. Hätte Rosa den Schlüssel, würden Blau und Weiß die Wahrheit sagen. Hätte Blau ihn, würden Rosa und Weiß die Wahrheit sagen. Nur wenn Weiß ihn hat, sagt genau eine Puppe die Wahrheit: Rosa.", clue:"Puppe Weiß hatte den Schlüssel. Ihre Hand war eiskalt.", next:"musicbox"},
+    musicbox:{type:"speed", scene:"Die Spieluhr", text:"Die Puppen beginnen, sich zu bewegen. Auf dem Tisch steht eine Spieluhr. Solange sie spielt, erstarren die Puppen. Zieh sie auf, mit jeder richtigen Aufgabe eine Umdrehung. 15 Aufgaben, so schnell du kannst!", speed:{tables:[6,7,8,9], op:"div", core:true, setSize:7}, win:"Die Spieluhr klimpert ein Wiegenlied. Alle Puppen sitzen wieder still. Fast alle.", clue:"Solange die Spieluhr spielt, sind die Puppen still.", next:"gears"},
+    gears:{type:"num", scene:"Die Zahnräder", text:"Hinter der Tür steht eine große Uhrenmaschine. Die Zahnräder liegen verstreut auf dem Boden. Auf jede der 9 Achsen gehören gleich viele.", share:{n:63,k:9,item:"gear:white",group:"Achsen"}, q:"Wie viele Zahnräder kommen auf jede Achse?", answer:7, sol:"63 : 9 = 7", clue:"Die Uhrenmaschine läuft wieder. Irgendwo oben setzt sich etwas in Bewegung.", next:"d1"},
+    d1:{type:"decide", scene:"Nach oben", text:"Zum Dachboden gibt es zwei Wege.", q:"Welchen nehmt ihr?", options:[
+      {label:"Die schmale Holztreppe", sub:"Viele Stufen fehlen.", next:"stairs"},
+      {label:"Den Gang hinter dem Spiegel", sub:"Im Spiegel siehst du dich. Aber dein Spiegelbild bewegt sich ein bisschen zu spät.", next:"mirror"}]},
+    stairs:{type:"path", dark:true, scene:"Die Dachbodentreppe", text:"Die Treppe ist eng und dunkel. Viele Stufen sind morsch. Nur die mit Ergebnis 8 halten. Deine Taschenlampe flackert und zeigt nur die Stufen direkt neben dir.", grid:[["Ziel", "32:4", "56:7", "72:9", "72:8", "27:3"], ["18:2", "40:5", "16:2", "32:4", "12:2", "16:2"], ["50:5", "72:9", "27:3", "56:7", "40:5", "48:8"], ["63:9", "48:6", "16:2", "64:8", "32:4", "18:3"], ["48:8", "72:9", "56:7", "28:4", "56:7", "49:7"], ["40:4", "24:3", "40:5", "12:2", "48:6", "72:9"]], start:[5,5], goal:[0,0], rule:"d8", q:"Finde den Weg nach oben.", clue:"Ihr seid auf dem Dachboden angekommen.", next:"END"},
+    mirror:{type:"num", scene:"Hinter dem Spiegel", text:"Im Spiegelgang stehen Zahlen auf dem Glas. Jede ist die Hälfte der Zahl davor. Die letzte ist verwischt, als hätte jemand mit dem Finger darübergewischt. Von der anderen Seite.", say:"96 · 48 · 24 · 12 · ?", q:"Welche Zahl fehlt?", answer:6, sol:"12 : 2 = 6", clue:"Der Spiegelgang führte direkt auf den Dachboden.", next:"END"}
+   }},
+ { title:"Der Dachboden",
+   outro:"Vor euch liegt die Tür zum Uhrenturm. Die große Turmuhr zeigt eine Minute vor zwölf. Und aus dem Turm hört ihr ein leises Weinen.",
+   nodes:{
+    start:{type:"story", scare:true, title:"Der Schrank", text:[
+      "Mit zitternden Händen öffnet Mila den Schrank. Er ist leer. Nur ein Tagebuch liegt darin, in Leder gebunden, mit den Buchstaben G. G."], whisper:"Hinter euch knarrt eine Diele. Als ihr euch umdreht, ist da nur ein alter Schaukelstuhl. Er schaukelt.", next:"diary"},
+    diary:{type:"pick", scene:"Das Tagebuch", text:"Das Tagebuch des Uhrmachers ist in Geheimschrift geschrieben. Auf der letzten Seite steht nur ein einziges Wort, dick unterstrichen. A ist 1, B ist 2 und so weiter.", code:"13 · 9 · 20 · 20 · 5 · 18 · 14 · 1 · 3 · 8 · 20", abc:true, q:"Welches Wort steht da?", options:["MITTELMEER","MITTERNACHT","MUTTERTAG","MITTAGSRUHE"], answer:"MITTERNACHT", sol:"M=13, I=9, T=20, T=20, E=5, R=18, N=14, A=1, C=3, H=8, T=20: MITTERNACHT.", clue:"Im Tagebuch stand nur ein Wort: MITTERNACHT.", next:"area"},
+    area:{type:"num", tries:3, scene:"Der zweite Plan", text:"Zwischen den Seiten liegt noch einmal der Grundriss der Villa. Jemand hat zwei Räume rot umkreist und daneben geschrieben: „Zusammen so viele Quadratmeter, wie Stufen zum Turm.“", art:"plan", plan:PLAN_VILLA, q:"Wie viele Quadratmeter haben Werkstatt und Flur zusammen?", answer:28, sol:"Werkstatt: 2 × 5 + 2 × 3 = 16. Flur: 6 × 2 = 12. Zusammen 28.", clue:"Zum Uhrenturm führen 28 Stufen.", next:"shadows"},
+    shadows:{type:"pick", tries:3, scene:"Drei Schatten", text:"Im Mondlicht huschen drei Schatten über die Wand: die Katze Mitternacht, Lotta und eine Puppe. Einer ist jetzt im Keller, einer auf dem Dachboden, einer oben im Turm. Der Turm ist am höchsten, der Keller am tiefsten. Die Puppe ist nicht im Turm. Lotta ist nicht im Keller. Die Katze ist genau eine Etage über der Puppe.", q:"Wo ist Lotta?", options:["Im Keller","Auf dem Dachboden","Im Turm"], answer:"Im Turm", sol:"Wäre die Puppe auf dem Dachboden, wäre die Katze im Turm und Lotta im Keller. Das geht nicht. Also ist die Puppe im Keller, die Katze auf dem Dachboden und Lotta im Turm.", clue:"Lotta ist oben im Uhrenturm.", next:"d1"},
+    d1:{type:"decide", scene:"Zum Turm", text:"Die Tür zum Turm klemmt. Es gibt noch zwei andere Wege.", q:"Was macht ihr?", options:[
+      {label:"Durchs Dachfenster", sub:"Draußen kreisen Fledermäuse.", next:"bats"},
+      {label:"In den alten Speiseaufzug", sub:"Eine Kiste an einem Seil, mitten durch die Wand.", next:"lift"}]},
+    bats:{type:"battle", scene:"Fledermäuse", text:"Kaum seid ihr auf dem Dach, flattern Hunderte Fledermäuse aus dem Turm! Jede richtige Rechnung ist ein Schritt über die rutschigen Ziegel. Gemischte Aufgaben!", foe:"Fledermäuse", hits:5, gen:"mix", tables:[6,7,8,9], hitLines:["Ein sicherer Schritt!","Die Fledermäuse weichen aus!","Festhalten!","Fast am Turmfenster!"], missLine:"Ein Ziegel rutscht weg!", win:"Ihr klettert durch das Turmfenster.", lose:"Ihr rutscht zurück zum Dachfenster. Durchatmen und nochmal!", clue:"Ihr seid über das Dach zum Turm geklettert.", next:"END"},
+    lift:{type:"path", dark:true, scene:"Im Speiseaufzug", text:"Der Aufzug ruckelt durch einen finsteren Schacht. An der Wand sind Hebel mit Rechnungen. Nur die mit Ergebnis 7 bringen euch weiter. Eure Taschenlampe ist fast leer.", grid:[["42:6", "36:6", "21:3", "42:6", "63:7", "45:5"], ["42:6", "45:9", "35:5", "28:4", "28:4", "40:8"], ["28:4", "35:5", "28:4", "35:7", "21:3", "40:8"], ["28:4", "42:7", "14:2", "42:6", "35:5", "15:3"], ["56:8", "63:7", "56:8", "36:6", "63:9", "54:9"], ["24:4", "54:9", "28:4", "14:2", "42:6", "Ziel"]], start:[0,0], goal:[5,5], rule:"d7", q:"Finde den Weg durch den Schacht.", clue:"Der Speiseaufzug hat euch bis unter den Turm gebracht.", next:"END"}
+   }},
+ { title:"Mitternacht",
+   outro:"Lotta sitzt oben im Turm, die Katze Mitternacht im Arm, und fällt euch um den Hals. Herr Grimmwald entschuldigt sich tausendmal und schenkt jedem einen Sack Süßigkeiten. Auf dem Heimweg dreht sich Ben noch einmal um. Oben im Fenster der Villa sitzt die Puppe, die aussieht wie Lotta. Sie hebt die Hand und winkt. Herr Grimmwald steht neben euch am Tor.",
+   nodes:{
+    start:{type:"story", scare:true, title:"Die Turmtreppe", text:[
+      "28 Stufen führen hinauf in den Uhrenturm. Bei jeder Stufe tickt es lauter. Tick. Tack. Tick. Tack."], whisper:"Dann schlägt die Turmuhr. Zwölf Mal. Und überall im Haus hört ihr es: klick, klick, klick. Alle Puppen öffnen die Augen.", next:"strikes"},
+    strikes:{type:"speed", scene:"Die zwölf Schläge", text:"Unten auf der Treppe trappeln kleine Porzellanfüße. Rechne, so schnell du kannst, damit ihr oben ankommt, bevor die Puppen euch einholen. Die Aufgaben, die dir schwerfallen, kommen besonders oft.", speed:{tables:[6,7,8,9], core:true, weak:true, setSize:8}, win:"Ihr erreicht die Turmstube und schlagt die Tür hinter euch zu. Draußen wird es still.", clue:"Ihr habt die Turmstube vor den Puppen erreicht.", next:"clockwork"},
+    clockwork:{type:"path", dark:true, scene:"Im Uhrwerk", text:"Die Turmstube ist das Innere der großen Uhr. Riesige Zahnräder drehen sich in der Dunkelheit. Nur auf den Zahnrädern mit Ergebnis 9 könnt ihr stehen. Ganz oben wartet Lotta.", grid:[["49:7", "72:9", "63:7", "36:4", "72:9", "Turm"], ["28:4", "27:3", "81:9", "54:6", "21:3", "45:5"], ["16:2", "54:6", "56:8", "81:9", "14:2", "54:6"], ["54:6", "54:6", "24:3", "72:8", "72:8", "27:3"], ["45:5", "80:8", "54:6", "50:5", "16:2", "14:2"], ["27:3", "28:4", "63:7", "32:4", "36:4", "48:6"]], start:[5,0], goal:[0,5], rule:"d9", q:"Finde den Weg durch das Uhrwerk.", clue:"Ihr seid durch das Uhrwerk geklettert.", next:"figure"},
+    figure:{type:"story", scare:true, title:"Die Gestalt", text:[
+      "Neben Lotta steht eine große, dünne Gestalt mit Zylinder. In der Hand hält sie einen goldenen Schlüssel.",
+      "„Na so was“, sagt die Gestalt mit freundlicher Stimme und nimmt den Zylinder ab. „Besuch? Um Mitternacht?“"], next:"combine"},
+    combine:{type:"combine", tries:3, scene:"Wer bewegt die Puppen?", text:"Mila schaut die Gestalt lange an. Dann schaut sie in eure Notizen. „Ich glaube, ich weiß, was hier los ist.“", combine:{pick:3, answer:["uhrwerk","schluessel","grimmwald"], cards:[
+      {id:"uhrwerk", icon:"gear:white", text:"Jede Puppe hat im Rücken ein kleines Uhrwerk."},
+      {id:"katze", icon:"monster:purple", text:"Die Katze heißt Mitternacht."},
+      {id:"schluessel", icon:"square:yellow", text:"Die Uhrwerke werden mit einem goldenen Schlüssel aufgezogen."},
+      {id:"matsch", icon:"circle:brown", text:"Im Garten war schwarzer Matsch."},
+      {id:"grimmwald", icon:"doll:white", text:"Die Gestalt hält einen goldenen Schlüssel und hat das Tagebuch mit G. G. geschrieben."},
+      {id:"wiegenlied", icon:"candy:orange", text:"Die Spieluhr spielt ein Wiegenlied."}]}, q:"Wähle die 3 Beweise, die zusammen erklären, wer die Puppen bewegt hat.", sol:"Die Puppen haben Uhrwerke. Die Uhrwerke werden mit einem goldenen Schlüssel aufgezogen. Und genau so einen Schlüssel hält die Gestalt: Gustav Grimmwald.", clue:"Gustav Grimmwald, der Urenkel des Uhrmachers, zieht die Puppen auf.", next:"candy"},
+    candy:{type:"num", scene:"Süßes statt Saures", text:"Gustav Grimmwald ist der Urenkel des alten Uhrmachers. Er repariert die Puppen und wollte nur seine Ruhe. „Ich wollte niemanden erschrecken“, sagt er verlegen. Er holt eine große Dose Süßigkeiten und teilt sie gerecht unter euch vieren auf: Mila, Ben, Lotta und dir.", share:{n:48,k:4,item:"candy:orange",group:"Kinder"}, q:"Wie viele Süßigkeiten bekommt jedes Kind?", answer:12, sol:"48 : 4 = 12", clue:"Fall gelöst! Lotta ist gerettet, und Gustav Grimmwald zieht seine Puppen nur noch tagsüber auf. Hoffentlich.", next:"END"}
    }}
 ];
 
@@ -669,7 +764,8 @@ const CASES=[
   {title:"Der Schatz der Möweninsel", from:8, to:11, blurb:"Im Kompass steckt eine geheime Botschaft. Sie führt zu einem Schatz auf einer Insel.", tag:"Profi-Rechnen · Knobeln", color:"#7fc8d9", done:"Kapitän Hansens Goldmünzen liegen jetzt im Museum, und die Rote Möwe ist gefasst."},
   {title:"Die Goldene Möwe", from:12, to:15, blurb:"Beim Hafenfest verschwindet der Siegerpokal aus einer verschlossenen Vitrine. Ein alter Bauplan führt unter die Bühne.", tag:"Baupläne · Logik · Wege · Beweise", color:"#9ad08c", done:"Die Goldene Möwe ist zurück, und die Siegerehrung fand pünktlich statt."},
   {title:"Der Nebelkapitän", from:16, to:19, mood:"dark", blurb:"In der Nacht vor dem Drachenbootrennen geistert eine Gestalt mit grüner Laterne durch den nebligen Hafen. Am Morgen sind die Paddel angesägt.", tag:"Speed-Rechnen · Wege · Beweise", color:"#6fbf8f", done:"Der Nebelkapitän ist entlarvt, und die Leuchtfeuer hat das Drachenbootrennen gewonnen."},
-  {title:"Die Geisterschule", from:20, to:23, mood:"halloween", blurb:"Halloween-Nacht in der Schule. Um Mitternacht gehen die Lichter aus, und eine Stimme flüstert: Löst meine Rätsel, oder bleibt für immer hier.", tag:"Geteilt · Wege · Grundrisse · Logik", color:"#e8833a", done:"Ihr seid aus der Geisterschule entkommen. Aber wer schrieb die letzte Botschaft?"}
+  {title:"Die Geisterschule", from:20, to:23, mood:"halloween", blurb:"Halloween-Nacht in der Schule. Um Mitternacht gehen die Lichter aus, und eine Stimme flüstert: Löst meine Rätsel, oder bleibt für immer hier.", tag:"Geteilt · Wege · Grundrisse · Logik", color:"#e8833a", done:"Ihr seid aus der Geisterschule entkommen. Aber wer schrieb die letzte Botschaft?"},
+  {title:"Die Uhrenpuppen", from:24, to:27, mood:"horror", blurb:"Halloween-Nacht. Lotta verschwindet in der verlassenen Villa Krähenstein, wo Puppen um Mitternacht die Augen öffnen. Nur für sehr mutige Detektive.", tag:"Taschenlampen-Wege · Geteilt · Grundrisse · Logik", color:"#c94848", done:"Lotta ist gerettet. Aber warum hat die Puppe im Fenster gewinkt?"}
 ];
 const caseOf=ch=>CASES.findIndex(c=>ch>=c.from&&ch<=c.to);
 const caseStars=ci=>{let t=0;for(let i=CASES[ci].from;i<=CASES[ci].to;i++)t+=chStars(i);return t;};
@@ -677,7 +773,7 @@ const caseStars=ci=>{let t=0;for(let i=CASES[ci].from;i<=CASES[ci].to;i++)t+=chS
 /* Grafik-Bausteine */
 const COL={red:"#d9473a",blue:"#2f6db5",yellow:"#f2c230",green:"#3f9a55",orange:"#ee8a2b",purple:"#7d4ea8",pink:"#e57aa6",brown:"#8a5a3b",white:"#ffffff",lightblue:"#8fc3e8"};
 const CN={red:"Rot",blue:"Blau",yellow:"Gelb",green:"Grün",orange:"Orange",purple:"Lila",pink:"Rosa",brown:"Braun",white:"Weiß",lightblue:"Hellblau"};
-const KN={ghost:"Geist",monster:"Monster",pumpkin:"Kürbis",candy:"Bonbon",paddle:"Paddel",card:"Karte",circle:"Kreis",square:"Quadrat",tri:"Dreieck",star:"Stern",heart:"Herz",balloon:"Ballon",muffin:"Muffin",brush:"Pinsel",box:"Karton"};
+const KN={doll:"Puppe",gear:"Zahnrad",ghost:"Geist",monster:"Monster",pumpkin:"Kürbis",candy:"Bonbon",paddle:"Paddel",card:"Karte",circle:"Kreis",square:"Quadrat",tri:"Dreieck",star:"Stern",heart:"Herz",balloon:"Ballon",muffin:"Muffin",brush:"Pinsel",box:"Karton"};
 function shape(kind,c,cx,cy,r,m){
   const rr=m==="small"?r*.8:r; let out=shapeBase(kind,c,cx,cy,rr,m);
   if(m==="gold") out+=shapeBase("star","yellow",cx+rr*.42,cy-rr*.62,rr*.3);
@@ -698,6 +794,10 @@ function shapeBase(kind,c,cx,cy,r,m){
     case "brush": return `<line x1="${cx-r*.8}" y1="${cy+r*.8}" x2="${cx+r*.3}" y2="${cy-r*.3}" stroke="#c9884f" stroke-width="${r*.35}" stroke-linecap="round"/><circle cx="${cx+r*.55}" cy="${cy-r*.55}" r="${r*.4}" fill="${f}" ${st}/>`;
     case "box": return `<rect x="${cx-r}" y="${cy-r*.55}" width="${2*r}" height="${r*1.1}" rx="2" fill="${f}" ${st}/><line x1="${cx-r}" y1="${cy}" x2="${cx+r}" y2="${cy}" stroke="#1f2a33" stroke-width="1"/>`;
     case "card": return `<rect x="${cx-r*.7}" y="${cy-r}" width="${r*1.4}" height="${r*2}" rx="3" fill="#fff" ${st}/>${shapeBase("heart",c,cx,cy+r*.1,r*.42)}`;
+    case "doll": { const ey=cy-r*.38, eyes=m==="open"?`<circle cx="${cx-r*.18}" cy="${ey}" r="${r*.11}" fill="#fff" stroke="#1f2a33" stroke-width="1"/><circle cx="${cx+r*.18}" cy="${ey}" r="${r*.11}" fill="#fff" stroke="#1f2a33" stroke-width="1"/><circle cx="${cx-r*.18}" cy="${ey}" r="${r*.055}" fill="#1f2a33"/><circle cx="${cx+r*.18}" cy="${ey}" r="${r*.055}" fill="#1f2a33"/>`:`<path d="M${cx-r*.27},${ey} q${r*.09},${r*.08} ${r*.18},0 M${cx+r*.09},${ey} q${r*.09},${r*.08} ${r*.18},0" fill="none" stroke="#1f2a33" stroke-width="1.4" stroke-linecap="round"/>`;
+      return `<polygon points="${cx},${cy-r*.15} ${cx+r*.7},${cy+r*.95} ${cx-r*.7},${cy+r*.95}" fill="${f}" ${st}/><circle cx="${cx}" cy="${cy-r*.42}" r="${r*.52}" fill="#5a3b2a" stroke="#1f2a33" stroke-width="1.5"/><circle cx="${cx}" cy="${cy-r*.34}" r="${r*.4}" fill="#f6efe6" stroke="#1f2a33" stroke-width="1.5"/>${eyes}<circle cx="${cx-r*.24}" cy="${cy-r*.2}" r="${r*.06}" fill="#e7a1a8"/><circle cx="${cx+r*.24}" cy="${cy-r*.2}" r="${r*.06}" fill="#e7a1a8"/>`; }
+    case "gear": { const pts=[]; for(let i=0;i<16;i++){const a=i*Math.PI/8, rr=i%2?r*.72:r*.95; pts.push((cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1));}
+      return `<polygon points="${pts.join(" ")}" fill="${f==="#ffffff"?"#c9cdd2":f}" ${st}/><circle cx="${cx}" cy="${cy}" r="${r*.28}" fill="#fff" stroke="#1f2a33" stroke-width="1.5"/>`; }
     case "ghost": {const ey=cy-r*.15, el=`<circle cx="${cx-r*.28}" cy="${ey}" r="${r*.13}" fill="#1f2a33"/>`, er=m==="wink"?`<line x1="${cx+r*.16}" y1="${ey}" x2="${cx+r*.4}" y2="${ey}" stroke="#1f2a33" stroke-width="2.2" stroke-linecap="round"/>`:`<circle cx="${cx+r*.28}" cy="${ey}" r="${r*.13}" fill="#1f2a33"/>`;
       const w=r*.75, b=cy+r*.85, s4=w*2/4;
       return `<path d="M${cx-w},${b} L${cx-w},${cy-r*.1} A${w},${w} 0 0 1 ${cx+w},${cy-r*.1} L${cx+w},${b} l${-s4/2},${-r*.22} l${-s4/2},${r*.22} l${-s4/2},${-r*.22} l${-s4/2},${r*.22} l${-s4/2},${-r*.22} l${-s4/2},${r*.22} l${-s4/2},${-r*.22} l${-s4/2},${r*.22}Z" fill="${f}" ${st}/>${el}${er}`;}
@@ -814,7 +914,8 @@ function render(){
   if(window.spTimer){clearInterval(window.spTimer);window.spTimer=null;}
   const chx=view.ch!=null?view.ch:((view.screen==="map"||view.screen==="end")&&view.cs!=null?CASES[view.cs].from:null);
   const mood=chx!=null?CASES[caseOf(chx)].mood:null;
-  document.body.classList.toggle("mood-dark",mood==="dark"||mood==="halloween");
+  document.body.classList.toggle("mood-dark",mood==="dark"||mood==="halloween"||mood==="horror");
+  document.body.classList.toggle("mood-horror",mood==="horror");
   document.body.classList.toggle("mood-halloween",mood==="halloween");
   ({title:renderTitle,map:renderMap,node:renderNode,outro:renderOutro,end:renderEnd,training:renderTraining})[view.screen]();
 }
@@ -875,7 +976,7 @@ function padHtml(){
 function renderNode(){
   const n=node();
   if(n.type==="story"){
-    app.innerHTML=bar()+`<article class="file">${head(n)}${n.text.map(t=>`<p>${esc(t)}</p>`).join("")}<button class="big" id="go">Weiter</button></article>`;
+    app.innerHTML=bar()+`<article class="file${n.scare?" scare":""}">${head(n)}${n.text.map(t=>`<p>${esc(t)}</p>`).join("")}${n.whisper?`<p class="whisper">${esc(n.whisper)}</p>`:""}<button class="big" id="go">Weiter</button></article>`;
     document.getElementById("go").onclick=()=>go(n.next); return;
   }
   if(n.type==="decide"){
@@ -901,7 +1002,7 @@ function renderNode(){
     const on=(r,c)=>view.path.some(([a,b])=>a===r&&b===c);
     let cells=""; n.grid.forEach((row,r)=>row.forEach((v,c)=>{
       const cls=["pathbtn"]; if(r===n.start[0]&&c===n.start[1])cls.push("start"); if(r===n.goal[0]&&c===n.goal[1])cls.push("goal"); if(on(r,c))cls.push("on");
-      cells+=`<button class="${cls.join(" ")}" data-r="${r}" data-c="${c}">${esc(v)}</button>`;}));
+      cells+=`<button class="${cls.join(" ")}" data-r="${r}" data-c="${c}" data-v="${esc(v)}">${esc(v)}</button>`;}));
     answer=`<div class="pathgrid" style="grid-template-columns:repeat(${n.grid[0].length},1fr)">${cells}</div>
      <div class="answer-row"><button class="small" id="pathreset">Zurück zum Start</button><span class="tries" id="tries">${limit} Versuche</span></div>`;
   }
@@ -938,7 +1039,7 @@ function renderNode(){
    <div class="feedback" id="fb" aria-live="polite"></div></article>`;
   if(pick) app.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>check(b.dataset.opt,b));
   else if(n.type==="diff") app.querySelectorAll("[data-cell]").forEach(b=>b.onclick=()=>check(b.dataset.cell,b));
-  else if(n.type==="path") bindPath(n,limit);
+  else if(n.type==="path"){ bindPath(n,limit); paintPath(); }
   else if(n.type==="combine"){
     const btn=document.getElementById("combcheck"), upd=()=>{btn.disabled=view.sel.length!==n.combine.pick;document.getElementById("selcount").textContent=`${view.sel.length} von ${n.combine.pick} gewählt`;};
     app.querySelectorAll(".cardbtn").forEach(b=>b.onclick=()=>{const id=b.dataset.id,i=view.sel.indexOf(id);if(i>=0)view.sel.splice(i,1);else if(view.sel.length<n.combine.pick)view.sel.push(id);else return;b.classList.toggle("sel",i<0);b.setAttribute("aria-pressed",i<0);document.getElementById("fb").textContent="";upd();});
@@ -967,7 +1068,17 @@ function solvePath(n){const R=n.grid.length,C=n.grid[0].length,prev={},q=[n.star
   while(q.length){const cur=q.shift();if(cur[0]===n.goal[0]&&cur[1]===n.goal[1])break;
     for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){const nr=cur[0]+dr,nc=cur[1]+dc;if(nr<0||nc<0||nr>=R||nc>=C||k([nr,nc]) in prev||!walkable(n,nr,nc))continue;prev[k([nr,nc])]=cur;q.push([nr,nc]);}}
   const path=[];let c=n.goal;while(c){path.unshift(c);c=prev[k(c)];}return path;}
-function paintPath(){app.querySelectorAll(".pathbtn").forEach(b=>b.classList.toggle("on",view.path.some(([a,c])=>a===+b.dataset.r&&c===+b.dataset.c)));}
+function paintPath(){
+  const n=node(), dark=n&&n.dark;
+  app.querySelectorAll(".pathbtn").forEach(b=>{
+    const r=+b.dataset.r,c=+b.dataset.c, on=view.path.some(([a,d])=>a===r&&d===c);
+    b.classList.toggle("on",on);
+    if(dark){
+      const vis=on||(r===n.goal[0]&&c===n.goal[1])||view.path.some(([a,d])=>Math.abs(a-r)+Math.abs(d-c)===1);
+      b.classList.toggle("hid",!vis); b.textContent=vis?b.dataset.v:"";
+    }
+  });
+}
 function bindPath(n,limit){
   const fb=()=>document.getElementById("fb");
   document.getElementById("pathreset").onclick=()=>{view.path=[n.start];paintPath();fb().textContent="";};
